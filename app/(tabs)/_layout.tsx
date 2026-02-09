@@ -8,13 +8,13 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: '#1A1A1A',
-        tabBarInactiveTintColor: '#999999',
+        tabBarActiveTintColor: '#FF1A55',
+        tabBarInactiveTintColor: '#666666',
         headerShown: false,
         tabBarButton: HapticTab,
         tabBarStyle: {
-          backgroundColor: '#FFFFFF',
-          borderTopColor: '#E0E0E0',
+          backgroundColor: '#050505',
+          borderTopColor: '#1A1A1A',
           borderTopWidth: 1,
           paddingTop: 8,
           paddingBottom: Platform.OS === 'ios' ? 28 : 12,
@@ -23,8 +23,10 @@ export default function TabLayout() {
           shadowOpacity: 0,
         },
         tabBarLabelStyle: {
-          fontSize: 11,
+          fontSize: 10,
           fontWeight: '600',
+          letterSpacing: 0.5,
+          textTransform: 'uppercase',
           marginTop: 2,
         },
       }}>
@@ -34,10 +36,9 @@ export default function TabLayout() {
           title: 'Home',
           tabBarIcon: ({ color, focused }) => (
             <Home 
-              size={24} 
-              color={focused ? '#FFE500' : color} 
-              strokeWidth={2}
-              fill={focused ? '#FFE500' : 'transparent'}
+              size={22} 
+              color={color} 
+              strokeWidth={focused ? 2.5 : 1.5}
             />
           ),
         }}
@@ -48,9 +49,9 @@ export default function TabLayout() {
           title: 'Activity',
           tabBarIcon: ({ color, focused }) => (
             <Activity 
-              size={24} 
-              color={focused ? '#FFE500' : color} 
-              strokeWidth={2}
+              size={22} 
+              color={color} 
+              strokeWidth={focused ? 2.5 : 1.5}
             />
           ),
         }}

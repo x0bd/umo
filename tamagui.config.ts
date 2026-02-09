@@ -2,40 +2,47 @@ import { createFont, createTamagui, createTokens } from 'tamagui'
 import { shorthands } from '@tamagui/shorthands'
 import { animations } from '@tamagui/config/v3'
 
-// System fonts that ACTUALLY work everywhere
+// ============================================
+// SPLTR-INSPIRED DESIGN SYSTEM
+// Dark + Hot Pink + Grey
+// ============================================
+
 const bodyFont = createFont({
-  family: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
+  family: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif",
   size: {
-    1: 12,
-    2: 14,
-    3: 15,
-    4: 16,
-    5: 18,
+    1: 10,
+    2: 12,
+    3: 14,
+    4: 15,
+    5: 16,
     6: 20,
     7: 24,
     8: 32,
     9: 40,
-    10: 52,
-    11: 64,
-    12: 80,
-    true: 16,
+    10: 48,
+    11: 56,
+    12: 72,
+    true: 15,
   },
   lineHeight: {
-    1: 18,
-    2: 20,
-    3: 22,
-    4: 24,
-    5: 26,
-    6: 28,
-    7: 32,
-    8: 40,
-    9: 50,
-    10: 62,
-    11: 74,
-    12: 92,
-    true: 24,
+    1: 14,
+    2: 16,
+    3: 18,
+    4: 20,
+    5: 22,
+    6: 26,
+    7: 30,
+    8: 36,
+    9: 44,
+    10: 52,
+    11: 58,
+    12: 76,
+    true: 20,
   },
   weight: {
+    1: '400',
+    2: '400',
+    3: '400',
     4: '400',
     5: '500',
     6: '600',
@@ -44,50 +51,52 @@ const bodyFont = createFont({
     9: '900',
   },
   letterSpacing: {
+    1: 0.5,
+    2: 0.5,
+    3: 0,
     4: 0,
-    5: 0,
-    6: -0.3,
-    7: -0.5,
-    8: -1,
-    9: -1.5,
+    5: -0.3,
+    6: -0.5,
+    7: -0.8,
+    8: -1.5,
+    9: -2,
     10: -2,
-    11: -2.5,
-    12: -3,
+    11: -3,
+    12: -4,
   },
 })
 
-// Mono font for numbers
 const monoFont = createFont({
-  family: '"SF Mono", SFMono-Regular, ui-monospace, Menlo, Monaco, "Cascadia Mono", monospace',
+  family: "'SF Mono', SFMono-Regular, ui-monospace, Menlo, Monaco, 'Cascadia Mono', monospace",
   size: {
-    1: 12,
-    2: 14,
-    3: 15,
-    4: 16,
-    5: 18,
+    1: 10,
+    2: 12,
+    3: 14,
+    4: 15,
+    5: 16,
     6: 20,
     7: 24,
     8: 32,
     9: 40,
-    10: 52,
-    11: 64,
-    12: 80,
-    true: 16,
+    10: 48,
+    11: 56,
+    12: 72,
+    true: 15,
   },
   lineHeight: {
-    1: 18,
-    2: 20,
-    3: 22,
-    4: 24,
-    5: 26,
-    6: 28,
-    7: 32,
-    8: 40,
-    9: 50,
-    10: 62,
-    11: 74,
-    12: 92,
-    true: 24,
+    1: 14,
+    2: 16,
+    3: 18,
+    4: 20,
+    5: 22,
+    6: 26,
+    7: 30,
+    8: 36,
+    9: 44,
+    10: 52,
+    11: 58,
+    12: 76,
+    true: 20,
   },
   weight: {
     4: '400',
@@ -110,33 +119,50 @@ const monoFont = createFont({
 
 const tokens = createTokens({
   color: {
-    // BRUTAL YELLOW
-    yellow: '#FFE500',        // Bright cyberpunk yellow
-    yellowLight: '#FFF44F',   // Lighter
-    yellowDark: '#E6CE00',    // Pressed
-    yellowPale: '#FFFDE7',    // Soft bg
-    
-    // Foundations
+    // Core dark
+    bgDark: '#050505',
+    bgBlack: '#080808',
+    bgCard: '#0D0D0D',
+
+    // Hot pink accent
+    pink: '#FF1A55',
+    pinkDark: '#E6003D',
+    pinkText: '#450010',
+    pinkLine: '#CC003A',
+    pinkMuted: 'rgba(255, 26, 85, 0.15)',
+    pinkSoft: 'rgba(255, 26, 85, 0.08)',
+
+    // Grey card
+    grey: '#E6E6E6',
+    greyDark: '#D1D1D1',
+    greyMid: '#C4C4C4',
+    greyText: '#111111',
+    greySub: '#555555',
+    greyLine: '#BBBBBB',
+    greyFaint: 'rgba(0,0,0,0.08)',
+
+    // Text
     white: '#FFFFFF',
-    offWhite: '#FAFAFA',
-    
-    // Blacks & Greys
+    whiteDim: 'rgba(255,255,255,0.8)',
+    whiteMuted: 'rgba(255,255,255,0.5)',
+    whiteGhost: 'rgba(255,255,255,0.2)',
     black: '#000000',
-    ink: '#1A1A1A',
-    charcoal: '#333333',
-    grey: '#666666',
-    greyLight: '#999999',
-    greyPale: '#E0E0E0',
-    greyFaint: '#F5F5F5',
-    
+    blackDim: 'rgba(0,0,0,0.6)',
+    blackMuted: 'rgba(0,0,0,0.4)',
+
+    // Accents
+    line: '#333333',
+    lineFaint: 'rgba(255,255,255,0.1)',
+    pill: '#1A1A1A',
+    accent666: '#666666',
+    accent808: '#808080',
+    accent999: '#999999',
+
     // Semantic
-    green: '#22C55E',
-    greenPale: '#DCFCE7',
-    red: '#EF4444',
-    redPale: '#FEE2E2',
-    blue: '#3B82F6',
-    bluePale: '#DBEAFE',
-    
+    green: '#00E676',
+    greenDark: '#00C853',
+    red: '#FF3B5C',
+
     transparent: 'transparent',
   },
   space: {
@@ -177,8 +203,9 @@ const tokens = createTokens({
     4: 16,
     5: 20,
     6: 24,
-    7: 32,
-    true: 16,
+    7: 28,
+    8: 50,
+    true: 28,
     full: 9999,
   },
   zIndex: {
@@ -201,68 +228,69 @@ const tamaguiConfig = createTamagui({
   shorthands,
   animations,
   themes: {
-    light: {
-      background: tokens.color.white,
-      backgroundStrong: tokens.color.offWhite,
-      backgroundHover: tokens.color.greyFaint,
-      backgroundPress: tokens.color.greyPale,
-      backgroundTransparent: 'rgba(255,255,255,0)',
-      
-      surface: tokens.color.white,
-      surfaceHover: tokens.color.greyFaint,
-      
-      color: tokens.color.ink,
-      colorSubtle: tokens.color.charcoal,
-      colorMuted: tokens.color.grey,
-      colorFaint: tokens.color.greyLight,
-      
-      borderColor: tokens.color.ink,
-      borderColorSubtle: tokens.color.greyPale,
-      
-      // YELLOW
-      yellow: tokens.color.yellow,
-      yellowLight: tokens.color.yellowLight,
-      yellowDark: tokens.color.yellowDark,
-      yellowPale: tokens.color.yellowPale,
-      
+    dark: {
+      background: tokens.color.bgDark,
+      backgroundStrong: tokens.color.bgBlack,
+      backgroundHover: tokens.color.bgCard,
+      backgroundPress: tokens.color.line,
+      backgroundTransparent: 'rgba(0,0,0,0)',
+
+      surface: tokens.color.bgCard,
+      surfaceHover: tokens.color.line,
+
+      color: tokens.color.white,
+      colorSubtle: tokens.color.whiteDim,
+      colorMuted: tokens.color.whiteMuted,
+      colorFaint: tokens.color.whiteGhost,
+
+      borderColor: tokens.color.line,
+      borderColorSubtle: tokens.color.lineFaint,
+
+      // Pink accent
+      pink: tokens.color.pink,
+      pinkDark: tokens.color.pinkDark,
+      pinkText: tokens.color.pinkText,
+      pinkMuted: tokens.color.pinkMuted,
+
+      // Grey card
+      grey: tokens.color.grey,
+      greyText: tokens.color.greyText,
+      greySub: tokens.color.greySub,
+
       // Semantic
       green: tokens.color.green,
-      greenPale: tokens.color.greenPale,
       red: tokens.color.red,
-      redPale: tokens.color.redPale,
-      blue: tokens.color.blue,
-      bluePale: tokens.color.bluePale,
     },
-    dark: {
-      // Same as light - NO DARK MODE
-      background: tokens.color.white,
-      backgroundStrong: tokens.color.offWhite,
-      backgroundHover: tokens.color.greyFaint,
-      backgroundPress: tokens.color.greyPale,
-      backgroundTransparent: 'rgba(255,255,255,0)',
-      
-      surface: tokens.color.white,
-      surfaceHover: tokens.color.greyFaint,
-      
-      color: tokens.color.ink,
-      colorSubtle: tokens.color.charcoal,
-      colorMuted: tokens.color.grey,
-      colorFaint: tokens.color.greyLight,
-      
-      borderColor: tokens.color.ink,
-      borderColorSubtle: tokens.color.greyPale,
-      
-      yellow: tokens.color.yellow,
-      yellowLight: tokens.color.yellowLight,
-      yellowDark: tokens.color.yellowDark,
-      yellowPale: tokens.color.yellowPale,
-      
+    light: {
+      // Mirror dark — this app IS dark mode
+      background: tokens.color.bgDark,
+      backgroundStrong: tokens.color.bgBlack,
+      backgroundHover: tokens.color.bgCard,
+      backgroundPress: tokens.color.line,
+      backgroundTransparent: 'rgba(0,0,0,0)',
+
+      surface: tokens.color.bgCard,
+      surfaceHover: tokens.color.line,
+
+      color: tokens.color.white,
+      colorSubtle: tokens.color.whiteDim,
+      colorMuted: tokens.color.whiteMuted,
+      colorFaint: tokens.color.whiteGhost,
+
+      borderColor: tokens.color.line,
+      borderColorSubtle: tokens.color.lineFaint,
+
+      pink: tokens.color.pink,
+      pinkDark: tokens.color.pinkDark,
+      pinkText: tokens.color.pinkText,
+      pinkMuted: tokens.color.pinkMuted,
+
+      grey: tokens.color.grey,
+      greyText: tokens.color.greyText,
+      greySub: tokens.color.greySub,
+
       green: tokens.color.green,
-      greenPale: tokens.color.greenPale,
       red: tokens.color.red,
-      redPale: tokens.color.redPale,
-      blue: tokens.color.blue,
-      bluePale: tokens.color.bluePale,
     },
   },
 })
