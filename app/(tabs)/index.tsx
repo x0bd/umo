@@ -1,187 +1,339 @@
-import { useState } from 'react'
-import { ScrollView, YStack, XStack, Text, H1, H2, Separator } from 'tamagui'
-import { DollarSign } from '@tamagui/lucide-icons'
-import { Button, Card, CardHeader, CardContent, Input } from '@/components/ui'
+import { ScrollView, YStack, XStack, Text, styled } from 'tamagui'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { ArrowUpRight, ArrowDownLeft, Zap, Users, QrCode, TrendingUp } from '@tamagui/lucide-icons'
+
+// ============================================
+// CHUNKY STYLED COMPONENTS - Duolingo Energy
+// ============================================
+
+// 3D Button with offset shadow
+const ChunkyButton = styled(YStack, {
+  backgroundColor: '$primary',
+  borderRadius: '$5',
+  borderWidth: 3,
+  borderColor: '$color',
+  paddingVertical: '$4',
+  paddingHorizontal: '$6',
+  // 3D shadow effect
+  shadowColor: '$color',
+  shadowOffset: { width: 4, height: 4 },
+  shadowOpacity: 1,
+  shadowRadius: 0,
+  elevation: 0,
+  pressStyle: {
+    shadowOffset: { width: 2, height: 2 },
+    transform: [{ translateX: 2 }, { translateY: 2 }],
+  },
+})
+
+// Action circles with thick borders
+const ActionButton = styled(YStack, {
+  alignItems: 'center',
+  gap: '$2',
+  pressStyle: { 
+    scale: 0.95,
+  },
+})
+
+const ActionCircle = styled(YStack, {
+  width: 72,
+  height: 72,
+  borderRadius: 36,
+  backgroundColor: '$surface',
+  borderWidth: 3,
+  borderColor: '$color',
+  alignItems: 'center',
+  justifyContent: 'center',
+  shadowColor: '$color',
+  shadowOffset: { width: 3, height: 3 },
+  shadowOpacity: 1,
+  shadowRadius: 0,
+})
+
+const ActionLabel = styled(Text, {
+  fontSize: 14,
+  fontWeight: '700',
+  color: '$color',
+})
+
+// Cards with chunky borders
+const Card = styled(YStack, {
+  backgroundColor: '$surface',
+  borderRadius: '$5',
+  borderWidth: 3,
+  borderColor: '$color',
+  padding: '$5',
+  shadowColor: '$color',
+  shadowOffset: { width: 4, height: 4 },
+  shadowOpacity: 1,
+  shadowRadius: 0,
+})
+
+const YellowCard = styled(YStack, {
+  backgroundColor: '$primary',
+  borderRadius: '$5',
+  borderWidth: 3,
+  borderColor: '$color',
+  padding: '$5',
+  shadowColor: '$color',
+  shadowOffset: { width: 4, height: 4 },
+  shadowOpacity: 1,
+  shadowRadius: 0,
+})
+
+// Transaction row
+const TransactionRow = styled(XStack, {
+  paddingVertical: '$4',
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  borderBottomWidth: 2,
+  borderBottomColor: '$borderColorSubtle',
+})
+
+const Avatar = styled(YStack, {
+  width: 48,
+  height: 48,
+  borderRadius: 24,
+  backgroundColor: '$primaryMuted',
+  borderWidth: 2,
+  borderColor: '$color',
+  alignItems: 'center',
+  justifyContent: 'center',
+})
+
+// Badge pill
+const Badge = styled(XStack, {
+  backgroundColor: '$successMuted',
+  paddingHorizontal: '$3',
+  paddingVertical: '$1',
+  borderRadius: '$full',
+  borderWidth: 2,
+  borderColor: '$success',
+})
+
+// --- Mock Data ---
+const transactions = [
+  { id: 1, name: 'Tendai', desc: 'Lunch split 🍔', amount: -12.50, type: 'expense', initials: 'TM' },
+  { id: 2, name: 'Rudo', desc: 'Uber fare 🚗', amount: 8.00, type: 'income', initials: 'RK' },
+  { id: 3, name: 'BBQ Crew', desc: 'Braai meats 🔥', amount: -25.00, type: 'expense', initials: '🍖' },
+]
 
 export default function HomeScreen() {
-  const [amount, setAmount] = useState('')
-  const [rate, setRate] = useState('13.50')
-
-  const usdAmount = parseFloat(amount) || 0
-  const zigAmount = (usdAmount * parseFloat(rate)).toFixed(2)
+  const insets = useSafeAreaInsets()
 
   return (
-    <ScrollView backgroundColor="$background">
-      <YStack padding="$6" gap="$6" paddingTop="$12">
+    <ScrollView 
+      backgroundColor="$background" 
+      showsVerticalScrollIndicator={false}
+    >
+      <YStack 
+        paddingTop={insets.top + 20}
+        paddingBottom={insets.bottom + 120}
+        paddingHorizontal="$5"
+        gap="$6"
+      >
         {/* Header */}
-        <YStack gap="$2">
-          <H1 color="$textPrimary" fontSize={32} fontWeight="700">
-            Welcome to Umo 💰
-          </H1>
-          <Text color="$textSecondary" fontSize={16}>
-            Split bills with friends. No more change drama.
-          </Text>
-        </YStack>
+        <XStack justifyContent="space-between" alignItems="center">
+          <YStack>
+            <Text fontSize={16} fontWeight="700" color="$colorMuted">Hey there! 👋</Text>
+            <Text fontSize={28} fontWeight="800" color="$color">Your Balance</Text>
+          </YStack>
+          <YStack 
+            width={48} 
+            height={48} 
+            borderRadius={24} 
+            backgroundColor="$primary"
+            borderWidth={3}
+            borderColor="$color"
+            alignItems="center"
+            justifyContent="center"
+          >
+            <Text fontSize={20}>😎</Text>
+          </YStack>
+        </XStack>
 
-        {/* Currency Converter Demo */}
-        <Card variant="elevated">
-          <CardHeader>
-            <H2 fontSize={20} fontWeight="600" color="$textPrimary">
-              Quick Convert
-            </H2>
-            <Text fontSize={14} color="$textSecondary">
-              USD to ZiG conversion
+        {/* HERO BALANCE CARD */}
+        <YellowCard>
+          <YStack alignItems="center" gap="$3">
+            <Text fontSize={16} fontWeight="700" color="$color" opacity={0.7}>
+              TOTAL BALANCE
             </Text>
-          </CardHeader>
-          
-          <CardContent gap="$4">
-            <Input
-              label="Amount (USD)"
-              placeholder="0.00"
-              value={amount}
-              onChangeText={setAmount}
-              keyboardType="decimal-pad"
-              leftElement={<DollarSign size={20} color="$textTertiary" />}
-            />
-            
-            <Input
-              label="Exchange Rate"
-              placeholder="13.50"
-              value={rate}
-              onChangeText={setRate}
-              keyboardType="decimal-pad"
-            />
-            
-            <Separator />
-            
-            <XStack 
-              justifyContent="space-between" 
-              alignItems="center"
-              paddingVertical="$3"
-              backgroundColor="$surface"
-              paddingHorizontal="$4"
-              borderRadius="$3"
-            >
-              <Text fontSize={16} color="$textSecondary">
-                ZiG Amount
+            <XStack alignItems="flex-start">
+              <Text 
+                fontSize={32} 
+                fontWeight="800" 
+                color="$color" 
+                marginTop={8}
+              >
+                $
               </Text>
-              <Text fontSize={24} fontWeight="700" color="$primary">
-                {zigAmount}
+              <Text 
+                fontFamily="$mono" 
+                fontSize={72} 
+                fontWeight="700" 
+                color="$color"
+                letterSpacing={-4}
+              >
+                247
+              </Text>
+              <Text 
+                fontFamily="$mono" 
+                fontSize={36} 
+                fontWeight="700" 
+                color="$color"
+                opacity={0.7}
+                marginTop={8}
+              >
+                .50
               </Text>
             </XStack>
-          </CardContent>
-        </Card>
+            <Badge>
+              <TrendingUp size={14} color="$success" strokeWidth={3} />
+              <Text fontSize={14} fontWeight="700" color="$success" marginLeft="$1">
+                +$12.50 today
+              </Text>
+            </Badge>
+          </YStack>
+        </YellowCard>
 
-        {/* Action Buttons */}
+        {/* QUICK ACTIONS */}
+        <XStack justifyContent="space-between" paddingHorizontal="$2">
+          <ActionButton>
+            <ActionCircle backgroundColor="$primary">
+              <ArrowUpRight size={28} color="$color" strokeWidth={2.5} />
+            </ActionCircle>
+            <ActionLabel>Send</ActionLabel>
+          </ActionButton>
+
+          <ActionButton>
+            <ActionCircle backgroundColor="$primary">
+              <ArrowDownLeft size={28} color="$color" strokeWidth={2.5} />
+            </ActionCircle>
+            <ActionLabel>Request</ActionLabel>
+          </ActionButton>
+
+          <ActionButton>
+            <ActionCircle>
+              <Zap size={28} color="$color" strokeWidth={2.5} />
+            </ActionCircle>
+            <ActionLabel>Split</ActionLabel>
+          </ActionButton>
+
+          <ActionButton>
+            <ActionCircle>
+              <QrCode size={28} color="$color" strokeWidth={2.5} />
+            </ActionCircle>
+            <ActionLabel>Scan</ActionLabel>
+          </ActionButton>
+        </XStack>
+
+        {/* EXCHANGE RATE */}
         <Card>
-          <CardContent gap="$3">
-            <Button 
-              fullWidth
-              size="lg"
-              onPress={() => alert('Split Bill!')}
+          <XStack justifyContent="space-between" alignItems="center">
+            <YStack gap="$1">
+              <Text fontSize={14} fontWeight="700" color="$colorMuted">
+                USD → ZiG
+              </Text>
+              <XStack alignItems="baseline" gap="$2">
+                <Text fontFamily="$mono" fontSize={32} fontWeight="700" color="$color">
+                  13.85
+                </Text>
+                <Text fontSize={14} fontWeight="700" color="$success">
+                  +2.1%
+                </Text>
+              </XStack>
+            </YStack>
+            <YStack 
+              backgroundColor="$primaryMuted" 
+              padding="$3" 
+              borderRadius="$4"
+              borderWidth={2}
+              borderColor="$primary"
             >
-              Split a Bill
-            </Button>
-            
-            <Button 
-              fullWidth
-              variant="outline"
-              size="lg"
-              onPress={() => alert('View Groups')}
-            >
-              My Groups
-            </Button>
-            
-            <XStack gap="$3">
-              <Button 
-                flex={1}
-                variant="secondary"
-                onPress={() => alert('Settle Up')}
-              >
-                Settle Up
-              </Button>
-              <Button 
-                flex={1}
-                variant="ghost"
-                onPress={() => alert('History')}
-              >
-                History
-              </Button>
-            </XStack>
-          </CardContent>
+              <Text fontSize={24}>💱</Text>
+            </YStack>
+          </XStack>
         </Card>
 
-        {/* Feature Cards */}
+        {/* RECENT ACTIVITY */}
         <YStack gap="$3">
-          <Card pressable variant="outlined">
-            <XStack padding="$4" gap="$3" alignItems="center">
-              <YStack 
-                width={48} 
-                height={48} 
-                backgroundColor="$primary" 
-                borderRadius="$3"
-                alignItems="center"
-                justifyContent="center"
-              >
-                <Text fontSize={24}>💸</Text>
-              </YStack>
-              <YStack flex={1}>
-                <Text fontSize={16} fontWeight="600" color="$textPrimary">
-                  Multi-Currency
-                </Text>
-                <Text fontSize={14} color="$textSecondary">
-                  Track USD & ZiG seamlessly
-                </Text>
-              </YStack>
-            </XStack>
-          </Card>
+          <XStack justifyContent="space-between" alignItems="center">
+            <Text fontSize={20} fontWeight="800" color="$color">
+              Recent Activity
+            </Text>
+            <Text fontSize={14} fontWeight="700" color="$primary" pressStyle={{ opacity: 0.7 }}>
+              See all →
+            </Text>
+          </XStack>
 
-          <Card pressable variant="outlined">
-            <XStack padding="$4" gap="$3" alignItems="center">
-              <YStack 
-                width={48} 
-                height={48} 
-                backgroundColor="$success" 
-                borderRadius="$3"
-                alignItems="center"
-                justifyContent="center"
+          <Card>
+            {transactions.map((tx, index) => (
+              <TransactionRow 
+                key={tx.id}
+                borderBottomWidth={index < transactions.length - 1 ? 2 : 0}
               >
-                <Text fontSize={24}>📱</Text>
-              </YStack>
-              <YStack flex={1}>
-                <Text fontSize={16} fontWeight="600" color="$textPrimary">
-                  Paynow Integration
+                <XStack gap="$3" alignItems="center">
+                  <Avatar>
+                    <Text fontSize={16} fontWeight="700">{tx.initials}</Text>
+                  </Avatar>
+                  <YStack>
+                    <Text fontSize={16} fontWeight="700" color="$color">
+                      {tx.name}
+                    </Text>
+                    <Text fontSize={14} color="$colorMuted">
+                      {tx.desc}
+                    </Text>
+                  </YStack>
+                </XStack>
+                <Text 
+                  fontFamily="$mono" 
+                  fontSize={18} 
+                  fontWeight="700"
+                  color={tx.type === 'income' ? '$success' : '$color'}
+                >
+                  {tx.type === 'income' ? '+' : '-'}${Math.abs(tx.amount).toFixed(2)}
                 </Text>
-                <Text fontSize={14} color="$textSecondary">
-                  Instant EcoCash settlements
-                </Text>
-              </YStack>
-            </XStack>
-          </Card>
-
-          <Card pressable variant="outlined">
-            <XStack padding="$4" gap="$3" alignItems="center">
-              <YStack 
-                width={48} 
-                height={48} 
-                backgroundColor="$warning" 
-                borderRadius="$3"
-                alignItems="center"
-                justifyContent="center"
-              >
-                <Text fontSize={24}>📊</Text>
-              </YStack>
-              <YStack flex={1}>
-                <Text fontSize={16} fontWeight="600" color="$textPrimary">
-                  Running Tabs
-                </Text>
-                <Text fontSize={14} color="$textSecondary">
-                  Handle small change amounts
-                </Text>
-              </YStack>
-            </XStack>
+              </TransactionRow>
+            ))}
           </Card>
         </YStack>
+
+        {/* CTA - SETTLE UP */}
+        <ChunkyButton pressStyle={{ scale: 0.98 }}>
+          <XStack alignItems="center" justifyContent="center" gap="$3">
+            <Text fontSize={18} fontWeight="800" color="$color">
+              ⚡ Settle Up Now
+            </Text>
+          </XStack>
+        </ChunkyButton>
+
+        {/* GROUPS PREVIEW */}
+        <Card>
+          <XStack alignItems="center" gap="$3">
+            <YStack 
+              width={56} 
+              height={56} 
+              borderRadius="$4"
+              backgroundColor="$info"
+              borderWidth={3}
+              borderColor="$color"
+              alignItems="center"
+              justifyContent="center"
+            >
+              <Users size={28} color="white" strokeWidth={2.5} />
+            </YStack>
+            <YStack flex={1}>
+              <Text fontSize={18} fontWeight="800" color="$color">
+                3 Active Groups
+              </Text>
+              <Text fontSize={14} color="$colorMuted">
+                BBQ Crew owes you $12.50
+              </Text>
+            </YStack>
+            <Text fontSize={24}>→</Text>
+          </XStack>
+        </Card>
+
       </YStack>
     </ScrollView>
   )

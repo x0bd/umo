@@ -1,33 +1,62 @@
 import { Tabs } from 'expo-router';
-import React from 'react';
+import { Platform } from 'react-native';
+import { Home, Receipt, Users, User } from '@tamagui/lucide-icons';
 
 import { HapticTab } from '@/components/haptic-tab';
-import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
-
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+        tabBarActiveTintColor: '#1A1A1A',
+        tabBarInactiveTintColor: '#999999',
         headerShown: false,
         tabBarButton: HapticTab,
+        tabBarStyle: {
+          backgroundColor: '#FFFFFF',
+          borderTopColor: '#1A1A1A',
+          borderTopWidth: 3,
+          paddingTop: 12,
+          paddingBottom: Platform.OS === 'ios' ? 28 : 16,
+          height: Platform.OS === 'ios' ? 96 : 76,
+          elevation: 0,
+          shadowOpacity: 0,
+        },
+        tabBarLabelStyle: {
+          fontSize: 12,
+          fontWeight: '700',
+          marginTop: 4,
+        },
+        tabBarIconStyle: {
+          marginTop: 4,
+        },
       }}>
       <Tabs.Screen
         name="index"
         options={{
           title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+          tabBarIcon: ({ color, focused }) => (
+            <Home 
+              size={26} 
+              color={focused ? '#FCCD00' : color} 
+              strokeWidth={focused ? 3 : 2} 
+              fill={focused ? '#FCCD00' : 'none'}
+            />
+          ),
         }}
       />
       <Tabs.Screen
         name="explore"
         options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+          title: 'Activity',
+          tabBarIcon: ({ color, focused }) => (
+            <Receipt 
+              size={26} 
+              color={focused ? '#FCCD00' : color} 
+              strokeWidth={focused ? 3 : 2}
+              fill={focused ? '#FCCD00' : 'none'}
+            />
+          ),
         }}
       />
     </Tabs>

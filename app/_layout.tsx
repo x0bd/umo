@@ -1,28 +1,52 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
+import { DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { TamaguiProvider } from 'tamagui';
+import { TamaguiProvider, Theme } from 'tamagui';
 import 'react-native-reanimated';
 
-import { useColorScheme } from '@/hooks/use-color-scheme';
 import config from '@/tamagui.config';
+
+// Bright, playful theme - NO DARK MODE
+const UmoTheme = {
+  ...DefaultTheme,
+  colors: {
+    ...DefaultTheme.colors,
+    background: '#FFFFFF',
+    card: '#FFFFFF',
+    border: '#1A1A1A',
+    primary: '#FCCD00',
+    text: '#1A1A1A',
+  },
+};
 
 export const unstable_settings = {
   anchor: '(tabs)',
 };
 
 export default function RootLayout() {
-  const colorScheme = useColorScheme();
-
   return (
-    <TamaguiProvider config={config} defaultTheme={colorScheme ?? 'light'}>
-      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-        <Stack>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="modal" options={{ presentation: 'modal', title: 'Modal' }} />
-        </Stack>
-        <StatusBar style="auto" />
-      </ThemeProvider>
+    <TamaguiProvider config={config} defaultTheme="light">
+      <Theme name="light">
+        <ThemeProvider value={UmoTheme}>
+          <Stack
+            screenOptions={{
+              headerShown: false,
+              contentStyle: { backgroundColor: '#FFFFFF' },
+              animation: 'slide_from_right',
+            }}
+          >
+            <Stack.Screen name="(tabs)" />
+            <Stack.Screen 
+              name="modal" 
+              options={{ 
+                presentation: 'modal',
+                animation: 'slide_from_bottom',
+              }} 
+            />
+          </Stack>
+          <StatusBar style="dark" />
+        </ThemeProvider>
+      </Theme>
     </TamaguiProvider>
   );
 }
