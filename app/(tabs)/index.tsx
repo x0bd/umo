@@ -1,121 +1,82 @@
-import { ScrollView, YStack, XStack, Text, styled } from 'tamagui'
+import { ScrollView, YStack, XStack, Text, styled, Circle, Square } from 'tamagui'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import { ArrowUpRight, ArrowDownLeft, Zap, Users, QrCode, TrendingUp } from '@tamagui/lucide-icons'
+import { 
+  Send, 
+  Download, 
+  Zap, 
+  ScanLine, 
+  TrendingUp,
+  Users,
+  ChevronRight,
+  ArrowUpRight,
+  ArrowDownLeft,
+  RefreshCw,
+  Bell,
+  User
+} from '@tamagui/lucide-icons'
 
 // ============================================
-// CHUNKY STYLED COMPONENTS - Duolingo Energy
+// APPLE-LEVEL COMPONENTS
 // ============================================
 
-// 3D Button with offset shadow
-const ChunkyButton = styled(YStack, {
-  backgroundColor: '$primary',
-  borderRadius: '$5',
-  borderWidth: 3,
-  borderColor: '$color',
-  paddingVertical: '$4',
-  paddingHorizontal: '$6',
-  // 3D shadow effect
-  shadowColor: '$color',
-  shadowOffset: { width: 4, height: 4 },
-  shadowOpacity: 1,
-  shadowRadius: 0,
-  elevation: 0,
-  pressStyle: {
-    shadowOffset: { width: 2, height: 2 },
-    transform: [{ translateX: 2 }, { translateY: 2 }],
-  },
-})
-
-// Action circles with thick borders
-const ActionButton = styled(YStack, {
-  alignItems: 'center',
-  gap: '$2',
-  pressStyle: { 
-    scale: 0.95,
-  },
-})
-
-const ActionCircle = styled(YStack, {
-  width: 72,
-  height: 72,
-  borderRadius: 36,
-  backgroundColor: '$surface',
-  borderWidth: 3,
-  borderColor: '$color',
-  alignItems: 'center',
-  justifyContent: 'center',
-  shadowColor: '$color',
-  shadowOffset: { width: 3, height: 3 },
-  shadowOpacity: 1,
-  shadowRadius: 0,
-})
-
-const ActionLabel = styled(Text, {
-  fontSize: 14,
-  fontWeight: '700',
-  color: '$color',
-})
-
-// Cards with chunky borders
 const Card = styled(YStack, {
   backgroundColor: '$surface',
-  borderRadius: '$5',
-  borderWidth: 3,
-  borderColor: '$color',
-  padding: '$5',
-  shadowColor: '$color',
-  shadowOffset: { width: 4, height: 4 },
-  shadowOpacity: 1,
-  shadowRadius: 0,
+  borderRadius: 16,
+  padding: 20,
+  shadowColor: '#000',
+  shadowOffset: { width: 0, height: 1 },
+  shadowOpacity: 0.04,
+  shadowRadius: 8,
 })
 
 const YellowCard = styled(YStack, {
-  backgroundColor: '$primary',
-  borderRadius: '$5',
-  borderWidth: 3,
-  borderColor: '$color',
-  padding: '$5',
-  shadowColor: '$color',
-  shadowOffset: { width: 4, height: 4 },
-  shadowOpacity: 1,
-  shadowRadius: 0,
+  backgroundColor: '$yellow',
+  borderRadius: 20,
+  padding: 24,
 })
 
-// Transaction row
-const TransactionRow = styled(XStack, {
-  paddingVertical: '$4',
+const ActionButton = styled(YStack, {
   alignItems: 'center',
-  justifyContent: 'space-between',
-  borderBottomWidth: 2,
-  borderBottomColor: '$borderColorSubtle',
+  gap: 8,
+  pressStyle: { opacity: 0.6, scale: 0.95 },
 })
 
-const Avatar = styled(YStack, {
-  width: 48,
-  height: 48,
-  borderRadius: 24,
-  backgroundColor: '$primaryMuted',
-  borderWidth: 2,
-  borderColor: '$color',
+const IconCircle = styled(YStack, {
+  width: 56,
+  height: 56,
+  borderRadius: 28,
   alignItems: 'center',
   justifyContent: 'center',
 })
 
-// Badge pill
-const Badge = styled(XStack, {
-  backgroundColor: '$successMuted',
-  paddingHorizontal: '$3',
-  paddingVertical: '$1',
-  borderRadius: '$full',
-  borderWidth: 2,
-  borderColor: '$success',
+const Pill = styled(XStack, {
+  paddingHorizontal: 10,
+  paddingVertical: 5,
+  borderRadius: 100,
+  alignItems: 'center',
+  gap: 4,
+})
+
+const TransactionItem = styled(XStack, {
+  paddingVertical: 14,
+  alignItems: 'center',
+  justifyContent: 'space-between',
+  pressStyle: { opacity: 0.6 },
+})
+
+const Avatar = styled(YStack, {
+  width: 40,
+  height: 40,
+  borderRadius: 20,
+  alignItems: 'center',
+  justifyContent: 'center',
 })
 
 // --- Mock Data ---
 const transactions = [
-  { id: 1, name: 'Tendai', desc: 'Lunch split 🍔', amount: -12.50, type: 'expense', initials: 'TM' },
-  { id: 2, name: 'Rudo', desc: 'Uber fare 🚗', amount: 8.00, type: 'income', initials: 'RK' },
-  { id: 3, name: 'BBQ Crew', desc: 'Braai meats 🔥', amount: -25.00, type: 'expense', initials: '🍖' },
+  { id: 1, name: 'Tendai M.', desc: 'Lunch split', amount: -12.50, type: 'out', color: '#FFE500' },
+  { id: 2, name: 'Rudo K.', desc: 'Uber refund', amount: 8.00, type: 'in', color: '#22C55E' },
+  { id: 3, name: 'BBQ Squad', desc: 'Braai contribution', amount: -25.00, type: 'out', color: '#3B82F6' },
 ]
 
 export default function HomeScreen() {
@@ -127,212 +88,215 @@ export default function HomeScreen() {
       showsVerticalScrollIndicator={false}
     >
       <YStack 
-        paddingTop={insets.top + 20}
-        paddingBottom={insets.bottom + 120}
-        paddingHorizontal="$5"
-        gap="$6"
+        paddingTop={insets.top + 12}
+        paddingBottom={insets.bottom + 100}
+        paddingHorizontal={20}
+        gap={24}
       >
-        {/* Header */}
-        <XStack justifyContent="space-between" alignItems="center">
-          <YStack>
-            <Text fontSize={16} fontWeight="700" color="$colorMuted">Hey there! 👋</Text>
-            <Text fontSize={28} fontWeight="800" color="$color">Your Balance</Text>
+        {/* HEADER */}
+        <XStack justifyContent="space-between" alignItems="center" paddingTop={8}>
+          <YStack gap={2}>
+            <Text fontSize={13} fontWeight="500" color="$colorMuted">
+              Good morning
+            </Text>
+            <Text fontSize={22} fontWeight="700" color="$color" letterSpacing={-0.5}>
+              Welcome back
+            </Text>
           </YStack>
-          <YStack 
-            width={48} 
-            height={48} 
-            borderRadius={24} 
-            backgroundColor="$primary"
-            borderWidth={3}
-            borderColor="$color"
-            alignItems="center"
-            justifyContent="center"
-          >
-            <Text fontSize={20}>😎</Text>
-          </YStack>
+          <XStack gap={12}>
+            <Circle 
+              size={40} 
+              backgroundColor="$backgroundHover"
+              pressStyle={{ opacity: 0.6 }}
+            >
+              <Bell size={20} color="$color" strokeWidth={2} />
+            </Circle>
+            <Circle 
+              size={40} 
+              backgroundColor="$yellow"
+              pressStyle={{ opacity: 0.6 }}
+            >
+              <User size={20} color="$color" strokeWidth={2} />
+            </Circle>
+          </XStack>
         </XStack>
 
-        {/* HERO BALANCE CARD */}
+        {/* BALANCE CARD */}
         <YellowCard>
-          <YStack alignItems="center" gap="$3">
-            <Text fontSize={16} fontWeight="700" color="$color" opacity={0.7}>
-              TOTAL BALANCE
-            </Text>
-            <XStack alignItems="flex-start">
-              <Text 
-                fontSize={32} 
-                fontWeight="800" 
-                color="$color" 
-                marginTop={8}
-              >
-                $
+          <YStack gap={16}>
+            <XStack justifyContent="space-between" alignItems="center">
+              <Text fontSize={13} fontWeight="600" color="$color" opacity={0.7}>
+                Total Balance
               </Text>
-              <Text 
-                fontFamily="$mono" 
-                fontSize={72} 
-                fontWeight="700" 
-                color="$color"
-                letterSpacing={-4}
-              >
+              <Pill backgroundColor="rgba(0,0,0,0.08)">
+                <TrendingUp size={12} color="$color" strokeWidth={2.5} />
+                <Text fontSize={12} fontWeight="700" color="$color">+12%</Text>
+              </Pill>
+            </XStack>
+            
+            <XStack alignItems="baseline">
+              <Text fontSize={24} fontWeight="600" color="$color" marginTop={6}>$</Text>
+              <Text fontFamily="$mono" fontSize={52} fontWeight="600" color="$color" letterSpacing={-2}>
                 247
               </Text>
-              <Text 
-                fontFamily="$mono" 
-                fontSize={36} 
-                fontWeight="700" 
-                color="$color"
-                opacity={0.7}
-                marginTop={8}
-              >
+              <Text fontFamily="$mono" fontSize={24} fontWeight="500" color="$color" opacity={0.5} marginTop={6}>
                 .50
               </Text>
             </XStack>
-            <Badge>
-              <TrendingUp size={14} color="$success" strokeWidth={3} />
-              <Text fontSize={14} fontWeight="700" color="$success" marginLeft="$1">
-                +$12.50 today
-              </Text>
-            </Badge>
+
+            <XStack gap={8}>
+              <Pill backgroundColor="$greenPale">
+                <ArrowDownLeft size={12} color="$green" strokeWidth={2.5} />
+                <Text fontSize={12} fontWeight="600" color="$green">$12.50 incoming</Text>
+              </Pill>
+            </XStack>
           </YStack>
         </YellowCard>
 
         {/* QUICK ACTIONS */}
-        <XStack justifyContent="space-between" paddingHorizontal="$2">
+        <XStack justifyContent="space-between" paddingHorizontal={8}>
           <ActionButton>
-            <ActionCircle backgroundColor="$primary">
-              <ArrowUpRight size={28} color="$color" strokeWidth={2.5} />
-            </ActionCircle>
-            <ActionLabel>Send</ActionLabel>
+            <IconCircle backgroundColor="$yellow">
+              <Send size={22} color="$color" strokeWidth={2} />
+            </IconCircle>
+            <Text fontSize={12} fontWeight="600" color="$color">Send</Text>
           </ActionButton>
 
           <ActionButton>
-            <ActionCircle backgroundColor="$primary">
-              <ArrowDownLeft size={28} color="$color" strokeWidth={2.5} />
-            </ActionCircle>
-            <ActionLabel>Request</ActionLabel>
+            <IconCircle backgroundColor="$yellowPale">
+              <Download size={22} color="$color" strokeWidth={2} />
+            </IconCircle>
+            <Text fontSize={12} fontWeight="600" color="$color">Request</Text>
           </ActionButton>
 
           <ActionButton>
-            <ActionCircle>
-              <Zap size={28} color="$color" strokeWidth={2.5} />
-            </ActionCircle>
-            <ActionLabel>Split</ActionLabel>
+            <IconCircle backgroundColor="$yellowPale">
+              <Zap size={22} color="$color" strokeWidth={2} />
+            </IconCircle>
+            <Text fontSize={12} fontWeight="600" color="$color">Split</Text>
           </ActionButton>
 
           <ActionButton>
-            <ActionCircle>
-              <QrCode size={28} color="$color" strokeWidth={2.5} />
-            </ActionCircle>
-            <ActionLabel>Scan</ActionLabel>
+            <IconCircle backgroundColor="$backgroundHover">
+              <ScanLine size={22} color="$color" strokeWidth={2} />
+            </IconCircle>
+            <Text fontSize={12} fontWeight="600" color="$color">Scan</Text>
           </ActionButton>
         </XStack>
 
-        {/* EXCHANGE RATE */}
+        {/* RATE CARD */}
         <Card>
           <XStack justifyContent="space-between" alignItems="center">
-            <YStack gap="$1">
-              <Text fontSize={14} fontWeight="700" color="$colorMuted">
-                USD → ZiG
+            <YStack gap={4}>
+              <Text fontSize={12} fontWeight="600" color="$colorMuted">
+                Exchange Rate
               </Text>
-              <XStack alignItems="baseline" gap="$2">
-                <Text fontFamily="$mono" fontSize={32} fontWeight="700" color="$color">
+              <XStack alignItems="baseline" gap={6}>
+                <Text fontSize={13} fontWeight="500" color="$colorMuted">1 USD =</Text>
+                <Text fontFamily="$mono" fontSize={24} fontWeight="700" color="$color">
                   13.85
                 </Text>
-                <Text fontSize={14} fontWeight="700" color="$success">
-                  +2.1%
-                </Text>
+                <Text fontSize={13} fontWeight="600" color="$color">ZiG</Text>
               </XStack>
             </YStack>
-            <YStack 
-              backgroundColor="$primaryMuted" 
-              padding="$3" 
-              borderRadius="$4"
-              borderWidth={2}
-              borderColor="$primary"
+            <Square 
+              size={44} 
+              backgroundColor="$yellow" 
+              borderRadius={12}
+              alignItems="center"
+              justifyContent="center"
             >
-              <Text fontSize={24}>💱</Text>
-            </YStack>
+              <RefreshCw size={20} color="$color" strokeWidth={2} />
+            </Square>
           </XStack>
         </Card>
 
-        {/* RECENT ACTIVITY */}
-        <YStack gap="$3">
+        {/* ACTIVITY */}
+        <YStack gap={14}>
           <XStack justifyContent="space-between" alignItems="center">
-            <Text fontSize={20} fontWeight="800" color="$color">
-              Recent Activity
-            </Text>
-            <Text fontSize={14} fontWeight="700" color="$primary" pressStyle={{ opacity: 0.7 }}>
-              See all →
-            </Text>
+            <Text fontSize={17} fontWeight="700" color="$color">Recent Activity</Text>
+            <XStack alignItems="center" gap={2} pressStyle={{ opacity: 0.6 }}>
+              <Text fontSize={14} fontWeight="600" color="$colorMuted">See all</Text>
+              <ChevronRight size={18} color="$colorMuted" strokeWidth={2} />
+            </XStack>
           </XStack>
 
-          <Card>
+          <Card padding={0} overflow="hidden">
             {transactions.map((tx, index) => (
-              <TransactionRow 
+              <TransactionItem 
                 key={tx.id}
-                borderBottomWidth={index < transactions.length - 1 ? 2 : 0}
+                paddingHorizontal={16}
+                borderBottomWidth={index < transactions.length - 1 ? 1 : 0}
+                borderBottomColor="$borderColorSubtle"
               >
-                <XStack gap="$3" alignItems="center">
-                  <Avatar>
-                    <Text fontSize={16} fontWeight="700">{tx.initials}</Text>
+                <XStack gap={12} alignItems="center">
+                  <Avatar backgroundColor={tx.color}>
+                    {tx.type === 'in' ? (
+                      <ArrowDownLeft size={18} color="white" strokeWidth={2.5} />
+                    ) : (
+                      <ArrowUpRight size={18} color="white" strokeWidth={2.5} />
+                    )}
                   </Avatar>
-                  <YStack>
-                    <Text fontSize={16} fontWeight="700" color="$color">
-                      {tx.name}
-                    </Text>
-                    <Text fontSize={14} color="$colorMuted">
-                      {tx.desc}
-                    </Text>
+                  <YStack gap={2}>
+                    <Text fontSize={15} fontWeight="600" color="$color">{tx.name}</Text>
+                    <Text fontSize={13} color="$colorMuted">{tx.desc}</Text>
                   </YStack>
                 </XStack>
                 <Text 
                   fontFamily="$mono" 
-                  fontSize={18} 
-                  fontWeight="700"
-                  color={tx.type === 'income' ? '$success' : '$color'}
+                  fontSize={15} 
+                  fontWeight="600"
+                  color={tx.type === 'in' ? '$green' : '$color'}
                 >
-                  {tx.type === 'income' ? '+' : '-'}${Math.abs(tx.amount).toFixed(2)}
+                  {tx.type === 'in' ? '+' : '-'}${Math.abs(tx.amount).toFixed(2)}
                 </Text>
-              </TransactionRow>
+              </TransactionItem>
             ))}
           </Card>
         </YStack>
 
-        {/* CTA - SETTLE UP */}
-        <ChunkyButton pressStyle={{ scale: 0.98 }}>
-          <XStack alignItems="center" justifyContent="center" gap="$3">
-            <Text fontSize={18} fontWeight="800" color="$color">
-              ⚡ Settle Up Now
-            </Text>
-          </XStack>
-        </ChunkyButton>
-
-        {/* GROUPS PREVIEW */}
-        <Card>
-          <XStack alignItems="center" gap="$3">
-            <YStack 
-              width={56} 
-              height={56} 
-              borderRadius="$4"
-              backgroundColor="$info"
-              borderWidth={3}
-              borderColor="$color"
+        {/* GROUPS */}
+        <Card 
+          backgroundColor="$yellowPale"
+          pressStyle={{ opacity: 0.8, scale: 0.99 }}
+        >
+          <XStack alignItems="center" gap={14}>
+            <Square 
+              size={48} 
+              backgroundColor="$yellow" 
+              borderRadius={14}
               alignItems="center"
               justifyContent="center"
             >
-              <Users size={28} color="white" strokeWidth={2.5} />
-            </YStack>
-            <YStack flex={1}>
-              <Text fontSize={18} fontWeight="800" color="$color">
+              <Users size={22} color="$color" strokeWidth={2} />
+            </Square>
+            <YStack flex={1} gap={2}>
+              <Text fontSize={15} fontWeight="700" color="$color">
                 3 Active Groups
               </Text>
-              <Text fontSize={14} color="$colorMuted">
-                BBQ Crew owes you $12.50
+              <Text fontSize={13} color="$colorSubtle">
+                You're owed $37.50 total
               </Text>
             </YStack>
-            <Text fontSize={24}>→</Text>
+            <ChevronRight size={22} color="$colorMuted" strokeWidth={2} />
           </XStack>
         </Card>
+
+        {/* SETTLE UP */}
+        <YStack 
+          backgroundColor="$yellow"
+          borderRadius={14}
+          padding={16}
+          alignItems="center"
+          pressStyle={{ backgroundColor: '$yellowDark', scale: 0.98 }}
+        >
+          <XStack alignItems="center" gap={8}>
+            <Zap size={20} color="$color" strokeWidth={2.5} />
+            <Text fontSize={16} fontWeight="700" color="$color">
+              Settle Up
+            </Text>
+          </XStack>
+        </YStack>
 
       </YStack>
     </ScrollView>

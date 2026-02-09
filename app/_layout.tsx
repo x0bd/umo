@@ -6,15 +6,15 @@ import 'react-native-reanimated';
 
 import config from '@/tamagui.config';
 
-// Bright, playful theme - NO DARK MODE
+// Clean light theme
 const UmoTheme = {
   ...DefaultTheme,
   colors: {
     ...DefaultTheme.colors,
     background: '#FFFFFF',
     card: '#FFFFFF',
-    border: '#1A1A1A',
-    primary: '#FCCD00',
+    border: '#E0E0E0',
+    primary: '#FFE500',
     text: '#1A1A1A',
   },
 };

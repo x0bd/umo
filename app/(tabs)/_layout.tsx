@@ -1,6 +1,6 @@
 import { Tabs } from 'expo-router';
 import { Platform } from 'react-native';
-import { Home, Receipt, Users, User } from '@tamagui/lucide-icons';
+import { Home, Activity, Users, User } from '@tamagui/lucide-icons';
 
 import { HapticTab } from '@/components/haptic-tab';
 
@@ -14,21 +14,18 @@ export default function TabLayout() {
         tabBarButton: HapticTab,
         tabBarStyle: {
           backgroundColor: '#FFFFFF',
-          borderTopColor: '#1A1A1A',
-          borderTopWidth: 3,
-          paddingTop: 12,
-          paddingBottom: Platform.OS === 'ios' ? 28 : 16,
-          height: Platform.OS === 'ios' ? 96 : 76,
+          borderTopColor: '#E0E0E0',
+          borderTopWidth: 1,
+          paddingTop: 8,
+          paddingBottom: Platform.OS === 'ios' ? 28 : 12,
+          height: Platform.OS === 'ios' ? 88 : 64,
           elevation: 0,
           shadowOpacity: 0,
         },
         tabBarLabelStyle: {
-          fontSize: 12,
-          fontWeight: '700',
-          marginTop: 4,
-        },
-        tabBarIconStyle: {
-          marginTop: 4,
+          fontSize: 11,
+          fontWeight: '600',
+          marginTop: 2,
         },
       }}>
       <Tabs.Screen
@@ -37,10 +34,10 @@ export default function TabLayout() {
           title: 'Home',
           tabBarIcon: ({ color, focused }) => (
             <Home 
-              size={26} 
-              color={focused ? '#FCCD00' : color} 
-              strokeWidth={focused ? 3 : 2} 
-              fill={focused ? '#FCCD00' : 'none'}
+              size={24} 
+              color={focused ? '#FFE500' : color} 
+              strokeWidth={2}
+              fill={focused ? '#FFE500' : 'transparent'}
             />
           ),
         }}
@@ -50,11 +47,10 @@ export default function TabLayout() {
         options={{
           title: 'Activity',
           tabBarIcon: ({ color, focused }) => (
-            <Receipt 
-              size={26} 
-              color={focused ? '#FCCD00' : color} 
-              strokeWidth={focused ? 3 : 2}
-              fill={focused ? '#FCCD00' : 'none'}
+            <Activity 
+              size={24} 
+              color={focused ? '#FFE500' : color} 
+              strokeWidth={2}
             />
           ),
         }}

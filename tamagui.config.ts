@@ -2,9 +2,9 @@ import { createFont, createTamagui, createTokens } from 'tamagui'
 import { shorthands } from '@tamagui/shorthands'
 import { animations } from '@tamagui/config/v3'
 
-// CHUNKY BOLD FONT - Duolingo vibes
-const headingFont = createFont({
-  family: '"Nunito", "Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+// System fonts that ACTUALLY work everywhere
+const bodyFont = createFont({
+  family: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
   size: {
     1: 12,
     2: 14,
@@ -18,7 +18,7 @@ const headingFont = createFont({
     10: 52,
     11: 64,
     12: 80,
-    true: 18,
+    true: 16,
   },
   lineHeight: {
     1: 18,
@@ -33,31 +33,32 @@ const headingFont = createFont({
     10: 62,
     11: 74,
     12: 92,
-    true: 26,
+    true: 24,
   },
   weight: {
-    4: '600',
-    5: '700',
-    6: '700',
-    7: '800',
-    8: '900',
+    4: '400',
+    5: '500',
+    6: '600',
+    7: '700',
+    8: '800',
+    9: '900',
   },
   letterSpacing: {
     4: 0,
-    5: -0.5,
-    6: -0.5,
-    7: -1,
-    8: -1.5,
-    9: -2,
-    10: -2.5,
-    11: -3,
-    12: -4,
+    5: 0,
+    6: -0.3,
+    7: -0.5,
+    8: -1,
+    9: -1.5,
+    10: -2,
+    11: -2.5,
+    12: -3,
   },
 })
 
-// Mono for numbers
+// Mono font for numbers
 const monoFont = createFont({
-  family: '"Space Mono", "JetBrains Mono", Menlo, monospace',
+  family: '"SF Mono", SFMono-Regular, ui-monospace, Menlo, Monaco, "Cascadia Mono", monospace',
   size: {
     1: 12,
     2: 14,
@@ -71,7 +72,7 @@ const monoFont = createFont({
     10: 52,
     11: 64,
     12: 80,
-    true: 18,
+    true: 16,
   },
   lineHeight: {
     1: 18,
@@ -86,16 +87,16 @@ const monoFont = createFont({
     10: 62,
     11: 74,
     12: 92,
-    true: 26,
+    true: 24,
   },
   weight: {
-    4: '500',
-    5: '600',
-    6: '700',
+    4: '400',
+    5: '500',
+    6: '600',
     7: '700',
   },
   letterSpacing: {
-    4: 0,
+    4: -0.5,
     5: -0.5,
     6: -1,
     7: -1.5,
@@ -109,32 +110,32 @@ const monoFont = createFont({
 
 const tokens = createTokens({
   color: {
-    // BRUTAL YELLOW - Cyberpunk 2077 vibes
-    yellow: '#FCCD00',       // Primary yellow
-    yellowBright: '#FFE234', // Hover state
-    yellowDark: '#E6B800',   // Pressed state
-    yellowMuted: '#FFF8DC',  // Subtle backgrounds
-    yellowPale: '#FFFBEB',   // Card highlights
+    // BRUTAL YELLOW
+    yellow: '#FFE500',        // Bright cyberpunk yellow
+    yellowLight: '#FFF44F',   // Lighter
+    yellowDark: '#E6CE00',    // Pressed
+    yellowPale: '#FFFDE7',    // Soft bg
     
-    // Pure foundations
+    // Foundations
     white: '#FFFFFF',
     offWhite: '#FAFAFA',
-    cream: '#F5F5F0',
     
-    // Blacks for contrast
-    black: '#1A1A1A',
-    charcoal: '#2D2D2D',
+    // Blacks & Greys
+    black: '#000000',
+    ink: '#1A1A1A',
+    charcoal: '#333333',
     grey: '#666666',
     greyLight: '#999999',
-    greyPale: '#E5E5E5',
+    greyPale: '#E0E0E0',
+    greyFaint: '#F5F5F5',
     
-    // Semantic - Bold & Playful
-    success: '#34D058',      // Fresh green for money
-    successMuted: '#E6F9ED',
-    error: '#FF4757',        // Punchy red
-    errorMuted: '#FFE8EA',
-    info: '#4A9EFF',         // Sky blue
-    infoMuted: '#E8F4FF',
+    // Semantic
+    green: '#22C55E',
+    greenPale: '#DCFCE7',
+    red: '#EF4444',
+    redPale: '#FEE2E2',
+    blue: '#3B82F6',
+    bluePale: '#DBEAFE',
     
     transparent: 'transparent',
   },
@@ -177,7 +178,6 @@ const tokens = createTokens({
     5: 20,
     6: 24,
     7: 32,
-    8: 40,
     true: 16,
     full: 9999,
   },
@@ -194,89 +194,75 @@ const tokens = createTokens({
 const tamaguiConfig = createTamagui({
   tokens,
   fonts: {
-    heading: headingFont,
-    body: headingFont,
+    heading: bodyFont,
+    body: bodyFont,
     mono: monoFont,
   },
   shorthands,
   animations,
   themes: {
-    // LIGHT MODE ONLY - Bright, bold, playful
     light: {
       background: tokens.color.white,
       backgroundStrong: tokens.color.offWhite,
-      backgroundHover: tokens.color.cream,
+      backgroundHover: tokens.color.greyFaint,
       backgroundPress: tokens.color.greyPale,
       backgroundTransparent: 'rgba(255,255,255,0)',
       
       surface: tokens.color.white,
-      surfaceHover: tokens.color.offWhite,
-      surfaceActive: tokens.color.cream,
+      surfaceHover: tokens.color.greyFaint,
       
-      // Text
-      color: tokens.color.black,
+      color: tokens.color.ink,
       colorSubtle: tokens.color.charcoal,
       colorMuted: tokens.color.grey,
       colorFaint: tokens.color.greyLight,
       
-      // Borders - THICK AND BOLD
-      borderColor: tokens.color.black,
+      borderColor: tokens.color.ink,
       borderColorSubtle: tokens.color.greyPale,
-      borderColorFocus: tokens.color.yellow,
       
-      // THE STAR - BRUTAL YELLOW
-      primary: tokens.color.yellow,
-      primaryHover: tokens.color.yellowBright,
-      primaryPress: tokens.color.yellowDark,
-      primaryMuted: tokens.color.yellowMuted,
-      primaryPale: tokens.color.yellowPale,
+      // YELLOW
+      yellow: tokens.color.yellow,
+      yellowLight: tokens.color.yellowLight,
+      yellowDark: tokens.color.yellowDark,
+      yellowPale: tokens.color.yellowPale,
       
       // Semantic
-      success: tokens.color.success,
-      successMuted: tokens.color.successMuted,
-      error: tokens.color.error,
-      errorMuted: tokens.color.errorMuted,
-      info: tokens.color.info,
-      infoMuted: tokens.color.infoMuted,
-      
-      // Shadows - 3D chunky feel
-      shadowColor: tokens.color.black,
+      green: tokens.color.green,
+      greenPale: tokens.color.greenPale,
+      red: tokens.color.red,
+      redPale: tokens.color.redPale,
+      blue: tokens.color.blue,
+      bluePale: tokens.color.bluePale,
     },
-    // Keep dark as alias to light (no dark mode)
     dark: {
+      // Same as light - NO DARK MODE
       background: tokens.color.white,
       backgroundStrong: tokens.color.offWhite,
-      backgroundHover: tokens.color.cream,
+      backgroundHover: tokens.color.greyFaint,
       backgroundPress: tokens.color.greyPale,
       backgroundTransparent: 'rgba(255,255,255,0)',
       
       surface: tokens.color.white,
-      surfaceHover: tokens.color.offWhite,
-      surfaceActive: tokens.color.cream,
+      surfaceHover: tokens.color.greyFaint,
       
-      color: tokens.color.black,
+      color: tokens.color.ink,
       colorSubtle: tokens.color.charcoal,
       colorMuted: tokens.color.grey,
       colorFaint: tokens.color.greyLight,
       
-      borderColor: tokens.color.black,
+      borderColor: tokens.color.ink,
       borderColorSubtle: tokens.color.greyPale,
-      borderColorFocus: tokens.color.yellow,
       
-      primary: tokens.color.yellow,
-      primaryHover: tokens.color.yellowBright,
-      primaryPress: tokens.color.yellowDark,
-      primaryMuted: tokens.color.yellowMuted,
-      primaryPale: tokens.color.yellowPale,
+      yellow: tokens.color.yellow,
+      yellowLight: tokens.color.yellowLight,
+      yellowDark: tokens.color.yellowDark,
+      yellowPale: tokens.color.yellowPale,
       
-      success: tokens.color.success,
-      successMuted: tokens.color.successMuted,
-      error: tokens.color.error,
-      errorMuted: tokens.color.errorMuted,
-      info: tokens.color.info,
-      infoMuted: tokens.color.infoMuted,
-      
-      shadowColor: tokens.color.black,
+      green: tokens.color.green,
+      greenPale: tokens.color.greenPale,
+      red: tokens.color.red,
+      redPale: tokens.color.redPale,
+      blue: tokens.color.blue,
+      bluePale: tokens.color.bluePale,
     },
   },
 })
