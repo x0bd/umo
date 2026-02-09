@@ -40,13 +40,6 @@
             "backgroundColor": "#000000"
           }
         }
-      ],
-      [
-        "@tamagui/metro-plugin",
-        {
-          "components": ["tamagui"],
-          "config": "./tamagui.config.ts"
-        }
       ]
     ],
     "experiments": {
