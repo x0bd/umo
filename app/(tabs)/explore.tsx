@@ -11,7 +11,6 @@ import Animated, {
   withSpring,
 } from 'react-native-reanimated'
 import {
-  Clock,
   Check,
   ChevronRight,
   Zap,
@@ -20,6 +19,12 @@ import {
   Utensils,
   MapPin,
   Calendar,
+  Coffee,
+  Mountain,
+  Plane,
+  Home as HomeIcon,
+  PartyPopper,
+  Filter,
 } from '@tamagui/lucide-icons'
 import { useThemeMode } from '@/providers/theme-mode'
 
@@ -27,6 +32,19 @@ import { useThemeMode } from '@/providers/theme-mode'
 // TYPES & DATA
 // ============================================
 type ActivityStatus = 'active' | 'pending' | 'settled'
+type IconType = 'food' | 'trip' | 'coffee' | 'ride' | 'groceries' | 'travel' | 'rent' | 'party'
+
+// Split icons mapping
+const SPLIT_ICONS = {
+  food: Utensils,
+  trip: Mountain,
+  coffee: Coffee,
+  ride: Car,
+  groceries: ShoppingBag,
+  travel: Plane,
+  rent: HomeIcon,
+  party: PartyPopper,
+}
 
 interface Activity {
   id: number
@@ -37,7 +55,7 @@ interface Activity {
   members: number
   date: string
   status: ActivityStatus
-  icon: typeof Utensils
+  iconType: IconType
   imageUrl?: string
 }
 
@@ -51,8 +69,7 @@ const activities: Activity[] = [
     members: 3,
     date: 'Today, 1:30 PM',
     status: 'active',
-    icon: Utensils,
-    imageUrl: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=100&h=100&fit=crop',
+    iconType: 'food',
   },
   {
     id: 2,
@@ -63,7 +80,7 @@ const activities: Activity[] = [
     members: 3,
     date: 'Yesterday',
     status: 'settled',
-    icon: Car,
+    iconType: 'ride',
   },
   {
     id: 3,
@@ -74,8 +91,7 @@ const activities: Activity[] = [
     members: 4,
     date: 'Feb 5',
     status: 'pending',
-    icon: MapPin,
-    imageUrl: 'https://images.unsplash.com/photo-1555244162-803834f70033?w=100&h=100&fit=crop',
+    iconType: 'party',
   },
   {
     id: 4,
@@ -86,7 +102,18 @@ const activities: Activity[] = [
     members: 2,
     date: 'Feb 3',
     status: 'settled',
-    icon: ShoppingBag,
+    iconType: 'groceries',
+  },
+  {
+    id: 5,
+    title: 'Weekend Trip',
+    venue: 'Nyanga Mountains',
+    amount: '$250.00',
+    yourShare: '$125.00',
+    members: 2,
+    date: 'Jan 28',
+    status: 'settled',
+    iconType: 'trip',
   },
 ]
 
@@ -94,9 +121,10 @@ const activities: Activity[] = [
 // ANIMATED COMPONENTS
 // ============================================
 const AnimatedXStack = Animated.createAnimatedComponent(XStack)
+const AnimatedYStack = Animated.createAnimatedComponent(YStack)
 
 // ============================================
-// STATS CARD
+// STATS CARD — With accent tint
 // ============================================
 const StatsCard = ({
   label,
@@ -127,18 +155,16 @@ const StatsCard = ({
       >
         <XStack alignItems="center" gap={6}>
           <View
-            width={18}
-            height={18}
-            borderRadius={5}
+            width={20}
+            height={20}
+            borderRadius={6}
             backgroundColor={isOwe ? '$errorSoft' : '$successSoft'}
             alignItems="center"
             justifyContent="center"
           >
-            {isOwe ? (
-              <Text fontSize={10} color="$error">↗</Text>
-            ) : (
-              <Text fontSize={10} color="$success">↙</Text>
-            )}
+            <Text fontSize={10} color={isOwe ? '$error' : '$success'}>
+              {isOwe ? '↗' : '↙'}
+            </Text>
           </View>
           <Text fontSize={11} fontWeight="500" color="$colorMuted" letterSpacing={0.3}>
             {label}
@@ -159,7 +185,7 @@ const StatsCard = ({
 }
 
 // ============================================
-// ACTIVITY CARD
+// ACTIVITY CARD — With consistent icons
 // ============================================
 const ActivityCard = ({
   activity,
@@ -168,10 +194,9 @@ const ActivityCard = ({
   activity: Activity
   delay?: number
 }) => {
-  const { isDark } = useThemeMode()
   const isActive = activity.status === 'active'
   const isSettled = activity.status === 'settled'
-  const Icon = activity.icon
+  const Icon = SPLIT_ICONS[activity.iconType]
 
   const scale = useSharedValue(1)
 
@@ -224,7 +249,7 @@ const ActivityCard = ({
             />
           )}
 
-          {/* Icon/Image */}
+          {/* Icon */}
           <View
             width={46}
             height={46}
@@ -232,21 +257,12 @@ const ActivityCard = ({
             backgroundColor={isActive ? '$accentSoft' : '$backgroundHover'}
             alignItems="center"
             justifyContent="center"
-            overflow="hidden"
           >
-            {activity.imageUrl ? (
-              <Image
-                source={{ uri: activity.imageUrl }}
-                style={{ width: 46, height: 46 }}
-                resizeMode="cover"
-              />
-            ) : (
-              <Icon
-                size={20}
-                color={isActive ? '$accent' : '$colorMuted'}
-                strokeWidth={1.8}
-              />
-            )}
+            <Icon
+              size={22}
+              color={isActive ? '$accent' : '$colorMuted'}
+              strokeWidth={1.8}
+            />
           </View>
 
           {/* Content */}
@@ -333,10 +349,16 @@ const ActivityCard = ({
 }
 
 // ============================================
-// SECTION HEADER
+// SECTION HEADER — With accent dot
 // ============================================
 const SectionHeader = ({ title, count }: { title: string; count?: number }) => (
   <XStack alignItems="center" gap={8} marginBottom={10}>
+    <View
+      width={4}
+      height={4}
+      borderRadius={2}
+      backgroundColor="$accent"
+    />
     <Text
       fontSize={12}
       fontWeight="600"
@@ -348,12 +370,12 @@ const SectionHeader = ({ title, count }: { title: string; count?: number }) => (
     </Text>
     {count !== undefined && (
       <View
-        backgroundColor="$backgroundHover"
+        backgroundColor="$accentSoft"
         paddingHorizontal={6}
         paddingVertical={2}
         borderRadius={4}
       >
-        <Text fontSize={10} fontWeight="600" color="$colorMuted">
+        <Text fontSize={10} fontWeight="600" color="$accent">
           {count}
         </Text>
       </View>
@@ -366,6 +388,7 @@ const SectionHeader = ({ title, count }: { title: string; count?: number }) => (
 // ============================================
 export default function ActivityScreen() {
   const insets = useSafeAreaInsets()
+  const { isDark } = useThemeMode()
 
   const activeItems = activities.filter((a) => a.status === 'active')
   const pendingItems = activities.filter((a) => a.status === 'pending')
@@ -375,11 +398,15 @@ export default function ActivityScreen() {
     <ScrollView
       backgroundColor="$background"
       showsVerticalScrollIndicator={false}
-      contentContainerStyle={{ paddingBottom: 120 }}
+      contentContainerStyle={{ paddingBottom: 140 }}
     >
       <YStack paddingTop={insets.top + 12} paddingHorizontal={20} gap={24}>
         {/* Header */}
-        <Animated.View entering={FadeInDown.delay(50).springify()}>
+        <AnimatedXStack
+          entering={FadeInDown.delay(50).springify()}
+          justifyContent="space-between"
+          alignItems="flex-end"
+        >
           <YStack gap={4}>
             <Text fontSize={13} color="$colorMuted" fontWeight="500">
               Your activity
@@ -388,7 +415,25 @@ export default function ActivityScreen() {
               All Splits
             </Text>
           </YStack>
-        </Animated.View>
+
+          {/* Filter button */}
+          <Pressable
+            onPress={() => Haptics.selectionAsync()}
+          >
+            <View
+              width={40}
+              height={40}
+              borderRadius={12}
+              backgroundColor="$cardBg"
+              borderWidth={1}
+              borderColor="$cardBorder"
+              alignItems="center"
+              justifyContent="center"
+            >
+              <Filter size={18} color="$colorMuted" strokeWidth={1.8} />
+            </View>
+          </Pressable>
+        </AnimatedXStack>
 
         {/* Stats */}
         <XStack gap={12}>
