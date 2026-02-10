@@ -1,7 +1,7 @@
 import { useState } from 'react'
-import { ScrollView, YStack, XStack, Text, View, styled } from 'tamagui'
+import { Pressable } from 'react-native'
+import { ScrollView, YStack, XStack, Text, View, styled, useThemeName } from 'tamagui'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import { Platform } from 'react-native'
 import { 
   ArrowUpRight,
   ArrowDownLeft,
@@ -11,7 +11,10 @@ import {
   Receipt,
   Wallet,
   RefreshCw,
+  Sun,
+  Moon,
 } from '@tamagui/lucide-icons'
+import { useThemeMode } from '../_layout'
 
 // ============================================
 // SPLTR-INSPIRED COMPONENTS
@@ -21,15 +24,15 @@ import {
 // --- Vertical Pill Label ---
 const VerticalPill = ({ label, variant = 'dark' }: { label: string; variant?: 'dark' | 'pink' | 'grey' }) => {
   const bg = variant === 'pink' 
-    ? 'rgba(69, 0, 16, 0.15)' 
+    ? '$pinkMuted' 
     : variant === 'grey' 
-      ? 'rgba(0,0,0,0.08)' 
-      : '#1A1A1A'
+      ? '$greyFaint' 
+      : '$pill'
   const color = variant === 'pink' 
-    ? '#450010' 
+    ? '$pinkText' 
     : variant === 'grey' 
-      ? '#111111' 
-      : '#999999'
+      ? '$greyText' 
+      : '$accent999'
 
   return (
     <YStack 
@@ -82,20 +85,20 @@ const FlowStep = ({
   variant?: 'dark' | 'pink' | 'grey'
 }) => {
   const lineColor = variant === 'pink' 
-    ? 'rgba(69,0,16,0.3)' 
+    ? '$pinkLine' // Was rgba(69,0,16,0.3)
     : variant === 'grey' 
-      ? 'rgba(0,0,0,0.2)' 
-      : 'rgba(255,255,255,0.2)'
+      ? '$greyLine' // Was rgba(0,0,0,0.2)
+      : '$lineFaint' // Was rgba(255,255,255,0.2)
   const labelColor = variant === 'pink' 
-    ? 'rgba(69,0,16,0.6)' 
+    ? '$pinkText' // Using pinkText for better contrast
     : variant === 'grey' 
-      ? '#555555' 
-      : 'rgba(255,255,255,0.5)'
+      ? '$greySub' 
+      : '$whiteMuted'
   const valueColor = variant === 'pink' 
-    ? '#450010' 
+    ? '$pinkText' 
     : variant === 'grey' 
-      ? '#111111' 
-      : '#FFFFFF'
+      ? '$greyText' 
+      : '$white'
 
   return (
     <XStack position="relative" paddingBottom={isLast ? 0 : 24}>
@@ -108,6 +111,7 @@ const FlowStep = ({
           bottom={-6}
           width={1}
           backgroundColor={lineColor}
+          opacity={0.3}
         >
           {/* Arrow marker */}
           <View
@@ -132,6 +136,7 @@ const FlowStep = ({
           letterSpacing={0.5}
           color={labelColor}
           marginBottom={2}
+          opacity={0.7}
         >
           {label}
         </Text>
@@ -156,7 +161,7 @@ const SplitItem = ({
   desc, 
   amount, 
   isPaid,
-  avatarBg = '#D1D1D1',
+  avatarBg = '$greyDark',
 }: { 
   initials: string
   name: string
@@ -170,7 +175,7 @@ const SplitItem = ({
     alignItems="center"
     paddingVertical={14}
     borderBottomWidth={1}
-    borderBottomColor="rgba(0,0,0,0.08)"
+    borderBottomColor="$greyFaint"
     pressStyle={{ opacity: 0.7 }}
   >
     <XStack alignItems="center" gap={12}>
@@ -182,36 +187,36 @@ const SplitItem = ({
         alignItems="center"
         justifyContent="center"
       >
-        <Text fontSize={11} fontWeight="600" color="#111">
+        <Text fontSize={11} fontWeight="600" color={avatarBg === '$black' ? '$white' : '$black'}>
           {initials}
         </Text>
       </View>
       <YStack>
-        <Text fontSize={15} fontWeight="500" color="#111111" letterSpacing={-0.2}>
+        <Text fontSize={15} fontWeight="500" color="$greyText" letterSpacing={-0.2}>
           {name}
         </Text>
-        <Text fontSize={12} color="#555555" opacity={0.8}>
+        <Text fontSize={12} color="$greySub" opacity={0.8}>
           {desc}
         </Text>
       </YStack>
     </XStack>
     <YStack alignItems="flex-end" gap={2}>
-      <Text fontSize={15} fontWeight="600" color="#111111">
+      <Text fontSize={15} fontWeight="600" color="$greyText">
         {amount}
       </Text>
       {isPaid ? (
         <View 
-          backgroundColor="#000" 
+          backgroundColor="$black" 
           paddingHorizontal={6} 
           paddingVertical={2} 
           borderRadius={4}
         >
-          <Text fontSize={9} fontWeight="700" letterSpacing={0.5} textTransform="uppercase" color="#FFF">
+          <Text fontSize={9} fontWeight="700" letterSpacing={0.5} textTransform="uppercase" color="$white">
             Paid
           </Text>
         </View>
       ) : (
-        <Text fontSize={9} fontWeight="700" letterSpacing={0.5} textTransform="uppercase" color="#111" opacity={0.4}>
+        <Text fontSize={9} fontWeight="700" letterSpacing={0.5} textTransform="uppercase" color="$greyText" opacity={0.4}>
           Pending
         </Text>
       )}
@@ -222,7 +227,7 @@ const SplitItem = ({
 // --- Connector Line (between cards) ---
 const ConnectorLine = () => (
   <View marginLeft={54} height={20} position="relative">
-    <View width={1} height={20} backgroundColor="#333333" />
+    <View width={1} height={20} backgroundColor="$line" />
     <View
       position="absolute"
       bottom={0}
@@ -231,7 +236,7 @@ const ConnectorLine = () => (
       height={7}
       borderRightWidth={1}
       borderBottomWidth={1}
-      borderColor="#333333"
+      borderColor="$line"
       style={{ transform: [{ rotate: '45deg' }] }}
     />
   </View>
@@ -239,9 +244,9 @@ const ConnectorLine = () => (
 
 // --- Mock Data ---
 const members = [
-  { id: 1, initials: 'Y', name: 'You', desc: 'Payer', amount: '$47.50', isPaid: true, avatarBg: '#000' },
-  { id: 2, initials: 'TM', name: 'Tendai M.', desc: 'Shared pizza', amount: '$47.50', isPaid: false, avatarBg: '#D1D1D1' },
-  { id: 3, initials: 'RK', name: 'Rudo K.', desc: 'Drinks only', amount: '$47.50', isPaid: false, avatarBg: '#C4C4C4' },
+  { id: 1, initials: 'Y', name: 'You', desc: 'Payer', amount: '$47.50', isPaid: true, avatarBg: '$black' },
+  { id: 2, initials: 'TM', name: 'Tendai M.', desc: 'Shared pizza', amount: '$47.50', isPaid: false, avatarBg: '$greyDark' },
+  { id: 3, initials: 'RK', name: 'Rudo K.', desc: 'Drinks only', amount: '$47.50', isPaid: false, avatarBg: '$greyMid' },
 ]
 
 // ============================================
@@ -249,10 +254,12 @@ const members = [
 // ============================================
 export default function HomeScreen() {
   const insets = useSafeAreaInsets()
+  const { isDark, toggle } = useThemeMode()
+  const themeName = useThemeName()
 
   return (
     <ScrollView 
-      backgroundColor="#050505" 
+      backgroundColor="$background" 
       showsVerticalScrollIndicator={false}
       style={{
         // @ts-ignore
@@ -278,14 +285,33 @@ export default function HomeScreen() {
             fontSize={32}
             fontWeight="500"
             letterSpacing={-1.5}
-            color="#FFFFFF"
+            color="$color"
             lineHeight={32}
           >
             Check Split
           </Text>
-          <Text fontSize={14} color="#666666" letterSpacing={-0.2}>
-            #4021
-          </Text>
+          <XStack alignItems="center" gap={12}>
+            {/* Theme Toggle */}
+            <Pressable onPress={toggle}>
+              <View
+                width={36}
+                height={36}
+                borderRadius={10}
+                backgroundColor={isDark ? '$surface' : '$grey'}
+                alignItems="center"
+                justifyContent="center"
+              >
+                {isDark ? (
+                  <Sun size={18} color="$colorMuted" strokeWidth={2} />
+                ) : (
+                  <Moon size={18} color="$colorMuted" strokeWidth={2} />
+                )}
+              </View>
+            </Pressable>
+            <Text fontSize={14} color="$colorMuted" letterSpacing={-0.2}>
+              #4021
+            </Text>
+          </XStack>
         </XStack>
 
         {/* ======== PINK CARD — Balance/Receipt ======== */}
@@ -294,7 +320,7 @@ export default function HomeScreen() {
           
           <YStack
             flex={1}
-            backgroundColor="#FF1A55"
+            backgroundColor="$pink"
             borderRadius={28}
             padding={24}
             minHeight={240}
@@ -302,7 +328,7 @@ export default function HomeScreen() {
             <Text 
               fontSize={14} 
               fontWeight="500" 
-              color="#450010" 
+              color="$pinkText" 
               opacity={0.7}
               marginBottom={4}
             >
@@ -312,7 +338,7 @@ export default function HomeScreen() {
               fontFamily="$mono"
               fontSize={56} 
               fontWeight="500" 
-              color="#450010" 
+              color="$pinkText" 
               letterSpacing={-3}
               lineHeight={52}
               marginBottom={24}
@@ -350,7 +376,7 @@ export default function HomeScreen() {
 
           <YStack
             flex={1}
-            backgroundColor="#E6E6E6"
+            backgroundColor="$grey"
             borderRadius={28}
             padding={24}
           >
@@ -372,63 +398,69 @@ export default function HomeScreen() {
 
         {/* ======== EXCHANGE RATE PILL ======== */}
         <XStack
-          backgroundColor="#0D0D0D"
+          backgroundColor="$surface"
           borderRadius={16}
           padding={16}
           alignItems="center"
           justifyContent="space-between"
           borderWidth={1}
-          borderColor="rgba(255,255,255,0.06)"
+          borderColor="$borderColorSubtle"
         >
           <YStack gap={2}>
-            <Text fontSize={12} fontWeight="600" textTransform="uppercase" letterSpacing={0.5} color="rgba(255,255,255,0.4)">
+            <Text fontSize={12} fontWeight="600" textTransform="uppercase" letterSpacing={0.5} color="$colorMuted">
               Exchange Rate
             </Text>
             <XStack alignItems="baseline" gap={6}>
-              <Text fontSize={14} fontWeight="500" color="rgba(255,255,255,0.5)">1 USD =</Text>
-              <Text fontFamily="$mono" fontSize={24} fontWeight="700" color="#FFFFFF" letterSpacing={-1}>
+              <Text fontSize={14} fontWeight="500" color="$colorMuted">1 USD =</Text>
+              <Text fontFamily="$mono" fontSize={24} fontWeight="700" color="$color" letterSpacing={-1}>
                 13.85
               </Text>
-              <Text fontSize={14} fontWeight="600" color="#FF1A55">ZiG</Text>
+              <Text fontSize={14} fontWeight="600" color="$pink">ZiG</Text>
             </XStack>
           </YStack>
           <View
             width={40}
             height={40}
             borderRadius={12}
-            backgroundColor="rgba(255,255,255,0.06)"
+            backgroundColor="$backgroundHover"
             alignItems="center"
             justifyContent="center"
             pressStyle={{ opacity: 0.6, scale: 0.95 }}
           >
-            <RefreshCw size={18} color="#666666" strokeWidth={2} />
+            <RefreshCw size={18} color="$colorMuted" strokeWidth={2} />
           </View>
         </XStack>
 
         {/* ======== CTA BUTTON ======== */}
-        <XStack
-          backgroundColor="#FFFFFF"
-          borderRadius={50}
-          paddingVertical={20}
-          paddingHorizontal={24}
-          alignItems="center"
-          justifyContent="space-between"
-          pressStyle={{ scale: 0.98, opacity: 0.9 }}
-        >
-          <Text fontSize={16} fontWeight="600" color="#000000" letterSpacing={-0.5}>
-            Request Payments
-          </Text>
-          <View
-            width={28}
-            height={28}
-            borderRadius={14}
-            backgroundColor="#000000"
+        <Pressable>
+          <XStack
+            backgroundColor={isDark ? '$white' : '$pink'}
+            borderRadius={50}
+            paddingVertical={20}
+            paddingHorizontal={24}
             alignItems="center"
-            justifyContent="center"
+            justifyContent="space-between"
           >
-            <ArrowUpRight size={16} color="#FFFFFF" strokeWidth={2.5} />
-          </View>
-        </XStack>
+            <Text 
+              fontSize={16} 
+              fontWeight="600" 
+              color={isDark ? '$black' : '$white'} 
+              letterSpacing={-0.5}
+            >
+              Request Payments
+            </Text>
+            <View
+              width={28}
+              height={28}
+              borderRadius={14}
+              backgroundColor={isDark ? '$black' : 'rgba(255,255,255,0.2)'}
+              alignItems="center"
+              justifyContent="center"
+            >
+              <ArrowUpRight size={16} color="$white" strokeWidth={2.5} />
+            </View>
+          </XStack>
+        </Pressable>
 
       </YStack>
     </ScrollView>

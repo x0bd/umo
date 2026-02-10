@@ -260,37 +260,49 @@ const tamaguiConfig = createTamagui({
       // Semantic
       green: tokens.color.green,
       red: tokens.color.red,
+
+      // Onboarding specific
+      cardBg: tokens.color.bgCard,
+      heroText: tokens.color.white,
+      subtleText: tokens.color.whiteMuted,
     },
     light: {
-      // Mirror dark — this app IS dark mode
-      background: tokens.color.bgDark,
-      backgroundStrong: tokens.color.bgBlack,
-      backgroundHover: tokens.color.bgCard,
-      backgroundPress: tokens.color.line,
-      backgroundTransparent: 'rgba(0,0,0,0)',
+      // Clean white background with pink accents
+      background: '#FAFAFA',
+      backgroundStrong: tokens.color.white,
+      backgroundHover: tokens.color.grey,
+      backgroundPress: tokens.color.greyDark,
+      backgroundTransparent: 'rgba(255,255,255,0)',
 
-      surface: tokens.color.bgCard,
-      surfaceHover: tokens.color.line,
+      surface: tokens.color.white,
+      surfaceHover: tokens.color.grey,
 
-      color: tokens.color.white,
-      colorSubtle: tokens.color.whiteDim,
-      colorMuted: tokens.color.whiteMuted,
-      colorFaint: tokens.color.whiteGhost,
+      color: tokens.color.greyText,
+      colorSubtle: tokens.color.greySub,
+      colorMuted: tokens.color.accent666,
+      colorFaint: tokens.color.greyLine,
 
-      borderColor: tokens.color.line,
-      borderColorSubtle: tokens.color.lineFaint,
+      borderColor: tokens.color.greyLine,
+      borderColorSubtle: tokens.color.greyFaint,
 
+      // Pink accent stays the same
       pink: tokens.color.pink,
       pinkDark: tokens.color.pinkDark,
       pinkText: tokens.color.pinkText,
       pinkMuted: tokens.color.pinkMuted,
 
-      grey: tokens.color.grey,
+      // Grey card becomes slightly darker for contrast
+      grey: '#F0F0F0',
       greyText: tokens.color.greyText,
       greySub: tokens.color.greySub,
 
-      green: tokens.color.green,
+      green: tokens.color.greenDark,
       red: tokens.color.red,
+
+      // Onboarding specific
+      cardBg: tokens.color.white,
+      heroText: tokens.color.greyText,
+      subtleText: tokens.color.greySub,
     },
   },
 })
