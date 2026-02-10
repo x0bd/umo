@@ -1,21 +1,18 @@
-import { useState, useRef } from 'react'
-import { Dimensions, Pressable, Image } from 'react-native'
+import { useState, useRef, useCallback } from 'react'
+import { Dimensions, Pressable, Image, ScrollView as RNScrollView } from 'react-native'
 import { YStack, XStack, Text, View } from 'tamagui'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { router } from 'expo-router'
 import * as Haptics from 'expo-haptics'
 import Animated, {
-  FadeIn,
   FadeInDown,
-  FadeInUp,
   useSharedValue,
   useAnimatedStyle,
   withSpring,
   withSequence,
-  withTiming,
-  useAnimatedScrollHandler,
   interpolate,
   Extrapolation,
+  runOnJS,
 } from 'react-native-reanimated'
 import {
   ArrowRight,
@@ -76,9 +73,7 @@ const slides = [
 // ANIMATED COMPONENTS
 // ============================================
 const AnimatedView = Animated.createAnimatedComponent(View)
-const AnimatedYStack = Animated.createAnimatedComponent(YStack)
 const AnimatedXStack = Animated.createAnimatedComponent(XStack)
-const AnimatedScrollView = Animated.createAnimatedComponent(Animated.ScrollView)
 
 // ============================================
 // SLIDE COMPONENT
@@ -220,6 +215,50 @@ const OnboardingSlide = ({
 }
 
 // ============================================
+// SINGLE DOT COMPONENT (proper hooks usage)
+// ============================================
+const Dot = ({
+  index,
+  scrollX,
+}: {
+  index: number
+  scrollX: Animated.SharedValue<number>
+}) => {
+  const animatedStyle = useAnimatedStyle(() => {
+    const inputRange = [
+      (index - 1) * SCREEN_WIDTH,
+      index * SCREEN_WIDTH,
+      (index + 1) * SCREEN_WIDTH,
+    ]
+
+    const width = interpolate(
+      scrollX.value,
+      inputRange,
+      [8, 24, 8],
+      Extrapolation.CLAMP
+    )
+
+    const opacity = interpolate(
+      scrollX.value,
+      inputRange,
+      [0.3, 1, 0.3],
+      Extrapolation.CLAMP
+    )
+
+    return { width, opacity }
+  })
+
+  return (
+    <AnimatedView
+      height={8}
+      borderRadius={4}
+      backgroundColor="$accent"
+      style={animatedStyle}
+    />
+  )
+}
+
+// ============================================
 // DOT INDICATOR
 // ============================================
 const DotIndicator = ({
@@ -231,41 +270,9 @@ const DotIndicator = ({
 }) => {
   return (
     <XStack gap={8} justifyContent="center" paddingVertical={20}>
-      {Array.from({ length: count }).map((_, i) => {
-        const animatedStyle = useAnimatedStyle(() => {
-          const inputRange = [
-            (i - 1) * SCREEN_WIDTH,
-            i * SCREEN_WIDTH,
-            (i + 1) * SCREEN_WIDTH,
-          ]
-
-          const width = interpolate(
-            scrollX.value,
-            inputRange,
-            [8, 24, 8],
-            Extrapolation.CLAMP
-          )
-
-          const opacity = interpolate(
-            scrollX.value,
-            inputRange,
-            [0.3, 1, 0.3],
-            Extrapolation.CLAMP
-          )
-
-          return { width, opacity }
-        })
-
-        return (
-          <AnimatedView
-            key={i}
-            height={8}
-            borderRadius={4}
-            backgroundColor="$accent"
-            style={animatedStyle}
-          />
-        )
-      })}
+      {Array.from({ length: count }).map((_, i) => (
+        <Dot key={i} index={i} scrollX={scrollX} />
+      ))}
     </XStack>
   )
 }
@@ -277,24 +284,25 @@ export default function OnboardingScreen() {
   const insets = useSafeAreaInsets()
   const { isDark, toggle } = useThemeMode()
   const [currentIndex, setCurrentIndex] = useState(0)
-  const scrollRef = useRef<Animated.ScrollView>(null)
+  const scrollRef = useRef<RNScrollView>(null)
   const scrollX = useSharedValue(0)
-
-  const scrollHandler = useAnimatedScrollHandler({
-    onScroll: (event) => {
-      scrollX.value = event.contentOffset.x
-    },
-    onMomentumEnd: (event) => {
-      const index = Math.round(event.contentOffset.x / SCREEN_WIDTH)
-      setCurrentIndex(index)
-    },
-  })
 
   const buttonScale = useSharedValue(1)
 
   const buttonAnimatedStyle = useAnimatedStyle(() => ({
     transform: [{ scale: buttonScale.value }],
   }))
+
+  // Handle scroll end to update current index
+  const handleScrollEnd = useCallback((event: any) => {
+    const index = Math.round(event.nativeEvent.contentOffset.x / SCREEN_WIDTH)
+    setCurrentIndex(index)
+  }, [])
+
+  // Handle scroll to update shared value
+  const handleScroll = useCallback((event: any) => {
+    scrollX.value = event.nativeEvent.contentOffset.x
+  }, [])
 
   const handleNext = () => {
     buttonScale.value = withSequence(withSpring(0.97), withSpring(1))
@@ -305,6 +313,7 @@ export default function OnboardingScreen() {
         x: (currentIndex + 1) * SCREEN_WIDTH,
         animated: true,
       })
+      setCurrentIndex(currentIndex + 1)
     } else {
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
       router.replace('/(tabs)')
@@ -389,12 +398,13 @@ export default function OnboardingScreen() {
       </AnimatedXStack>
 
       {/* Slides */}
-      <AnimatedScrollView
+      <RNScrollView
         ref={scrollRef}
         horizontal
         pagingEnabled
         showsHorizontalScrollIndicator={false}
-        onScroll={scrollHandler}
+        onScroll={handleScroll}
+        onMomentumScrollEnd={handleScrollEnd}
         scrollEventThrottle={16}
         decelerationRate="fast"
         style={{ flex: 1 }}
@@ -402,7 +412,7 @@ export default function OnboardingScreen() {
         {slides.map((slide, index) => (
           <OnboardingSlide key={slide.id} slide={slide} index={index} scrollX={scrollX} />
         ))}
-      </AnimatedScrollView>
+      </RNScrollView>
 
       {/* Bottom Section */}
       <YStack paddingHorizontal={20} paddingBottom={insets.bottom + 16} gap={12}>
