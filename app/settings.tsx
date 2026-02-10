@@ -1,33 +1,32 @@
-import { Pressable, Image, Switch } from 'react-native'
-import { ScrollView, YStack, XStack, Text, View } from 'tamagui'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import { router } from 'expo-router'
-import * as Haptics from 'expo-haptics'
-import Animated, {
-  FadeInDown,
-  FadeInUp,
-  useSharedValue,
-  useAnimatedStyle,
-  withSpring,
-} from 'react-native-reanimated'
-import {
-  ArrowLeft,
-  ChevronRight,
-  User,
-  Bell,
-  Moon,
-  Sun,
-  CreditCard,
-  Shield,
-  HelpCircle,
-  LogOut,
-  Smartphone,
-  Globe,
-  Palette,
-  Zap,
-  Heart,
-} from '@tamagui/lucide-icons'
 import { useThemeMode } from '@/providers/theme-mode'
+import {
+    ArrowLeft,
+    Bell,
+    ChevronRight,
+    CreditCard,
+    Globe,
+    Heart,
+    HelpCircle,
+    LogOut,
+    Moon,
+    Palette,
+    Shield,
+    Smartphone,
+    Sun,
+    User,
+} from '@tamagui/lucide-icons'
+import * as Haptics from 'expo-haptics'
+import { router } from 'expo-router'
+import { Image, Pressable, Switch } from 'react-native'
+import Animated, {
+    FadeInDown,
+    FadeInUp,
+    useAnimatedStyle,
+    useSharedValue,
+    withSpring,
+} from 'react-native-reanimated'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { ScrollView, Text, View, XStack, YStack } from 'tamagui'
 
 // Avatar
 const AVATAR_URL = 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=faces'
@@ -39,7 +38,7 @@ const AnimatedYStack = Animated.createAnimatedComponent(YStack)
 const AnimatedXStack = Animated.createAnimatedComponent(XStack)
 
 // ============================================
-// SETTINGS ROW
+// 間 — SETTINGS ROW
 // ============================================
 const SettingsRow = ({
   icon: Icon,
@@ -66,22 +65,18 @@ const SettingsRow = ({
     transform: [{ scale: scale.value }],
   }))
 
-  const handlePressIn = () => {
-    scale.value = withSpring(0.98, { damping: 15 })
-  }
-
-  const handlePressOut = () => {
-    scale.value = withSpring(1, { damping: 15 })
-  }
-
   return (
     <AnimatedXStack
       entering={FadeInDown.delay(delay).springify()}
       style={animatedStyle}
     >
       <Pressable
-        onPressIn={handlePressIn}
-        onPressOut={handlePressOut}
+        onPressIn={() => {
+          scale.value = withSpring(0.98, { damping: 15 })
+        }}
+        onPressOut={() => {
+          scale.value = withSpring(1, { damping: 15 })
+        }}
         onPress={() => {
           Haptics.selectionAsync()
           onPress?.()
@@ -95,21 +90,12 @@ const SettingsRow = ({
           alignItems="center"
           gap={14}
         >
-          <View
-            width={36}
-            height={36}
-            borderRadius={10}
-            backgroundColor={accentIcon ? '$accentSoft' : isDestructive ? '$errorSoft' : '$backgroundHover'}
-            alignItems="center"
-            justifyContent="center"
-          >
-            <Icon
-              size={18}
-              color={accentIcon ? '$accent' : isDestructive ? '$error' : '$colorMuted'}
-              strokeWidth={1.8}
-            />
-          </View>
-          
+          <Icon
+            size={18}
+            color={accentIcon ? '$accent' : isDestructive ? '$error' : '$colorMuted'}
+            strokeWidth={1.8}
+          />
+
           <YStack flex={1}>
             <Text
               fontSize={15}
@@ -120,13 +106,13 @@ const SettingsRow = ({
               {label}
             </Text>
           </YStack>
-          
+
           {value && (
             <Text fontSize={14} color="$colorMuted">
               {value}
             </Text>
           )}
-          
+
           {showChevron && onPress && (
             <ChevronRight size={18} color="$colorGhost" strokeWidth={2} />
           )}
@@ -137,7 +123,7 @@ const SettingsRow = ({
 }
 
 // ============================================
-// TOGGLE ROW
+// 間 — TOGGLE ROW
 // ============================================
 const ToggleRow = ({
   icon: Icon,
@@ -162,21 +148,12 @@ const ToggleRow = ({
         alignItems="center"
         gap={14}
       >
-        <View
-          width={36}
-          height={36}
-          borderRadius={10}
-          backgroundColor={accentIcon ? '$accentSoft' : '$backgroundHover'}
-          alignItems="center"
-          justifyContent="center"
-        >
-          <Icon
-            size={18}
-            color={accentIcon ? '$accent' : '$colorMuted'}
-            strokeWidth={1.8}
-          />
-        </View>
-        
+        <Icon
+          size={18}
+          color={accentIcon ? '$accent' : '$colorMuted'}
+          strokeWidth={1.8}
+        />
+
         <Text
           flex={1}
           fontSize={15}
@@ -186,7 +163,7 @@ const ToggleRow = ({
         >
           {label}
         </Text>
-        
+
         <Switch
           value={value}
           onValueChange={() => {
@@ -203,14 +180,14 @@ const ToggleRow = ({
 }
 
 // ============================================
-// SECTION HEADER
+// 間 — SECTION HEADER
 // ============================================
 const SectionHeader = ({ title, delay = 0 }: { title: string; delay?: number }) => (
   <Animated.View entering={FadeInDown.delay(delay).springify()}>
     <Text
-      fontSize={12}
-      fontWeight="600"
-      letterSpacing={0.5}
+      fontSize={11}
+      fontWeight="500"
+      letterSpacing={0.8}
       textTransform="uppercase"
       color="$colorFaint"
       marginTop={24}
@@ -223,7 +200,7 @@ const SectionHeader = ({ title, delay = 0 }: { title: string; delay?: number }) 
 )
 
 // ============================================
-// MAIN SCREEN
+// 間 — MAIN SCREEN
 // ============================================
 export default function SettingsScreen() {
   const insets = useSafeAreaInsets()
@@ -252,21 +229,19 @@ export default function SettingsScreen() {
               <View
                 width={40}
                 height={40}
-                borderRadius={12}
-                backgroundColor="$cardBg"
-                borderWidth={1}
-                borderColor="$cardBorder"
+                borderRadius={9999}
+                backgroundColor="$backgroundHover"
                 alignItems="center"
                 justifyContent="center"
               >
                 <ArrowLeft size={18} color="$colorMuted" strokeWidth={2} />
               </View>
             </Pressable>
-            
+
             <Text fontSize={17} fontWeight="600" color="$color" letterSpacing={-0.3}>
               Settings
             </Text>
-            
+
             <View width={40} />
           </AnimatedXStack>
 
@@ -276,9 +251,12 @@ export default function SettingsScreen() {
             backgroundColor="$cardBg"
             borderRadius={20}
             padding={20}
-            borderWidth={1}
-            borderColor="$cardBorder"
             marginBottom={8}
+            shadowColor="#000"
+            shadowOffset={{ width: 0, height: 2 }}
+            shadowOpacity={0.06}
+            shadowRadius={12}
+            elevation={3}
           >
             <Pressable
               onPress={() => {
@@ -286,28 +264,28 @@ export default function SettingsScreen() {
               }}
             >
               <XStack alignItems="center" gap={16}>
-                {/* Avatar with accent ring */}
+                {/* Avatar */}
                 <View
-                  width={68}
-                  height={68}
-                  borderRadius={20}
-                  padding={3}
+                  width={64}
+                  height={64}
+                  borderRadius={18}
+                  padding={2}
                   backgroundColor="$accentSoft"
                 >
                   <View
-                    width={62}
-                    height={62}
-                    borderRadius={18}
+                    width={60}
+                    height={60}
+                    borderRadius={16}
                     overflow="hidden"
                   >
                     <Image
                       source={{ uri: AVATAR_URL }}
-                      style={{ width: 62, height: 62 }}
+                      style={{ width: 60, height: 60 }}
                       resizeMode="cover"
                     />
                   </View>
                 </View>
-                
+
                 <YStack flex={1} gap={4}>
                   <Text fontSize={20} fontWeight="600" color="$color" letterSpacing={-0.5}>
                     Tino Mabika
@@ -315,23 +293,20 @@ export default function SettingsScreen() {
                   <Text fontSize={14} color="$colorMuted">
                     tino@umo.app
                   </Text>
-                  <XStack alignItems="center" gap={6} marginTop={4}>
-                    <View
-                      backgroundColor="$accentSoft"
-                      paddingHorizontal={8}
-                      paddingVertical={3}
-                      borderRadius={6}
-                    >
-                      <XStack alignItems="center" gap={4}>
-                        <Zap size={10} color="$accent" strokeWidth={2.5} />
-                        <Text fontSize={11} fontWeight="600" color="$accent">
-                          Pro Member
-                        </Text>
-                      </XStack>
-                    </View>
-                  </XStack>
+                  <View
+                    backgroundColor="$accentGhost"
+                    paddingHorizontal={8}
+                    paddingVertical={3}
+                    borderRadius={6}
+                    alignSelf="flex-start"
+                    marginTop={4}
+                  >
+                    <Text fontSize={11} fontWeight="600" color="$accent">
+                      Pro Member
+                    </Text>
+                  </View>
                 </YStack>
-                
+
                 <ChevronRight size={20} color="$colorGhost" strokeWidth={2} />
               </XStack>
             </Pressable>
@@ -344,8 +319,11 @@ export default function SettingsScreen() {
             backgroundColor="$cardBg"
             borderRadius={16}
             paddingHorizontal={14}
-            borderWidth={1}
-            borderColor="$cardBorder"
+            shadowColor="#000"
+            shadowOffset={{ width: 0, height: 2 }}
+            shadowOpacity={0.06}
+            shadowRadius={12}
+            elevation={3}
           >
             <SettingsRow
               icon={User}
@@ -353,7 +331,7 @@ export default function SettingsScreen() {
               onPress={() => {}}
               delay={180}
             />
-            <View height={1} backgroundColor="$borderColorSoft" marginLeft={50} />
+            <View height={1} backgroundColor="$borderColorSoft" marginLeft={32} />
             <SettingsRow
               icon={CreditCard}
               label="Payment Methods"
@@ -361,7 +339,7 @@ export default function SettingsScreen() {
               onPress={() => {}}
               delay={200}
             />
-            <View height={1} backgroundColor="$borderColorSoft" marginLeft={50} />
+            <View height={1} backgroundColor="$borderColorSoft" marginLeft={32} />
             <SettingsRow
               icon={Globe}
               label="Currency"
@@ -379,8 +357,11 @@ export default function SettingsScreen() {
             backgroundColor="$cardBg"
             borderRadius={16}
             paddingHorizontal={14}
-            borderWidth={1}
-            borderColor="$cardBorder"
+            shadowColor="#000"
+            shadowOffset={{ width: 0, height: 2 }}
+            shadowOpacity={0.06}
+            shadowRadius={12}
+            elevation={3}
           >
             <ToggleRow
               icon={isDark ? Moon : Sun}
@@ -390,7 +371,7 @@ export default function SettingsScreen() {
               accentIcon
               delay={270}
             />
-            <View height={1} backgroundColor="$borderColorSoft" marginLeft={50} />
+            <View height={1} backgroundColor="$borderColorSoft" marginLeft={32} />
             <SettingsRow
               icon={Palette}
               label="Accent Color"
@@ -398,14 +379,14 @@ export default function SettingsScreen() {
               onPress={() => {}}
               delay={290}
             />
-            <View height={1} backgroundColor="$borderColorSoft" marginLeft={50} />
+            <View height={1} backgroundColor="$borderColorSoft" marginLeft={32} />
             <SettingsRow
               icon={Bell}
               label="Notifications"
               onPress={() => {}}
               delay={310}
             />
-            <View height={1} backgroundColor="$borderColorSoft" marginLeft={50} />
+            <View height={1} backgroundColor="$borderColorSoft" marginLeft={32} />
             <SettingsRow
               icon={Smartphone}
               label="Haptic Feedback"
@@ -422,8 +403,11 @@ export default function SettingsScreen() {
             backgroundColor="$cardBg"
             borderRadius={16}
             paddingHorizontal={14}
-            borderWidth={1}
-            borderColor="$cardBorder"
+            shadowColor="#000"
+            shadowOffset={{ width: 0, height: 2 }}
+            shadowOpacity={0.06}
+            shadowRadius={12}
+            elevation={3}
           >
             <SettingsRow
               icon={HelpCircle}
@@ -431,14 +415,14 @@ export default function SettingsScreen() {
               onPress={() => {}}
               delay={380}
             />
-            <View height={1} backgroundColor="$borderColorSoft" marginLeft={50} />
+            <View height={1} backgroundColor="$borderColorSoft" marginLeft={32} />
             <SettingsRow
               icon={Shield}
               label="Privacy Policy"
               onPress={() => {}}
               delay={400}
             />
-            <View height={1} backgroundColor="$borderColorSoft" marginLeft={50} />
+            <View height={1} backgroundColor="$borderColorSoft" marginLeft={32} />
             <SettingsRow
               icon={Heart}
               label="Rate the App"
@@ -454,9 +438,12 @@ export default function SettingsScreen() {
             backgroundColor="$cardBg"
             borderRadius={16}
             paddingHorizontal={14}
-            borderWidth={1}
-            borderColor="$cardBorder"
             marginTop={24}
+            shadowColor="#000"
+            shadowOffset={{ width: 0, height: 2 }}
+            shadowOpacity={0.06}
+            shadowRadius={12}
+            elevation={3}
           >
             <SettingsRow
               icon={LogOut}
@@ -489,4 +476,3 @@ export default function SettingsScreen() {
     </YStack>
   )
 }
-

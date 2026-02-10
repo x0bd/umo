@@ -1,28 +1,33 @@
-import { Input as TamaguiInput, styled, YStack, Text, XStack, InputProps } from 'tamagui'
 import { forwardRef } from 'react'
+import { InputProps, styled, Input as TamaguiInput, Text, XStack, YStack } from 'tamagui'
 
+// ============================================
+// 間 — INPUT
+// Borderless at rest. Border appears on focus.
+// ============================================
 const StyledInput = styled(TamaguiInput, {
   name: 'Input',
-  backgroundColor: '$background',
-  borderWidth: 1,
-  borderColor: '$borderColor',
-  borderRadius: '$3',
+  backgroundColor: '$inputBg',
+  borderWidth: 0,
+  borderColor: 'transparent',
+  borderRadius: 14,
   paddingHorizontal: '$4',
   fontSize: 16,
-  color: '$textPrimary',
+  color: '$color',
   height: 48,
-  
+
   focusStyle: {
-    borderColor: '$primary',
-    borderWidth: 2,
+    borderWidth: 1,
+    borderColor: '$accent',
   },
-  
+
   variants: {
     size: {
       sm: {
         height: 36,
         fontSize: 14,
         paddingHorizontal: '$3',
+        borderRadius: 10,
       },
       md: {
         height: 48,
@@ -37,11 +42,12 @@ const StyledInput = styled(TamaguiInput, {
     },
     error: {
       true: {
+        borderWidth: 1,
         borderColor: '$error',
       },
     },
   } as const,
-  
+
   defaultVariants: {
     size: 'md',
   },
@@ -68,14 +74,15 @@ export const Input = forwardRef<any, UmoInputProps>(({
     <YStack gap="$2">
       {label && (
         <Text
-          fontSize={14}
-          fontWeight="600"
-          color="$textSecondary"
+          fontSize={13}
+          fontWeight="500"
+          color="$colorMuted"
+          letterSpacing={0.2}
         >
           {label}
         </Text>
       )}
-      
+
       <XStack
         position="relative"
         alignItems="center"
@@ -90,15 +97,16 @@ export const Input = forwardRef<any, UmoInputProps>(({
             {leftElement}
           </XStack>
         )}
-        
+
         <StyledInput
           ref={ref}
           error={!!error}
           paddingLeft={leftElement ? '$10' : undefined}
           paddingRight={rightElement ? '$10' : undefined}
+          placeholderTextColor="$colorFaint"
           {...props}
         />
-        
+
         {rightElement && (
           <XStack
             position="absolute"
@@ -109,21 +117,15 @@ export const Input = forwardRef<any, UmoInputProps>(({
           </XStack>
         )}
       </XStack>
-      
+
       {error && (
-        <Text
-          fontSize={12}
-          color="$error"
-        >
+        <Text fontSize={12} color="$error">
           {error}
         </Text>
       )}
-      
+
       {hint && !error && (
-        <Text
-          fontSize={12}
-          color="$textTertiary"
-        >
+        <Text fontSize={12} color="$colorFaint">
           {hint}
         </Text>
       )}
@@ -132,4 +134,3 @@ export const Input = forwardRef<any, UmoInputProps>(({
 })
 
 Input.displayName = 'Input'
-

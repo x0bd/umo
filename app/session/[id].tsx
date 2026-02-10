@@ -1,29 +1,28 @@
-import { useState, useCallback } from 'react'
-import { Pressable, Image } from 'react-native'
-import { ScrollView, YStack, XStack, Text, View } from 'tamagui'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import { useLocalSearchParams, router } from 'expo-router'
-import * as Haptics from 'expo-haptics'
-import Animated, {
-  FadeInDown,
-  FadeInUp,
-  useSharedValue,
-  useAnimatedStyle,
-  withSpring,
-  withSequence,
-} from 'react-native-reanimated'
-import {
-  ArrowLeft,
-  ArrowRight,
-  Check,
-  ChevronDown,
-  Receipt,
-  CreditCard,
-  Utensils,
-  Wine,
-  Coffee,
-} from '@tamagui/lucide-icons'
 import { useThemeMode } from '@/providers/theme-mode'
+import {
+    ArrowLeft,
+    Check,
+    ChevronDown,
+    Coffee,
+    CreditCard,
+    Receipt,
+    Utensils,
+    Wine
+} from '@tamagui/lucide-icons'
+import * as Haptics from 'expo-haptics'
+import { router, useLocalSearchParams } from 'expo-router'
+import { useCallback, useState } from 'react'
+import { Image, Pressable } from 'react-native'
+import Animated, {
+    FadeInDown,
+    FadeInUp,
+    useAnimatedStyle,
+    useSharedValue,
+    withSequence,
+    withSpring,
+} from 'react-native-reanimated'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { ScrollView, Text, View, XStack, YStack } from 'tamagui'
 
 // ============================================
 // TYPES & MOCK DATA
@@ -105,10 +104,9 @@ const CATEGORY_ICONS = {
 // ANIMATED COMPONENTS
 // ============================================
 const AnimatedYStack = Animated.createAnimatedComponent(YStack)
-const AnimatedXStack = Animated.createAnimatedComponent(XStack)
 
 // ============================================
-// CIRCULAR CHECKBOX
+// 間 — CIRCULAR CHECKBOX
 // ============================================
 const CircleCheck = ({
   checked,
@@ -136,7 +134,7 @@ const CircleCheck = ({
           width={24}
           height={24}
           borderRadius={12}
-          borderWidth={1.5}
+          borderWidth={1}
           borderColor={checked ? '$accent' : '$borderColor'}
           backgroundColor={checked ? '$accent' : 'transparent'}
           alignItems="center"
@@ -150,7 +148,7 @@ const CircleCheck = ({
 }
 
 // ============================================
-// ITEM ROW
+// 間 — ITEM ROW
 // ============================================
 const ItemRow = ({
   item,
@@ -163,7 +161,7 @@ const ItemRow = ({
   onToggle: () => void
   delay?: number
 }) => (
-  <AnimatedXStack entering={FadeInDown.delay(delay).springify()}>
+  <Animated.View entering={FadeInDown.delay(delay).springify()}>
     <Pressable onPress={onToggle} style={{ flex: 1 }}>
       <XStack
         alignItems="center"
@@ -173,7 +171,6 @@ const ItemRow = ({
       >
         <CircleCheck checked={isSelected} onToggle={onToggle} />
 
-        {/* Image or icon placeholder */}
         {item.imageUrl ? (
           <View
             width={44}
@@ -224,20 +221,20 @@ const ItemRow = ({
         </Text>
       </XStack>
     </Pressable>
-  </AnimatedXStack>
+  </Animated.View>
 )
 
 // ============================================
-// CATEGORY HEADER
+// 間 — CATEGORY HEADER
 // ============================================
 const CategoryHeader = ({ title }: { title: string }) => (
   <XStack alignItems="center" gap={6} marginTop={16} marginBottom={8}>
     <ChevronDown size={12} color="$colorMuted" strokeWidth={2} />
     <Text
       fontSize={11}
-      fontWeight="600"
+      fontWeight="500"
       textTransform="uppercase"
-      letterSpacing={0.6}
+      letterSpacing={0.8}
       color="$colorMuted"
     >
       {title}
@@ -246,7 +243,7 @@ const CategoryHeader = ({ title }: { title: string }) => (
 )
 
 // ============================================
-// SUMMARY ROW
+// 間 — SUMMARY ROW
 // ============================================
 const SummaryRow = ({
   label,
@@ -278,7 +275,7 @@ const SummaryRow = ({
 )
 
 // ============================================
-// MAIN SCREEN
+// 間 — MAIN SCREEN
 // ============================================
 export default function SessionReceiptScreen() {
   const insets = useSafeAreaInsets()
@@ -333,20 +330,15 @@ export default function SessionReceiptScreen() {
             style={{ width: '100%', height: 160, opacity: isDark ? 0.7 : 0.9 }}
             resizeMode="cover"
           />
-          {/* Gradient overlay */}
+          {/* Gradient fade — solid block for native compat */}
           <View
             position="absolute"
             bottom={0}
             left={0}
             right={0}
-            height={80}
+            height={60}
             backgroundColor="$background"
-            style={{
-              // @ts-ignore
-              background: isDark
-                ? 'linear-gradient(transparent, #0A0A0B)'
-                : 'linear-gradient(transparent, #F4F4F5)',
-            }}
+            opacity={0.85}
           />
           {/* Back button */}
           <Pressable
@@ -359,12 +351,10 @@ export default function SessionReceiptScreen() {
             <View
               width={40}
               height={40}
-              borderRadius={12}
-              backgroundColor="$overlay"
+              borderRadius={9999}
+              backgroundColor="rgba(0,0,0,0.4)"
               alignItems="center"
               justifyContent="center"
-              // @ts-ignore
-              style={{ backdropFilter: 'blur(10px)' }}
             >
               <ArrowLeft size={18} color="white" strokeWidth={2} />
             </View>
@@ -388,21 +378,15 @@ export default function SessionReceiptScreen() {
             backgroundColor="$cardBg"
             borderRadius={20}
             padding={20}
-            borderWidth={1}
-            borderColor="$cardBorder"
+            shadowColor="#000"
+            shadowOffset={{ width: 0, height: 2 }}
+            shadowOpacity={0.06}
+            shadowRadius={12}
+            elevation={3}
           >
             {/* Card Header */}
             <XStack alignItems="center" gap={10} marginBottom={8}>
-              <View
-                width={32}
-                height={32}
-                borderRadius={10}
-                backgroundColor="$backgroundHover"
-                alignItems="center"
-                justifyContent="center"
-              >
-                <Receipt size={16} color="$colorMuted" strokeWidth={1.8} />
-              </View>
+              <Receipt size={16} color="$colorMuted" strokeWidth={1.8} />
               <YStack>
                 <Text fontSize={17} fontWeight="600" letterSpacing={-0.3} color="$color">
                   Full Receipt
@@ -484,20 +468,14 @@ export default function SessionReceiptScreen() {
             backgroundColor="$cardBg"
             borderRadius={20}
             padding={20}
-            borderWidth={1}
-            borderColor="$cardBorder"
+            shadowColor="#000"
+            shadowOffset={{ width: 0, height: 2 }}
+            shadowOpacity={0.06}
+            shadowRadius={12}
+            elevation={3}
           >
             <XStack alignItems="center" gap={10} marginBottom={12}>
-              <View
-                width={32}
-                height={32}
-                borderRadius={10}
-                backgroundColor="$accentSoft"
-                alignItems="center"
-                justifyContent="center"
-              >
-                <CreditCard size={16} color="$accent" strokeWidth={1.8} />
-              </View>
+              <CreditCard size={16} color="$accent" strokeWidth={1.8} />
               <Text fontSize={17} fontWeight="600" letterSpacing={-0.3} color="$color">
                 Your Share
               </Text>
@@ -516,11 +494,11 @@ export default function SessionReceiptScreen() {
             <Pressable onPress={handleProceed} disabled={total === 0}>
               <XStack
                 backgroundColor={total > 0 ? '$accent' : '$backgroundHover'}
-                borderRadius={16}
+                borderRadius={9999}
                 paddingVertical={18}
                 paddingHorizontal={20}
                 alignItems="center"
-                justifyContent="space-between"
+                justifyContent="center"
               >
                 <Text
                   fontSize={16}
@@ -530,16 +508,6 @@ export default function SessionReceiptScreen() {
                 >
                   {total > 0 ? 'Proceed to Pay' : 'Select Items'}
                 </Text>
-                <View
-                  width={28}
-                  height={28}
-                  borderRadius={8}
-                  backgroundColor={total > 0 ? 'rgba(255,255,255,0.2)' : '$backgroundPress'}
-                  alignItems="center"
-                  justifyContent="center"
-                >
-                  <ArrowRight size={14} color={total > 0 ? '$accentText' : '$colorMuted'} strokeWidth={2.5} />
-                </View>
               </XStack>
             </Pressable>
           </Animated.View>

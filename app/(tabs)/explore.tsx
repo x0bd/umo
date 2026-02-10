@@ -1,216 +1,112 @@
-import { Pressable, Image } from 'react-native'
-import { ScrollView, YStack, XStack, Text, View } from 'tamagui'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import { router } from 'expo-router'
-import * as Haptics from 'expo-haptics'
-import Animated, {
-  FadeInDown,
-  FadeInUp,
-  useSharedValue,
-  useAnimatedStyle,
-  withSpring,
-} from 'react-native-reanimated'
 import {
-  Check,
-  ChevronRight,
-  Zap,
-  Car,
-  ShoppingBag,
-  Utensils,
-  MapPin,
-  Calendar,
-  Coffee,
-  Mountain,
-  Plane,
-  Home as HomeIcon,
-  PartyPopper,
-  Filter,
+    ArrowDownLeft,
+    ArrowUpRight,
+    Coffee,
+    Filter,
+    Mountain,
+    ShoppingBag,
+    Utensils
 } from '@tamagui/lucide-icons'
-import { useThemeMode } from '@/providers/theme-mode'
-
-// ============================================
-// TYPES & DATA
-// ============================================
-type ActivityStatus = 'active' | 'pending' | 'settled'
-type IconType = 'food' | 'trip' | 'coffee' | 'ride' | 'groceries' | 'travel' | 'rent' | 'party'
-
-// Split icons mapping
-const SPLIT_ICONS = {
-  food: Utensils,
-  trip: Mountain,
-  coffee: Coffee,
-  ride: Car,
-  groceries: ShoppingBag,
-  travel: Plane,
-  rent: HomeIcon,
-  party: PartyPopper,
-}
-
-interface Activity {
-  id: number
-  title: string
-  venue: string
-  amount: string
-  yourShare: string
-  members: number
-  date: string
-  status: ActivityStatus
-  iconType: IconType
-  imageUrl?: string
-}
-
-const activities: Activity[] = [
-  {
-    id: 1,
-    title: 'Lunch Split',
-    venue: "Nando's — Table 6",
-    amount: '$142.50',
-    yourShare: '$47.50',
-    members: 3,
-    date: 'Today, 1:30 PM',
-    status: 'active',
-    iconType: 'food',
-  },
-  {
-    id: 2,
-    title: 'Uber Ride',
-    venue: 'Airport → CBD',
-    amount: '$24.00',
-    yourShare: '$8.00',
-    members: 3,
-    date: 'Yesterday',
-    status: 'settled',
-    iconType: 'ride',
-  },
-  {
-    id: 3,
-    title: 'BBQ Night',
-    venue: "Braai @ Rudo's",
-    amount: '$85.00',
-    yourShare: '$21.25',
-    members: 4,
-    date: 'Feb 5',
-    status: 'pending',
-    iconType: 'party',
-  },
-  {
-    id: 4,
-    title: 'Groceries',
-    venue: 'Pick n Pay',
-    amount: '$62.30',
-    yourShare: '$31.15',
-    members: 2,
-    date: 'Feb 3',
-    status: 'settled',
-    iconType: 'groceries',
-  },
-  {
-    id: 5,
-    title: 'Weekend Trip',
-    venue: 'Nyanga Mountains',
-    amount: '$250.00',
-    yourShare: '$125.00',
-    members: 2,
-    date: 'Jan 28',
-    status: 'settled',
-    iconType: 'trip',
-  },
-]
+import * as Haptics from 'expo-haptics'
+import { useState } from 'react'
+import { Pressable } from 'react-native'
+import Animated, {
+    FadeInDown,
+    FadeInUp,
+    useAnimatedStyle,
+    useSharedValue,
+    withSpring,
+} from 'react-native-reanimated'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { ScrollView, Text, View, XStack, YStack } from 'tamagui'
 
 // ============================================
 // ANIMATED COMPONENTS
 // ============================================
-const AnimatedXStack = Animated.createAnimatedComponent(XStack)
 const AnimatedYStack = Animated.createAnimatedComponent(YStack)
+const AnimatedXStack = Animated.createAnimatedComponent(XStack)
 
 // ============================================
-// STATS CARD — With accent tint
+// TYPES
+// ============================================
+type FilterType = 'all' | 'active' | 'pending' | 'completed'
+
+// ============================================
+// 間 — STATS CARD
 // ============================================
 const StatsCard = ({
   label,
   amount,
-  type,
+  trend,
   delay = 0,
 }: {
   label: string
   amount: string
-  type: 'owe' | 'owed'
+  trend: 'up' | 'down'
   delay?: number
-}) => {
-  const isOwe = type === 'owe'
-
-  return (
-    <Animated.View
-      entering={FadeInUp.delay(delay).springify()}
-      style={{ flex: 1 }}
-    >
-      <YStack
-        flex={1}
-        backgroundColor="$cardBg"
-        borderRadius={16}
-        padding={16}
-        borderWidth={1}
-        borderColor="$cardBorder"
-        gap={8}
-      >
-        <XStack alignItems="center" gap={6}>
-          <View
-            width={20}
-            height={20}
-            borderRadius={6}
-            backgroundColor={isOwe ? '$errorSoft' : '$successSoft'}
-            alignItems="center"
-            justifyContent="center"
-          >
-            <Text fontSize={10} color={isOwe ? '$error' : '$success'}>
-              {isOwe ? '↗' : '↙'}
-            </Text>
-          </View>
-          <Text fontSize={11} fontWeight="500" color="$colorMuted" letterSpacing={0.3}>
-            {label}
-          </Text>
-        </XStack>
-        <Text
-          fontFamily="$mono"
-          fontSize={24}
-          fontWeight="600"
-          letterSpacing={-1}
-          color={isOwe ? '$error' : '$success'}
-        >
-          {amount}
-        </Text>
-      </YStack>
-    </Animated.View>
-  )
-}
+}) => (
+  <AnimatedYStack
+    entering={FadeInDown.delay(delay).springify()}
+    flex={1}
+    backgroundColor="$cardBg"
+    borderRadius={18}
+    padding={18}
+    gap={10}
+    shadowColor="#000"
+    shadowOffset={{ width: 0, height: 2 }}
+    shadowOpacity={0.06}
+    shadowRadius={12}
+    elevation={3}
+  >
+    <XStack alignItems="center" gap={6}>
+      {trend === 'up' ? (
+        <ArrowUpRight size={12} color="$error" strokeWidth={2} />
+      ) : (
+        <ArrowDownLeft size={12} color="$success" strokeWidth={2} />
+      )}
+      <Text fontSize={11} fontWeight="500" color="$colorMuted" letterSpacing={0.3}>
+        {label}
+      </Text>
+    </XStack>
+    <Text fontFamily="$mono" fontSize={26} fontWeight="600" color="$color" letterSpacing={-1}>
+      {amount}
+    </Text>
+  </AnimatedYStack>
+)
 
 // ============================================
-// ACTIVITY CARD — With consistent icons
+// 間 — ACTIVITY CARD
 // ============================================
 const ActivityCard = ({
-  activity,
+  title,
+  subtitle,
+  amount,
+  date,
+  status,
+  icon: Icon,
   delay = 0,
 }: {
-  activity: Activity
+  title: string
+  subtitle: string
+  amount: string
+  date: string
+  status: 'active' | 'pending' | 'completed'
+  icon: typeof Utensils
   delay?: number
 }) => {
-  const isActive = activity.status === 'active'
-  const isSettled = activity.status === 'settled'
-  const Icon = SPLIT_ICONS[activity.iconType]
-
   const scale = useSharedValue(1)
 
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ scale: scale.value }],
   }))
 
-  const handlePressIn = () => {
-    scale.value = withSpring(0.98, { damping: 15 })
+  const statusConfig = {
+    active: { text: 'Active', bg: '$accentGhost', color: '$accent' },
+    pending: { text: 'Pending', bg: '$backgroundHover', color: '$colorMuted' },
+    completed: { text: 'Done', bg: '$successSoft', color: '$success' },
   }
 
-  const handlePressOut = () => {
-    scale.value = withSpring(1, { damping: 15 })
-  }
+  const s = statusConfig[status]
 
   return (
     <AnimatedXStack
@@ -218,54 +114,38 @@ const ActivityCard = ({
       style={animatedStyle}
     >
       <Pressable
-        onPressIn={handlePressIn}
-        onPressOut={handlePressOut}
-        onPress={() => {
-          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
-          router.push(`/session/${activity.id}`)
+        onPressIn={() => {
+          scale.value = withSpring(0.98, { damping: 15 })
         }}
+        onPressOut={() => {
+          scale.value = withSpring(1, { damping: 15 })
+        }}
+        onPress={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
         style={{ flex: 1 }}
       >
         <XStack
-          backgroundColor={isActive ? '$featureBg' : '$cardBg'}
+          backgroundColor="$cardBg"
           borderRadius={18}
           padding={16}
           alignItems="center"
-          gap={12}
-          borderWidth={1}
-          borderColor={isActive ? '$featureBorder' : '$cardBorder'}
-          overflow="hidden"
+          gap={14}
+          shadowColor="#000"
+          shadowOffset={{ width: 0, height: 2 }}
+          shadowOpacity={0.06}
+          shadowRadius={12}
+          elevation={3}
         >
-          {/* Subtle glow for active */}
-          {isActive && (
-            <View
-              position="absolute"
-              top={-40}
-              right={-40}
-              width={100}
-              height={100}
-              borderRadius={50}
-              backgroundColor="$featureGlow"
-            />
-          )}
-
-          {/* Icon */}
           <View
-            width={46}
-            height={46}
-            borderRadius={14}
-            backgroundColor={isActive ? '$accentSoft' : '$backgroundHover'}
+            width={44}
+            height={44}
+            borderRadius={12}
+            backgroundColor="$backgroundHover"
             alignItems="center"
             justifyContent="center"
           >
-            <Icon
-              size={22}
-              color={isActive ? '$accent' : '$colorMuted'}
-              strokeWidth={1.8}
-            />
+            <Icon size={20} color="$colorMuted" strokeWidth={1.6} />
           </View>
 
-          {/* Content */}
           <YStack flex={1} gap={4}>
             <XStack alignItems="center" gap={8}>
               <Text
@@ -276,72 +156,32 @@ const ActivityCard = ({
                 numberOfLines={1}
                 flex={1}
               >
-                {activity.title}
+                {title}
               </Text>
-              {isActive && (
-                <View
-                  backgroundColor="$accent"
-                  paddingHorizontal={6}
-                  paddingVertical={2}
-                  borderRadius={4}
-                >
-                  <XStack alignItems="center" gap={3}>
-                    <Zap size={8} color="$accentText" strokeWidth={3} />
-                    <Text fontSize={9} fontWeight="700" color="$accentText" letterSpacing={0.4}>
-                      LIVE
-                    </Text>
-                  </XStack>
-                </View>
-              )}
-              {isSettled && (
-                <View
-                  backgroundColor="$successSoft"
-                  paddingHorizontal={6}
-                  paddingVertical={2}
-                  borderRadius={4}
-                >
-                  <XStack alignItems="center" gap={3}>
-                    <Check size={9} color="$success" strokeWidth={3} />
-                    <Text fontSize={9} fontWeight="700" color="$success" letterSpacing={0.4}>
-                      DONE
-                    </Text>
-                  </XStack>
-                </View>
-              )}
+              <View
+                backgroundColor={s.bg}
+                paddingHorizontal={6}
+                paddingVertical={2}
+                borderRadius={4}
+              >
+                <Text fontSize={9} fontWeight="600" color={s.color} letterSpacing={0.4}>
+                  {s.text}
+                </Text>
+              </View>
             </XStack>
             <Text fontSize={12} color="$colorMuted" numberOfLines={1}>
-              {activity.venue}
+              {subtitle}
             </Text>
-            <XStack alignItems="center" gap={4}>
-              <Calendar size={10} color="$colorFaint" strokeWidth={2} />
-              <Text fontSize={11} color="$colorFaint">
-                {activity.date}
-              </Text>
-              <Text fontSize={11} color="$colorGhost">·</Text>
-              <Text fontSize={11} color="$colorFaint">
-                {activity.members} {activity.members === 1 ? 'person' : 'people'}
-              </Text>
-            </XStack>
           </YStack>
 
-          {/* Amount */}
           <YStack alignItems="flex-end" gap={2}>
-            <Text
-              fontFamily="$mono"
-              fontSize={17}
-              fontWeight="600"
-              color="$color"
-              letterSpacing={-0.3}
-            >
-              {activity.yourShare}
+            <Text fontFamily="$mono" fontSize={16} fontWeight="600" color="$color" letterSpacing={-0.3}>
+              {amount}
             </Text>
             <Text fontSize={10} color="$colorFaint">
-              of {activity.amount}
+              {date}
             </Text>
           </YStack>
-
-          {/* Chevron */}
-          <ChevronRight size={16} color="$colorGhost" strokeWidth={2} />
         </XStack>
       </Pressable>
     </AnimatedXStack>
@@ -349,50 +189,46 @@ const ActivityCard = ({
 }
 
 // ============================================
-// SECTION HEADER — With accent dot
+// 間 — FILTER CHIP
 // ============================================
-const SectionHeader = ({ title, count }: { title: string; count?: number }) => (
-  <XStack alignItems="center" gap={8} marginBottom={10}>
+const FilterChip = ({
+  label,
+  isActive,
+  onPress,
+}: {
+  label: string
+  isActive: boolean
+  onPress: () => void
+}) => (
+  <Pressable
+    onPress={() => {
+      Haptics.selectionAsync()
+      onPress()
+    }}
+  >
     <View
-      width={4}
-      height={4}
-      borderRadius={2}
-      backgroundColor="$accent"
-    />
-    <Text
-      fontSize={12}
-      fontWeight="600"
-      letterSpacing={0.5}
-      textTransform="uppercase"
-      color="$colorFaint"
+      paddingHorizontal={14}
+      paddingVertical={8}
+      borderRadius={9999}
+      backgroundColor={isActive ? '$accent' : '$backgroundHover'}
     >
-      {title}
-    </Text>
-    {count !== undefined && (
-      <View
-        backgroundColor="$accentSoft"
-        paddingHorizontal={6}
-        paddingVertical={2}
-        borderRadius={4}
+      <Text
+        fontSize={13}
+        fontWeight={isActive ? '600' : '500'}
+        color={isActive ? '$accentText' : '$colorMuted'}
       >
-        <Text fontSize={10} fontWeight="600" color="$accent">
-          {count}
-        </Text>
-      </View>
-    )}
-  </XStack>
+        {label}
+      </Text>
+    </View>
+  </Pressable>
 )
 
 // ============================================
-// MAIN SCREEN
+// 間 — MAIN SCREEN
 // ============================================
 export default function ActivityScreen() {
   const insets = useSafeAreaInsets()
-  const { isDark } = useThemeMode()
-
-  const activeItems = activities.filter((a) => a.status === 'active')
-  const pendingItems = activities.filter((a) => a.status === 'pending')
-  const settledItems = activities.filter((a) => a.status === 'settled')
+  const [activeFilter, setActiveFilter] = useState<FilterType>('all')
 
   return (
     <ScrollView
@@ -403,30 +239,25 @@ export default function ActivityScreen() {
       <YStack paddingTop={insets.top + 12} paddingHorizontal={20} gap={24}>
         {/* Header */}
         <AnimatedXStack
-          entering={FadeInDown.delay(50).springify()}
+          entering={FadeInUp.delay(50).springify()}
           justifyContent="space-between"
-          alignItems="flex-end"
+          alignItems="center"
         >
-          <YStack gap={4}>
+          <YStack gap={2}>
             <Text fontSize={13} color="$colorMuted" fontWeight="500">
-              Your activity
+              Overview
             </Text>
-            <Text fontSize={28} fontWeight="600" letterSpacing={-1} color="$color">
-              All Splits
+            <Text fontSize={26} fontWeight="600" letterSpacing={-0.8} color="$color">
+              Activity
             </Text>
           </YStack>
 
-          {/* Filter button */}
-          <Pressable
-            onPress={() => Haptics.selectionAsync()}
-          >
+          <Pressable onPress={() => Haptics.selectionAsync()}>
             <View
               width={40}
               height={40}
-              borderRadius={12}
-              backgroundColor="$cardBg"
-              borderWidth={1}
-              borderColor="$cardBorder"
+              borderRadius={9999}
+              backgroundColor="$backgroundHover"
               alignItems="center"
               justifyContent="center"
             >
@@ -435,55 +266,109 @@ export default function ActivityScreen() {
           </Pressable>
         </AnimatedXStack>
 
-        {/* Stats */}
+        {/* Stats Row */}
         <XStack gap={12}>
-          <StatsCard label="You Owe" amount="$68.75" type="owe" delay={100} />
-          <StatsCard label="Owed to You" amount="$95.00" type="owed" delay={150} />
+          <StatsCard label="You Owe" amount="$68.75" trend="up" delay={100} />
+          <StatsCard label="Owed to You" amount="$95.00" trend="down" delay={150} />
         </XStack>
 
-        {/* Active */}
-        {activeItems.length > 0 && (
-          <YStack>
-            <SectionHeader title="Active Now" count={activeItems.length} />
-            <YStack gap={10}>
-              {activeItems.map((activity, i) => (
-                <ActivityCard key={activity.id} activity={activity} delay={200 + i * 50} />
-              ))}
-            </YStack>
-          </YStack>
-        )}
+        {/* Filter Chips */}
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{ gap: 8 }}
+        >
+          {([
+            { key: 'all', label: 'All' },
+            { key: 'active', label: 'Active' },
+            { key: 'pending', label: 'Pending' },
+            { key: 'completed', label: 'Completed' },
+          ] as const).map(({ key, label }) => (
+            <FilterChip
+              key={key}
+              label={label}
+              isActive={activeFilter === key}
+              onPress={() => setActiveFilter(key)}
+            />
+          ))}
+        </ScrollView>
 
-        {/* Pending */}
-        {pendingItems.length > 0 && (
-          <YStack>
-            <SectionHeader title="Pending" count={pendingItems.length} />
-            <YStack gap={10}>
-              {pendingItems.map((activity, i) => (
-                <ActivityCard
-                  key={activity.id}
-                  activity={activity}
-                  delay={300 + i * 50}
-                />
-              ))}
-            </YStack>
-          </YStack>
-        )}
+        {/* Activity List */}
+        <YStack gap={10}>
+          {/* Section: Active */}
+          <Text
+            fontSize={11}
+            fontWeight="500"
+            letterSpacing={0.8}
+            textTransform="uppercase"
+            color="$colorFaint"
+            marginBottom={4}
+          >
+            Active Now
+          </Text>
+          <ActivityCard
+            title="Lunch Split"
+            subtitle="Nando's · 3 people"
+            amount="$47.50"
+            date="Today"
+            status="active"
+            icon={Utensils}
+            delay={200}
+          />
 
-        {/* Settled */}
-        {settledItems.length > 0 && (
-          <YStack>
-            <SectionHeader title="Completed" count={settledItems.length} />
-            <YStack gap={10}>
-              {settledItems.map((activity, i) => (
-                <ActivityCard
-                  key={activity.id}
-                  activity={activity}
-                  delay={400 + i * 50}
-                />
-              ))}
-            </YStack>
-          </YStack>
-        )}
+          {/* Section: Pending */}
+          <Text
+            fontSize={11}
+            fontWeight="500"
+            letterSpacing={0.8}
+            textTransform="uppercase"
+            color="$colorFaint"
+            marginTop={12}
+            marginBottom={4}
+          >
+            Pending
+          </Text>
+          <ActivityCard
+            title="Coffee Run"
+            subtitle="Vida e Caffè · 2 people"
+            amount="$7.50"
+            date="Yesterday"
+            status="pending"
+            icon={Coffee}
+            delay={250}
+          />
+          <ActivityCard
+            title="Groceries"
+            subtitle="Pick n Pay · 2 people"
+            amount="$31.15"
+            date="Oct 12"
+            status="pending"
+            icon={ShoppingBag}
+            delay={300}
+          />
+
+          {/* Section: Completed */}
+          <Text
+            fontSize={11}
+            fontWeight="500"
+            letterSpacing={0.8}
+            textTransform="uppercase"
+            color="$colorFaint"
+            marginTop={12}
+            marginBottom={4}
+          >
+            Completed
+          </Text>
+          <ActivityCard
+            title="Weekend Trip"
+            subtitle="Nyanga · 5 people"
+            amount="$125.00"
+            date="Oct 8"
+            status="completed"
+            icon={Mountain}
+            delay={350}
+          />
+        </YStack>
       </YStack>
     </ScrollView>
   )

@@ -1,40 +1,38 @@
-import { useEffect } from 'react'
-import { Pressable, Image } from 'react-native'
-import { ScrollView, YStack, XStack, Text, View } from 'tamagui'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import { router } from 'expo-router'
-import * as Haptics from 'expo-haptics'
-import Animated, {
-  FadeInDown,
-  FadeInRight,
-  useSharedValue,
-  useAnimatedStyle,
-  withSpring,
-  withRepeat,
-  withSequence,
-  withTiming,
-  Easing,
-} from 'react-native-reanimated'
-import {
-  ArrowUpRight,
-  ArrowDownLeft,
-  Bell,
-  RefreshCw,
-  ChevronRight,
-  Zap,
-  TrendingUp,
-  Clock,
-  Utensils,
-  Mountain,
-  Coffee,
-  Car,
-  ShoppingBag,
-  Plane,
-  Home as HomeIcon,
-  PartyPopper,
-} from '@tamagui/lucide-icons'
-import { useThemeMode } from '@/providers/theme-mode'
 import { useExchangeRate } from '@/hooks/use-exchange-rate'
+import {
+    ArrowDownLeft,
+    ArrowUpRight,
+    Bell,
+    Car,
+    ChevronRight,
+    Clock,
+    Coffee,
+    Home as HomeIcon,
+    Mountain,
+    PartyPopper,
+    Plane,
+    RefreshCw,
+    ShoppingBag,
+    TrendingUp,
+    Utensils,
+} from '@tamagui/lucide-icons'
+import * as Haptics from 'expo-haptics'
+import { router } from 'expo-router'
+import { useEffect } from 'react'
+import { Image, Pressable } from 'react-native'
+import Animated, {
+    Easing,
+    FadeInDown,
+    FadeInRight,
+    useAnimatedStyle,
+    useSharedValue,
+    withRepeat,
+    withSequence,
+    withSpring,
+    withTiming,
+} from 'react-native-reanimated'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { ScrollView, Text, View, XStack, YStack } from 'tamagui'
 
 // Unsplash avatar URLs
 const AVATARS = {
@@ -66,10 +64,9 @@ const AnimatedXStack = Animated.createAnimatedComponent(XStack)
 const AnimatedYStack = Animated.createAnimatedComponent(YStack)
 
 // ============================================
-// BALANCE CARD — With accent glow
+// 間 — BALANCE CARD
 // ============================================
 const BalanceCard = () => {
-  const { isDark } = useThemeMode()
   const scale = useSharedValue(1)
 
   const animatedStyle = useAnimatedStyle(() => ({
@@ -83,48 +80,30 @@ const BalanceCard = () => {
 
   return (
     <Pressable onPress={handlePress}>
-      <AnimatedYStack style={animatedStyle} position="relative">
-        {/* Accent glow behind card */}
-        <View
-          position="absolute"
-          top={-20}
-          right={-20}
-          width={150}
-          height={150}
-          borderRadius={75}
-          backgroundColor="$accentGhost"
-          opacity={0.6}
-        />
-        
+      <AnimatedYStack style={animatedStyle}>
         <YStack
           backgroundColor="$cardBg"
-          borderRadius={24}
+          borderRadius={20}
           padding={24}
-          borderWidth={1}
-          borderColor="$cardBorder"
           gap={20}
-          overflow="hidden"
+          shadowColor="#000"
+          shadowOffset={{ width: 0, height: 2 }}
+          shadowOpacity={0.06}
+          shadowRadius={12}
+          elevation={3}
         >
           {/* Balance Header */}
           <XStack justifyContent="space-between" alignItems="flex-start">
             <YStack gap={6}>
-              <XStack alignItems="center" gap={6}>
-                <View
-                  width={6}
-                  height={6}
-                  borderRadius={3}
-                  backgroundColor="$accent"
-                />
-                <Text
-                  fontSize={12}
-                  fontWeight="500"
-                  letterSpacing={0.6}
-                  textTransform="uppercase"
-                  color="$colorMuted"
-                >
-                  Your Balance
-                </Text>
-              </XStack>
+              <Text
+                fontSize={12}
+                fontWeight="500"
+                letterSpacing={0.8}
+                textTransform="uppercase"
+                color="$colorMuted"
+              >
+                Your Balance
+              </Text>
               <Text
                 fontFamily="$mono"
                 fontSize={42}
@@ -141,8 +120,6 @@ const BalanceCard = () => {
               paddingHorizontal={10}
               paddingVertical={6}
               borderRadius={8}
-              borderWidth={1}
-              borderColor="$featureBorder"
             >
               <Text fontSize={11} fontWeight="600" color="$accent" letterSpacing={0.5}>
                 USD
@@ -155,23 +132,12 @@ const BalanceCard = () => {
             <YStack
               flex={1}
               backgroundColor="$backgroundSoft"
-              borderRadius={16}
+              borderRadius={14}
               padding={14}
-              borderWidth={1}
-              borderColor="$borderColorSoft"
               gap={6}
             >
               <XStack alignItems="center" gap={6}>
-                <View
-                  width={20}
-                  height={20}
-                  borderRadius={6}
-                  backgroundColor="$errorSoft"
-                  alignItems="center"
-                  justifyContent="center"
-                >
-                  <ArrowUpRight size={11} color="$error" strokeWidth={2.5} />
-                </View>
+                <ArrowUpRight size={12} color="$error" strokeWidth={2} />
                 <Text fontSize={11} fontWeight="500" color="$colorMuted" letterSpacing={0.3}>
                   You Owe
                 </Text>
@@ -184,23 +150,12 @@ const BalanceCard = () => {
             <YStack
               flex={1}
               backgroundColor="$backgroundSoft"
-              borderRadius={16}
+              borderRadius={14}
               padding={14}
-              borderWidth={1}
-              borderColor="$borderColorSoft"
               gap={6}
             >
               <XStack alignItems="center" gap={6}>
-                <View
-                  width={20}
-                  height={20}
-                  borderRadius={6}
-                  backgroundColor="$successSoft"
-                  alignItems="center"
-                  justifyContent="center"
-                >
-                  <ArrowDownLeft size={11} color="$success" strokeWidth={2.5} />
-                </View>
+                <ArrowDownLeft size={12} color="$success" strokeWidth={2} />
                 <Text fontSize={11} fontWeight="500" color="$colorMuted" letterSpacing={0.3}>
                   Owed to You
                 </Text>
@@ -217,7 +172,7 @@ const BalanceCard = () => {
 }
 
 // ============================================
-// EXCHANGE RATE CARD — With accent highlight
+// 間 — EXCHANGE RATE CARD
 // ============================================
 const ExchangeRateCard = () => {
   const { rate, isLoading, lastUpdated, refresh, error } = useExchangeRate()
@@ -270,20 +225,14 @@ const ExchangeRateCard = () => {
       padding={16}
       alignItems="center"
       justifyContent="space-between"
-      borderWidth={1}
-      borderColor="$cardBorder"
+      shadowColor="#000"
+      shadowOffset={{ width: 0, height: 2 }}
+      shadowOpacity={0.06}
+      shadowRadius={12}
+      elevation={3}
     >
       <XStack alignItems="center" gap={12}>
-        <View
-          width={40}
-          height={40}
-          borderRadius={12}
-          backgroundColor="$accentSoft"
-          alignItems="center"
-          justifyContent="center"
-        >
-          <TrendingUp size={18} color="$accent" strokeWidth={1.8} />
-        </View>
+        <TrendingUp size={18} color="$accent" strokeWidth={1.8} />
         <YStack gap={2}>
           <XStack alignItems="center" gap={6}>
             <Text fontSize={11} fontWeight="500" color="$colorMuted" letterSpacing={0.3}>
@@ -312,10 +261,8 @@ const ExchangeRateCard = () => {
           <View
             width={36}
             height={36}
-            borderRadius={10}
+            borderRadius={9999}
             backgroundColor="$backgroundHover"
-            borderWidth={1}
-            borderColor="$borderColorSoft"
             alignItems="center"
             justifyContent="center"
           >
@@ -328,7 +275,7 @@ const ExchangeRateCard = () => {
 }
 
 // ============================================
-// SECTION HEADER — With accent dot
+// 間 — SECTION HEADER
 // ============================================
 const SectionHeader = ({
   title,
@@ -340,23 +287,15 @@ const SectionHeader = ({
   onAction?: () => void
 }) => (
   <XStack justifyContent="space-between" alignItems="center" marginBottom={12}>
-    <XStack alignItems="center" gap={8}>
-      <View
-        width={4}
-        height={4}
-        borderRadius={2}
-        backgroundColor="$accent"
-      />
-      <Text
-        fontSize={13}
-        fontWeight="600"
-        letterSpacing={0.5}
-        textTransform="uppercase"
-        color="$colorFaint"
-      >
-        {title}
-      </Text>
-    </XStack>
+    <Text
+      fontSize={11}
+      fontWeight="500"
+      letterSpacing={0.8}
+      textTransform="uppercase"
+      color="$colorFaint"
+    >
+      {title}
+    </Text>
     {action && (
       <Pressable onPress={onAction}>
         <XStack alignItems="center" gap={4}>
@@ -371,7 +310,7 @@ const SectionHeader = ({
 )
 
 // ============================================
-// ACTIVE SPLIT CARD — With icon support
+// 間 — ACTIVE SPLIT CARD
 // ============================================
 const ActiveSplitCard = ({
   title,
@@ -380,7 +319,6 @@ const ActiveSplitCard = ({
   members,
   isLive = false,
   iconType = 'food',
-  imageUrl,
   delay = 0,
 }: {
   title: string
@@ -389,7 +327,6 @@ const ActiveSplitCard = ({
   members: number
   isLive?: boolean
   iconType?: keyof typeof SPLIT_ICONS
-  imageUrl?: string
   delay?: number
 }) => {
   const scale = useSharedValue(1)
@@ -399,22 +336,18 @@ const ActiveSplitCard = ({
     transform: [{ scale: scale.value }],
   }))
 
-  const handlePressIn = () => {
-    scale.value = withSpring(0.98, { damping: 15 })
-  }
-
-  const handlePressOut = () => {
-    scale.value = withSpring(1, { damping: 15 })
-  }
-
   return (
     <AnimatedXStack
       entering={FadeInDown.delay(delay).springify()}
       style={animatedStyle}
     >
       <Pressable
-        onPressIn={handlePressIn}
-        onPressOut={handlePressOut}
+        onPressIn={() => {
+          scale.value = withSpring(0.98, { damping: 15 })
+        }}
+        onPressOut={() => {
+          scale.value = withSpring(1, { damping: 15 })
+        }}
         onPress={() => {
           Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
           router.push(`/session/${title.replace(/\s+/g, '-').toLowerCase()}`)
@@ -423,50 +356,30 @@ const ActiveSplitCard = ({
       >
         <XStack
           backgroundColor={isLive ? '$featureBg' : '$cardBg'}
-          borderRadius={20}
+          borderRadius={18}
           padding={16}
           alignItems="center"
           gap={14}
-          borderWidth={1}
-          borderColor={isLive ? '$featureBorder' : '$cardBorder'}
-          overflow="hidden"
+          shadowColor="#000"
+          shadowOffset={{ width: 0, height: 2 }}
+          shadowOpacity={0.06}
+          shadowRadius={12}
+          elevation={3}
         >
-          {/* Glow effect for live */}
-          {isLive && (
-            <View
-              position="absolute"
-              top={-50}
-              right={-50}
-              width={120}
-              height={120}
-              borderRadius={60}
-              backgroundColor="$featureGlow"
-            />
-          )}
-
-          {/* Icon/Image */}
+          {/* Icon */}
           <View
-            width={48}
-            height={48}
-            borderRadius={14}
-            backgroundColor={isLive ? '$accentSoft' : '$backgroundHover'}
+            width={44}
+            height={44}
+            borderRadius={12}
+            backgroundColor="$backgroundHover"
             alignItems="center"
             justifyContent="center"
-            overflow="hidden"
           >
-            {imageUrl ? (
-              <Image
-                source={{ uri: imageUrl }}
-                style={{ width: 48, height: 48 }}
-                resizeMode="cover"
-              />
-            ) : (
-              <Icon
-                size={22}
-                color={isLive ? '$accent' : '$colorMuted'}
-                strokeWidth={1.8}
-              />
-            )}
+            <Icon
+              size={20}
+              color={isLive ? '$accent' : '$colorMuted'}
+              strokeWidth={1.6}
+            />
           </View>
 
           {/* Content */}
@@ -483,17 +396,14 @@ const ActiveSplitCard = ({
               </Text>
               {isLive && (
                 <View
-                  backgroundColor="$accent"
+                  backgroundColor="$accentGhost"
                   paddingHorizontal={6}
                   paddingVertical={2}
                   borderRadius={4}
                 >
-                  <XStack alignItems="center" gap={3}>
-                    <Zap size={8} color="$accentText" strokeWidth={3} />
-                    <Text fontSize={9} fontWeight="700" color="$accentText" letterSpacing={0.4}>
-                      LIVE
-                    </Text>
-                  </XStack>
+                  <Text fontSize={9} fontWeight="600" color="$accent" letterSpacing={0.4}>
+                    LIVE
+                  </Text>
                 </View>
               )}
             </XStack>
@@ -518,7 +428,7 @@ const ActiveSplitCard = ({
 }
 
 // ============================================
-// FRIEND AVATAR — With accent border for balance
+// 間 — FRIEND AVATAR
 // ============================================
 const FriendAvatar = ({
   name,
@@ -555,17 +465,17 @@ const FriendAvatar = ({
       >
         <YStack alignItems="center" gap={8} width={72}>
           <View
-            width={56}
-            height={56}
-            borderRadius={18}
-            borderWidth={2}
-            borderColor={isOwed ? '$success' : '$accent'}
+            width={52}
+            height={52}
+            borderRadius={16}
+            borderWidth={1.5}
+            borderColor="$borderColor"
             overflow="hidden"
             backgroundColor="$cardBg"
           >
             <Image
               source={{ uri: imageUrl }}
-              style={{ width: 52, height: 52 }}
+              style={{ width: 49, height: 49 }}
               resizeMode="cover"
             />
           </View>
@@ -588,11 +498,10 @@ const FriendAvatar = ({
 }
 
 // ============================================
-// MAIN SCREEN
+// 間 — MAIN SCREEN
 // ============================================
 export default function HomeScreen() {
   const insets = useSafeAreaInsets()
-  const { isDark } = useThemeMode()
 
   return (
     <ScrollView
@@ -615,17 +524,14 @@ export default function HomeScreen() {
             <Text fontSize={13} color="$colorMuted" fontWeight="500">
               Good evening
             </Text>
-            <XStack alignItems="center" gap={6}>
-              <Text
-                fontSize={26}
-                fontWeight="600"
-                letterSpacing={-0.8}
-                color="$color"
-              >
-                Tino
-              </Text>
-              <Text fontSize={20}>👋</Text>
-            </XStack>
+            <Text
+              fontSize={26}
+              fontWeight="600"
+              letterSpacing={-0.8}
+              color="$color"
+            >
+              Tino
+            </Text>
           </YStack>
 
           {/* Profile + Notifications */}
@@ -634,26 +540,22 @@ export default function HomeScreen() {
               <View
                 width={40}
                 height={40}
-                borderRadius={12}
-                backgroundColor="$cardBg"
+                borderRadius={9999}
+                backgroundColor="$backgroundHover"
                 alignItems="center"
                 justifyContent="center"
-                borderWidth={1}
-                borderColor="$cardBorder"
                 position="relative"
               >
                 <Bell size={18} color="$colorMuted" strokeWidth={1.8} />
-                {/* Notification dot with accent */}
+                {/* Notification dot */}
                 <View
                   position="absolute"
-                  top={8}
-                  right={8}
-                  width={8}
-                  height={8}
-                  borderRadius={4}
+                  top={9}
+                  right={9}
+                  width={6}
+                  height={6}
+                  borderRadius={3}
                   backgroundColor="$accent"
-                  borderWidth={2}
-                  borderColor="$background"
                 />
               </View>
             </Pressable>
@@ -669,12 +571,12 @@ export default function HomeScreen() {
                 height={44}
                 borderRadius={14}
                 overflow="hidden"
-                borderWidth={2}
-                borderColor="$accentSoft"
+                borderWidth={1.5}
+                borderColor="$borderColor"
               >
                 <Image
                   source={{ uri: AVATARS.user }}
-                  style={{ width: 40, height: 40 }}
+                  style={{ width: 41, height: 41 }}
                   resizeMode="cover"
                 />
               </View>

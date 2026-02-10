@@ -1,31 +1,28 @@
-import { useState } from 'react'
-import { Pressable, Image } from 'react-native'
-import { ScrollView, YStack, XStack, Text, View } from 'tamagui'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import { router } from 'expo-router'
-import * as Haptics from 'expo-haptics'
-import Animated, {
-  FadeInDown,
-  FadeInUp,
-  useSharedValue,
-  useAnimatedStyle,
-  withSpring,
-  withSequence,
-  interpolateColor,
-  useDerivedValue,
-} from 'react-native-reanimated'
-import {
-  ArrowLeft,
-  ArrowRight,
-  Check,
-  Minus,
-  Plus,
-  Zap,
-  Users,
-  Receipt,
-  Percent,
-} from '@tamagui/lucide-icons'
 import { useThemeMode } from '@/providers/theme-mode'
+import {
+    ArrowLeft,
+    Check,
+    Minus,
+    Percent,
+    Plus,
+    Receipt,
+    Users,
+    Zap,
+} from '@tamagui/lucide-icons'
+import * as Haptics from 'expo-haptics'
+import { router } from 'expo-router'
+import { useState } from 'react'
+import { Image, Pressable } from 'react-native'
+import Animated, {
+    FadeInDown,
+    FadeInUp,
+    useAnimatedStyle,
+    useSharedValue,
+    withSequence,
+    withSpring,
+} from 'react-native-reanimated'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { ScrollView, Text, View, XStack, YStack } from 'tamagui'
 
 // ============================================
 // MOCK DATA
@@ -43,10 +40,9 @@ const billData = {
 // ANIMATED COMPONENTS
 // ============================================
 const AnimatedYStack = Animated.createAnimatedComponent(YStack)
-const AnimatedXStack = Animated.createAnimatedComponent(XStack)
 
 // ============================================
-// TIP OPTION
+// 間 — TIP OPTION
 // ============================================
 const TipOption = ({
   value,
@@ -77,8 +73,6 @@ const TipOption = ({
           paddingVertical={10}
           borderRadius={10}
           backgroundColor={isSelected ? '$accent' : '$backgroundHover'}
-          borderWidth={1}
-          borderColor={isSelected ? '$accent' : '$borderColorSoft'}
         >
           <Text
             fontSize={14}
@@ -94,7 +88,7 @@ const TipOption = ({
 }
 
 // ============================================
-// SPLIT COUNTER
+// 間 — SPLIT COUNTER
 // ============================================
 const SplitCounter = ({
   count,
@@ -129,8 +123,6 @@ const SplitCounter = ({
           height={44}
           borderRadius={12}
           backgroundColor="$backgroundHover"
-          borderWidth={1}
-          borderColor="$borderColorSoft"
           alignItems="center"
           justifyContent="center"
         >
@@ -166,8 +158,6 @@ const SplitCounter = ({
           height={44}
           borderRadius={12}
           backgroundColor="$backgroundHover"
-          borderWidth={1}
-          borderColor="$borderColorSoft"
           alignItems="center"
           justifyContent="center"
         >
@@ -179,7 +169,7 @@ const SplitCounter = ({
 }
 
 // ============================================
-// INFO ROW
+// 間 — INFO ROW
 // ============================================
 const InfoRow = ({
   label,
@@ -207,7 +197,7 @@ const InfoRow = ({
 )
 
 // ============================================
-// MAIN SCREEN
+// 間 — MAIN SCREEN
 // ============================================
 export default function FinalizeScreen() {
   const insets = useSafeAreaInsets()
@@ -244,19 +234,15 @@ export default function FinalizeScreen() {
             style={{ width: '100%', height: 140, opacity: isDark ? 0.6 : 0.85 }}
             resizeMode="cover"
           />
+          {/* Solid fade for native compat */}
           <View
             position="absolute"
             bottom={0}
             left={0}
             right={0}
-            height={60}
+            height={50}
             backgroundColor="$background"
-            style={{
-              // @ts-ignore
-              background: isDark
-                ? 'linear-gradient(transparent, #0A0A0B)'
-                : 'linear-gradient(transparent, #F4F4F5)',
-            }}
+            opacity={0.85}
           />
           <Pressable
             onPress={() => {
@@ -268,12 +254,10 @@ export default function FinalizeScreen() {
             <View
               width={40}
               height={40}
-              borderRadius={12}
-              backgroundColor="$overlay"
+              borderRadius={9999}
+              backgroundColor="rgba(0,0,0,0.4)"
               alignItems="center"
               justifyContent="center"
-              // @ts-ignore
-              style={{ backdropFilter: 'blur(10px)' }}
             >
               <ArrowLeft size={18} color="white" strokeWidth={2} />
             </View>
@@ -297,20 +281,14 @@ export default function FinalizeScreen() {
             backgroundColor="$cardBg"
             borderRadius={20}
             padding={20}
-            borderWidth={1}
-            borderColor="$cardBorder"
+            shadowColor="#000"
+            shadowOffset={{ width: 0, height: 2 }}
+            shadowOpacity={0.06}
+            shadowRadius={12}
+            elevation={3}
           >
             <XStack alignItems="center" gap={10} marginBottom={12}>
-              <View
-                width={32}
-                height={32}
-                borderRadius={10}
-                backgroundColor="$backgroundHover"
-                alignItems="center"
-                justifyContent="center"
-              >
-                <Receipt size={16} color="$colorMuted" strokeWidth={1.8} />
-              </View>
+              <Receipt size={16} color="$colorMuted" strokeWidth={1.8} />
               <Text fontSize={17} fontWeight="600" letterSpacing={-0.3} color="$color">
                 Bill Summary
               </Text>
@@ -338,21 +316,15 @@ export default function FinalizeScreen() {
             backgroundColor="$cardBg"
             borderRadius={20}
             padding={20}
-            borderWidth={1}
-            borderColor="$cardBorder"
             gap={20}
+            shadowColor="#000"
+            shadowOffset={{ width: 0, height: 2 }}
+            shadowOpacity={0.06}
+            shadowRadius={12}
+            elevation={3}
           >
             <XStack alignItems="center" gap={10}>
-              <View
-                width={32}
-                height={32}
-                borderRadius={10}
-                backgroundColor="$backgroundHover"
-                alignItems="center"
-                justifyContent="center"
-              >
-                <Users size={16} color="$colorMuted" strokeWidth={1.8} />
-              </View>
+              <Users size={16} color="$colorMuted" strokeWidth={1.8} />
               <Text fontSize={17} fontWeight="600" letterSpacing={-0.3} color="$color">
                 Split Options
               </Text>
@@ -360,7 +332,7 @@ export default function FinalizeScreen() {
 
             {/* Split Counter */}
             <YStack alignItems="center" gap={12}>
-              <Text fontSize={11} fontWeight="600" textTransform="uppercase" letterSpacing={0.5} color="$colorMuted">
+              <Text fontSize={11} fontWeight="500" textTransform="uppercase" letterSpacing={0.8} color="$colorMuted">
                 Split Between
               </Text>
               <SplitCounter
@@ -374,7 +346,7 @@ export default function FinalizeScreen() {
             <YStack gap={12}>
               <XStack alignItems="center" gap={6}>
                 <Percent size={12} color="$colorMuted" strokeWidth={2} />
-                <Text fontSize={11} fontWeight="600" textTransform="uppercase" letterSpacing={0.5} color="$colorMuted">
+                <Text fontSize={11} fontWeight="500" textTransform="uppercase" letterSpacing={0.8} color="$colorMuted">
                   Tip
                 </Text>
               </XStack>
@@ -397,33 +369,15 @@ export default function FinalizeScreen() {
             backgroundColor="$featureBg"
             borderRadius={20}
             padding={24}
-            borderWidth={1}
-            borderColor="$featureBorder"
             gap={16}
-            overflow="hidden"
+            shadowColor="#000"
+            shadowOffset={{ width: 0, height: 2 }}
+            shadowOpacity={0.06}
+            shadowRadius={12}
+            elevation={3}
           >
-            {/* Subtle glow */}
-            <View
-              position="absolute"
-              top={-60}
-              right={-60}
-              width={140}
-              height={140}
-              borderRadius={70}
-              backgroundColor="$featureGlow"
-            />
-
             <XStack alignItems="center" gap={10}>
-              <View
-                width={32}
-                height={32}
-                borderRadius={10}
-                backgroundColor="$accentSoft"
-                alignItems="center"
-                justifyContent="center"
-              >
-                <Zap size={16} color="$accent" strokeWidth={2} />
-              </View>
+              <Zap size={16} color="$accent" strokeWidth={2} />
               <Text fontSize={17} fontWeight="600" letterSpacing={-0.3} color="$color">
                 Your Share
               </Text>
@@ -463,28 +417,15 @@ export default function FinalizeScreen() {
             <Pressable onPress={handleConfirm}>
               <XStack
                 backgroundColor="$accent"
-                borderRadius={16}
+                borderRadius={9999}
                 paddingVertical={18}
                 paddingHorizontal={20}
                 alignItems="center"
-                justifyContent="space-between"
+                justifyContent="center"
               >
-                <XStack alignItems="center" gap={10}>
-                  <Zap size={18} color="$accentText" strokeWidth={2.5} />
-                  <Text fontSize={16} fontWeight="600" color="$accentText" letterSpacing={-0.2}>
-                    Settle Up
-                  </Text>
-                </XStack>
-                <View
-                  width={28}
-                  height={28}
-                  borderRadius={8}
-                  backgroundColor="rgba(255,255,255,0.2)"
-                  alignItems="center"
-                  justifyContent="center"
-                >
-                  <ArrowRight size={14} color="$accentText" strokeWidth={2.5} />
-                </View>
+                <Text fontSize={16} fontWeight="600" color="$accentText" letterSpacing={-0.2}>
+                  Settle Up
+                </Text>
               </XStack>
             </Pressable>
           </Animated.View>

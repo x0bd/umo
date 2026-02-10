@@ -1,5 +1,5 @@
-import { Stack } from 'expo-router'
 import { useThemeMode } from '@/providers/theme-mode'
+import { Stack } from 'expo-router'
 
 export default function SessionLayout() {
   const { isDark } = useThemeMode()
@@ -9,7 +9,7 @@ export default function SessionLayout() {
       screenOptions={{
         headerShown: false,
         contentStyle: {
-          backgroundColor: isDark ? '#050505' : '#F5F5F7',
+          backgroundColor: isDark ? '#0A0A0B' : '#F4F4F5',
         },
         animation: 'slide_from_right',
       }}

@@ -1,29 +1,23 @@
-import { router } from 'expo-router'
-import { Pressable, Image } from 'react-native'
-import { YStack, XStack, Text, View } from 'tamagui'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import * as Haptics from 'expo-haptics'
-import Animated, {
-  FadeIn,
-  FadeInDown,
-  FadeInUp,
-  SlideInDown,
-  useSharedValue,
-  useAnimatedStyle,
-  withSpring,
-  withSequence,
-} from 'react-native-reanimated'
 import {
-  X,
-  ArrowRight,
-  Receipt,
-  Camera,
-  Users,
-  Zap,
-  Scan,
-  Link,
+    ArrowRight,
+    Link,
+    Receipt,
+    Scan,
+    X
 } from '@tamagui/lucide-icons'
-import { useThemeMode } from '@/providers/theme-mode'
+import * as Haptics from 'expo-haptics'
+import { router } from 'expo-router'
+import { Image, Pressable } from 'react-native'
+import Animated, {
+    FadeIn,
+    FadeInDown,
+    FadeInUp,
+    useAnimatedStyle,
+    useSharedValue,
+    withSpring,
+} from 'react-native-reanimated'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { Text, View, XStack, YStack } from 'tamagui'
 
 // ============================================
 // ANIMATED COMPONENTS
@@ -32,7 +26,7 @@ const AnimatedYStack = Animated.createAnimatedComponent(YStack)
 const AnimatedXStack = Animated.createAnimatedComponent(XStack)
 
 // ============================================
-// ACTION ROW
+// 間 — ACTION ROW
 // ============================================
 const ActionRow = ({
   icon: Icon,
@@ -55,22 +49,18 @@ const ActionRow = ({
     transform: [{ scale: scale.value }],
   }))
 
-  const handlePressIn = () => {
-    scale.value = withSpring(0.98, { damping: 15 })
-  }
-
-  const handlePressOut = () => {
-    scale.value = withSpring(1, { damping: 15 })
-  }
-
   return (
     <AnimatedXStack
       entering={FadeInDown.delay(delay).springify()}
       style={animatedStyle}
     >
       <Pressable
-        onPressIn={handlePressIn}
-        onPressOut={handlePressOut}
+        onPressIn={() => {
+          scale.value = withSpring(0.98, { damping: 15 })
+        }}
+        onPressOut={() => {
+          scale.value = withSpring(1, { damping: 15 })
+        }}
         onPress={() => {
           Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
           onPress()
@@ -83,22 +73,12 @@ const ActionRow = ({
           padding={16}
           alignItems="center"
           gap={14}
-          borderWidth={1}
-          borderColor={isPrimary ? '$featureBorder' : '$cardBorder'}
-          overflow="hidden"
+          shadowColor="#000"
+          shadowOffset={{ width: 0, height: 2 }}
+          shadowOpacity={0.06}
+          shadowRadius={12}
+          elevation={3}
         >
-          {isPrimary && (
-            <View
-              position="absolute"
-              top={-40}
-              right={-40}
-              width={100}
-              height={100}
-              borderRadius={50}
-              backgroundColor="$featureGlow"
-            />
-          )}
-
           <View
             width={44}
             height={44}
@@ -136,7 +116,7 @@ const ActionRow = ({
 }
 
 // ============================================
-// QUICK RESUME CARD
+// 間 — QUICK RESUME CARD
 // ============================================
 const QuickResumeCard = () => {
   const scale = useSharedValue(1)
@@ -144,14 +124,6 @@ const QuickResumeCard = () => {
   const animatedStyle = useAnimatedStyle(() => ({
     transform: [{ scale: scale.value }],
   }))
-
-  const handlePressIn = () => {
-    scale.value = withSpring(0.98, { damping: 15 })
-  }
-
-  const handlePressOut = () => {
-    scale.value = withSpring(1, { damping: 15 })
-  }
 
   const handlePress = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
@@ -165,8 +137,12 @@ const QuickResumeCard = () => {
       style={animatedStyle}
     >
       <Pressable
-        onPressIn={handlePressIn}
-        onPressOut={handlePressOut}
+        onPressIn={() => {
+          scale.value = withSpring(0.98, { damping: 15 })
+        }}
+        onPressOut={() => {
+          scale.value = withSpring(1, { damping: 15 })
+        }}
         onPress={handlePress}
         style={{ flex: 1 }}
       >
@@ -176,10 +152,12 @@ const QuickResumeCard = () => {
           padding={14}
           alignItems="center"
           gap={12}
-          borderWidth={1}
-          borderColor="$cardBorder"
+          shadowColor="#000"
+          shadowOffset={{ width: 0, height: 2 }}
+          shadowOpacity={0.06}
+          shadowRadius={12}
+          elevation={3}
         >
-          {/* Image */}
           <View
             width={52}
             height={52}
@@ -207,17 +185,14 @@ const QuickResumeCard = () => {
                 Lunch Split
               </Text>
               <View
-                backgroundColor="$accent"
+                backgroundColor="$accentGhost"
                 paddingHorizontal={6}
                 paddingVertical={2}
                 borderRadius={4}
               >
-                <XStack alignItems="center" gap={3}>
-                  <Zap size={8} color="$accentText" strokeWidth={3} />
-                  <Text fontSize={9} fontWeight="700" color="$accentText" letterSpacing={0.4}>
-                    LIVE
-                  </Text>
-                </XStack>
+                <Text fontSize={9} fontWeight="600" color="$accent" letterSpacing={0.4}>
+                  LIVE
+                </Text>
               </View>
             </XStack>
             <Text fontSize={12} color="$colorMuted">
@@ -233,11 +208,10 @@ const QuickResumeCard = () => {
 }
 
 // ============================================
-// MAIN MODAL
+// 間 — MAIN MODAL
 // ============================================
 export default function ModalScreen() {
   const insets = useSafeAreaInsets()
-  const { isDark } = useThemeMode()
 
   const close = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
@@ -262,7 +236,7 @@ export default function ModalScreen() {
           <YStack gap={2}>
             <Text
               fontSize={11}
-              fontWeight="600"
+              fontWeight="500"
               letterSpacing={0.8}
               textTransform="uppercase"
               color="$colorMuted"
@@ -283,10 +257,8 @@ export default function ModalScreen() {
             <View
               width={40}
               height={40}
-              borderRadius={12}
-              backgroundColor="$cardBg"
-              borderWidth={1}
-              borderColor="$cardBorder"
+              borderRadius={9999}
+              backgroundColor="$backgroundHover"
               alignItems="center"
               justifyContent="center"
             >
@@ -337,8 +309,8 @@ export default function ModalScreen() {
           <Animated.View entering={FadeInDown.delay(260).springify()}>
             <Text
               fontSize={11}
-              fontWeight="600"
-              letterSpacing={0.6}
+              fontWeight="500"
+              letterSpacing={0.8}
               textTransform="uppercase"
               color="$colorFaint"
             >
@@ -351,18 +323,16 @@ export default function ModalScreen() {
         {/* Spacer */}
         <View flex={1} />
 
-        {/* Close Button */}
+        {/* Cancel Button */}
         <Animated.View entering={FadeInDown.delay(350).springify()}>
           <Pressable onPress={close}>
             <XStack
               backgroundColor="$backgroundHover"
-              borderRadius={16}
+              borderRadius={9999}
               paddingVertical={16}
               paddingHorizontal={18}
               alignItems="center"
               justifyContent="center"
-              borderWidth={1}
-              borderColor="$borderColorSoft"
             >
               <Text fontSize={15} fontWeight="600" letterSpacing={-0.2} color="$color">
                 Cancel

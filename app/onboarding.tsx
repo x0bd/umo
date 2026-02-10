@@ -1,29 +1,27 @@
-import { useState, useRef, useCallback } from 'react'
-import { Dimensions, Pressable, Image, ScrollView as RNScrollView } from 'react-native'
-import { YStack, XStack, Text, View } from 'tamagui'
-import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import { router } from 'expo-router'
-import * as Haptics from 'expo-haptics'
-import Animated, {
-  FadeInDown,
-  useSharedValue,
-  useAnimatedStyle,
-  withSpring,
-  withSequence,
-  interpolate,
-  Extrapolation,
-  runOnJS,
-} from 'react-native-reanimated'
-import {
-  ArrowRight,
-  Wallet,
-  Users,
-  Zap,
-  RefreshCw,
-  Sun,
-  Moon,
-} from '@tamagui/lucide-icons'
 import { useThemeMode } from '@/providers/theme-mode'
+import {
+    Moon,
+    RefreshCw,
+    Sun,
+    Users,
+    Wallet,
+    Zap
+} from '@tamagui/lucide-icons'
+import * as Haptics from 'expo-haptics'
+import { router } from 'expo-router'
+import { useCallback, useRef, useState } from 'react'
+import { Dimensions, Image, Pressable, ScrollView as RNScrollView } from 'react-native'
+import Animated, {
+    Extrapolation,
+    FadeInDown,
+    interpolate,
+    useAnimatedStyle,
+    useSharedValue,
+    withSequence,
+    withSpring,
+} from 'react-native-reanimated'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { Text, View, XStack, YStack } from 'tamagui'
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window')
 
@@ -54,7 +52,7 @@ const slides = [
     tag: 'Friends',
     title: 'Track IOUs.\nNo friction.',
     subtitle: 'Built-in ledger.',
-    description: 'Running tabs, small change, amounts that can\'t be settled immediately.',
+    description: "Running tabs, small change, amounts that can't be settled immediately.",
     icon: Users,
     image: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=400&h=300&fit=crop',
   },
@@ -76,7 +74,7 @@ const AnimatedView = Animated.createAnimatedComponent(View)
 const AnimatedXStack = Animated.createAnimatedComponent(XStack)
 
 // ============================================
-// SLIDE COMPONENT
+// 間 — SLIDE COMPONENT
 // ============================================
 const OnboardingSlide = ({
   slide,
@@ -128,8 +126,6 @@ const OnboardingSlide = ({
             paddingHorizontal={12}
             paddingVertical={6}
             borderRadius={8}
-            borderWidth={1}
-            borderColor="$borderColorSoft"
           >
             <Text
               fontSize={11}
@@ -163,18 +159,14 @@ const OnboardingSlide = ({
               position="absolute"
               bottom={16}
               left={16}
-              width={48}
-              height={48}
-              borderRadius={14}
+              width={44}
+              height={44}
+              borderRadius={12}
               backgroundColor="$accent"
               alignItems="center"
               justifyContent="center"
-              shadowColor="$accent"
-              shadowOffset={{ width: 0, height: 4 }}
-              shadowOpacity={0.3}
-              shadowRadius={12}
             >
-              <Icon size={22} color="$accentText" strokeWidth={2} />
+              <Icon size={20} color="$accentText" strokeWidth={2} />
             </View>
           </View>
 
@@ -215,7 +207,7 @@ const OnboardingSlide = ({
 }
 
 // ============================================
-// SINGLE DOT COMPONENT (proper hooks usage)
+// 間 — DOT (refined)
 // ============================================
 const Dot = ({
   index,
@@ -234,7 +226,7 @@ const Dot = ({
     const width = interpolate(
       scrollX.value,
       inputRange,
-      [8, 24, 8],
+      [6, 20, 6],
       Extrapolation.CLAMP
     )
 
@@ -250,8 +242,8 @@ const Dot = ({
 
   return (
     <AnimatedView
-      height={8}
-      borderRadius={4}
+      height={4}
+      borderRadius={2}
       backgroundColor="$accent"
       style={animatedStyle}
     />
@@ -259,7 +251,7 @@ const Dot = ({
 }
 
 // ============================================
-// DOT INDICATOR
+// 間 — DOT INDICATOR
 // ============================================
 const DotIndicator = ({
   count,
@@ -269,7 +261,7 @@ const DotIndicator = ({
   scrollX: Animated.SharedValue<number>
 }) => {
   return (
-    <XStack gap={8} justifyContent="center" paddingVertical={20}>
+    <XStack gap={6} justifyContent="center" paddingVertical={20}>
       {Array.from({ length: count }).map((_, i) => (
         <Dot key={i} index={i} scrollX={scrollX} />
       ))}
@@ -278,7 +270,7 @@ const DotIndicator = ({
 }
 
 // ============================================
-// MAIN SCREEN
+// 間 — MAIN SCREEN
 // ============================================
 export default function OnboardingScreen() {
   const insets = useSafeAreaInsets()
@@ -293,13 +285,11 @@ export default function OnboardingScreen() {
     transform: [{ scale: buttonScale.value }],
   }))
 
-  // Handle scroll end to update current index
   const handleScrollEnd = useCallback((event: any) => {
     const index = Math.round(event.nativeEvent.contentOffset.x / SCREEN_WIDTH)
     setCurrentIndex(index)
   }, [])
 
-  // Handle scroll to update shared value
   const handleScroll = useCallback((event: any) => {
     scrollX.value = event.nativeEvent.contentOffset.x
   }, [])
@@ -345,14 +335,14 @@ export default function OnboardingScreen() {
         {/* Logo */}
         <XStack alignItems="center" gap={8}>
           <View
-            width={32}
-            height={32}
-            borderRadius={10}
+            width={28}
+            height={28}
+            borderRadius={9999}
             backgroundColor="$accent"
             alignItems="center"
             justifyContent="center"
           >
-            <Text fontSize={16} fontWeight="800" color="$accentText">
+            <Text fontSize={14} fontWeight="800" color="$accentText">
               U
             </Text>
           </View>
@@ -367,10 +357,8 @@ export default function OnboardingScreen() {
             <View
               width={40}
               height={40}
-              borderRadius={12}
-              backgroundColor="$cardBg"
-              borderWidth={1}
-              borderColor="$cardBorder"
+              borderRadius={9999}
+              backgroundColor="$backgroundHover"
               alignItems="center"
               justifyContent="center"
             >
@@ -383,16 +371,9 @@ export default function OnboardingScreen() {
           </Pressable>
 
           <Pressable onPress={handleSkip}>
-            <View
-              paddingHorizontal={14}
-              paddingVertical={10}
-              borderRadius={10}
-              backgroundColor="$backgroundHover"
-            >
-              <Text fontSize={14} fontWeight="500" color="$colorMuted">
-                Skip
-              </Text>
-            </View>
+            <Text fontSize={14} fontWeight="500" color="$accent">
+              Skip
+            </Text>
           </Pressable>
         </XStack>
       </AnimatedXStack>
@@ -423,11 +404,11 @@ export default function OnboardingScreen() {
           <Pressable onPress={handleNext}>
             <XStack
               backgroundColor="$accent"
-              borderRadius={16}
+              borderRadius={9999}
               paddingVertical={18}
               paddingHorizontal={20}
               alignItems="center"
-              justifyContent="space-between"
+              justifyContent="center"
             >
               <Text
                 fontSize={16}
@@ -437,20 +418,6 @@ export default function OnboardingScreen() {
               >
                 {isLastSlide ? 'Get Started' : 'Continue'}
               </Text>
-              <View
-                width={28}
-                height={28}
-                borderRadius={8}
-                backgroundColor="rgba(255,255,255,0.2)"
-                alignItems="center"
-                justifyContent="center"
-              >
-                {isLastSlide ? (
-                  <Zap size={14} color="$accentText" strokeWidth={2.5} />
-                ) : (
-                  <ArrowRight size={14} color="$accentText" strokeWidth={2.5} />
-                )}
-              </View>
             </XStack>
           </Pressable>
         </Animated.View>

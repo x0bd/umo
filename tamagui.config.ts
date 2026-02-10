@@ -1,6 +1,6 @@
-import { createFont, createTamagui, createTokens } from 'tamagui'
-import { shorthands } from '@tamagui/shorthands'
 import { animations } from '@tamagui/config/v3'
+import { shorthands } from '@tamagui/shorthands'
+import { createFont, createTamagui, createTokens } from 'tamagui'
 
 // ============================================
 // UMO DESIGN SYSTEM
@@ -294,7 +294,7 @@ const tamaguiConfig = createTamagui({
       cardBorder: tokens.color.neutral800,
       cardBorderHover: tokens.color.neutral700,
 
-      dockBg: 'rgba(17,17,19,0.85)',
+      dockBg: 'rgba(17,17,19,0.92)',
       dockBorder: tokens.color.neutral800,
 
       inputBg: tokens.color.neutral850,
@@ -307,8 +307,8 @@ const tamaguiConfig = createTamagui({
 
       // Feature card (accent tinted)
       featureBg: tokens.color.neutral900,
-      featureBorder: 'rgba(232, 93, 117, 0.15)',
-      featureGlow: 'rgba(232, 93, 117, 0.08)',
+      featureBorder: 'rgba(232, 93, 117, 0.08)',
+      featureGlow: 'rgba(232, 93, 117, 0.04)',
     },
     light: {
       // Surfaces
@@ -376,8 +376,8 @@ const tamaguiConfig = createTamagui({
 
       // Feature card (accent tinted)
       featureBg: tokens.color.white,
-      featureBorder: 'rgba(232, 93, 117, 0.12)',
-      featureGlow: 'rgba(232, 93, 117, 0.04)',
+      featureBorder: 'rgba(232, 93, 117, 0.06)',
+      featureGlow: 'rgba(232, 93, 117, 0.02)',
     },
   },
 })

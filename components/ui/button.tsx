@@ -1,51 +1,40 @@
-import { Button as TamaguiButton, ButtonProps, styled } from 'tamagui'
 import * as Haptics from 'expo-haptics'
+import { ButtonProps, styled, Button as TamaguiButton } from 'tamagui'
 
-// Styled button with variants
+// ============================================
+// 間 — BUTTON
+// Pill-shaped. Restrained variants.
+// ============================================
 const StyledButton = styled(TamaguiButton, {
   name: 'Button',
-  backgroundColor: '$primary',
+  backgroundColor: '$accent',
   color: 'white',
-  borderRadius: '$4',
+  borderRadius: 9999,
   fontWeight: '600',
   fontSize: 16,
+  borderWidth: 0,
+
   pressStyle: {
-    opacity: 0.9,
-    scale: 0.98,
+    opacity: 0.88,
   },
-  hoverStyle: {
-    backgroundColor: '$primaryHover',
-  },
-  
+
   variants: {
     variant: {
       primary: {
-        backgroundColor: '$primary',
+        backgroundColor: '$accent',
         color: 'white',
       },
       secondary: {
-        backgroundColor: '$surface',
-        color: '$textPrimary',
-        borderWidth: 1,
-        borderColor: '$borderColor',
-      },
-      outline: {
-        backgroundColor: 'transparent',
-        color: '$primary',
-        borderWidth: 2,
-        borderColor: '$primary',
+        backgroundColor: '$backgroundHover',
+        color: '$color',
       },
       ghost: {
         backgroundColor: 'transparent',
-        color: '$primary',
+        color: '$accent',
       },
-      success: {
-        backgroundColor: '$success',
-        color: 'white',
-      },
-      error: {
-        backgroundColor: '$error',
-        color: 'white',
+      destructive: {
+        backgroundColor: '$errorSoft',
+        color: '$error',
       },
     },
     size: {
@@ -62,7 +51,7 @@ const StyledButton = styled(TamaguiButton, {
       lg: {
         height: 56,
         paddingHorizontal: 32,
-        fontSize: 18,
+        fontSize: 17,
       },
     },
     fullWidth: {
@@ -71,7 +60,7 @@ const StyledButton = styled(TamaguiButton, {
       },
     },
   } as const,
-  
+
   defaultVariants: {
     variant: 'primary',
     size: 'md',
@@ -79,25 +68,25 @@ const StyledButton = styled(TamaguiButton, {
 })
 
 export interface UmoButtonProps extends ButtonProps {
-  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'success' | 'error'
+  variant?: 'primary' | 'secondary' | 'ghost' | 'destructive'
   size?: 'sm' | 'md' | 'lg'
   fullWidth?: boolean
   haptic?: boolean
 }
 
-export function Button({ 
-  onPress, 
-  haptic = true, 
+export function Button({
+  onPress,
+  haptic = true,
   disabled,
-  ...props 
+  ...props
 }: UmoButtonProps) {
   const handlePress = (e: any) => {
     if (disabled) return
-    
+
     if (haptic) {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
     }
-    
+
     onPress?.(e)
   }
 
@@ -105,9 +94,8 @@ export function Button({
     <StyledButton
       onPress={handlePress}
       disabled={disabled}
-      opacity={disabled ? 0.5 : 1}
+      opacity={disabled ? 0.4 : 1}
       {...props}
     />
   )
 }
-

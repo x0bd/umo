@@ -1,43 +1,43 @@
-import { YStack, styled, YStackProps } from 'tamagui'
+import { YStack, styled } from 'tamagui'
 
+// ============================================
+// 間 — CARD
+// Depth through shadow alone. No borders.
+// ============================================
 export const Card = styled(YStack, {
   name: 'Card',
-  backgroundColor: '$background',
-  borderRadius: '$4',
+  backgroundColor: '$cardBg',
+  borderRadius: 20,
   padding: '$4',
   shadowColor: '#000',
   shadowOffset: { width: 0, height: 2 },
-  shadowOpacity: 0.1,
-  shadowRadius: 8,
+  shadowOpacity: 0.06,
+  shadowRadius: 12,
   elevation: 3,
-  
+
   variants: {
     variant: {
-      default: {
-        backgroundColor: '$background',
-      },
+      default: {},
       elevated: {
-        shadowOpacity: 0.15,
-        shadowRadius: 12,
+        shadowOpacity: 0.1,
+        shadowRadius: 20,
         elevation: 6,
       },
-      outlined: {
-        borderWidth: 1,
-        borderColor: '$borderColor',
+      flat: {
         shadowOpacity: 0,
         elevation: 0,
+        backgroundColor: '$backgroundSoft',
       },
     },
     pressable: {
       true: {
         pressStyle: {
-          scale: 0.98,
-          opacity: 0.95,
+          opacity: 0.92,
         },
       },
     },
   } as const,
-  
+
   defaultVariants: {
     variant: 'default',
   },
@@ -58,6 +58,5 @@ export const CardFooter = styled(YStack, {
   marginTop: '$3',
   paddingTop: '$3',
   borderTopWidth: 1,
-  borderTopColor: '$borderColor',
+  borderTopColor: '$borderColorSoft',
 })
-
