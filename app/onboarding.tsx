@@ -1,11 +1,8 @@
-import { useThemeMode } from '@/providers/theme-mode'
 import {
-    Moon,
     RefreshCw,
-    Sun,
     Users,
     Wallet,
-    Zap
+    Zap,
 } from '@tamagui/lucide-icons'
 import * as Haptics from 'expo-haptics'
 import { router } from 'expo-router'
@@ -14,6 +11,7 @@ import { Dimensions, Image, Pressable, ScrollView as RNScrollView } from 'react-
 import Animated, {
     Extrapolation,
     FadeInDown,
+    FadeInUp,
     interpolate,
     useAnimatedStyle,
     useSharedValue,
@@ -37,6 +35,7 @@ const slides = [
     description: 'Handle multi-currency splits and settle up instantly via mobile money.',
     icon: Wallet,
     image: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=400&h=300&fit=crop',
+    accent: true,
   },
   {
     id: 2,
@@ -64,6 +63,7 @@ const slides = [
     description: 'Trigger EcoCash or OneMoney prompts directly. No more "I\'ll pay you later".',
     icon: Zap,
     image: 'https://images.unsplash.com/photo-1563986768494-4dee2763ff3f?w=400&h=300&fit=crop',
+    accent: true,
   },
 ]
 
@@ -72,6 +72,7 @@ const slides = [
 // ============================================
 const AnimatedView = Animated.createAnimatedComponent(View)
 const AnimatedXStack = Animated.createAnimatedComponent(XStack)
+const AnimatedYStack = Animated.createAnimatedComponent(YStack)
 
 // ============================================
 // 間 — SLIDE COMPONENT
@@ -85,7 +86,6 @@ const OnboardingSlide = ({
   index: number
   scrollX: Animated.SharedValue<number>
 }) => {
-  const { isDark } = useThemeMode()
   const Icon = slide.icon
 
   const animatedStyle = useAnimatedStyle(() => {
@@ -98,92 +98,113 @@ const OnboardingSlide = ({
     const opacity = interpolate(
       scrollX.value,
       inputRange,
-      [0.3, 1, 0.3],
+      [0, 1, 0],
       Extrapolation.CLAMP
     )
 
     const translateY = interpolate(
       scrollX.value,
       inputRange,
-      [30, 0, 30],
+      [40, 0, 40],
+      Extrapolation.CLAMP
+    )
+
+    const scale = interpolate(
+      scrollX.value,
+      inputRange,
+      [0.92, 1, 0.92],
       Extrapolation.CLAMP
     )
 
     return {
       opacity,
-      transform: [{ translateY }],
+      transform: [{ translateY }, { scale }],
     }
   })
 
   return (
     <View width={SCREEN_WIDTH} paddingHorizontal={24}>
       <Animated.View style={animatedStyle}>
-        <YStack gap={24} paddingTop={20}>
-          {/* Tag */}
-          <View
-            alignSelf="flex-start"
-            backgroundColor="$backgroundHover"
-            paddingHorizontal={12}
-            paddingVertical={6}
-            borderRadius={8}
-          >
-            <Text
-              fontSize={11}
-              fontWeight="600"
-              letterSpacing={0.6}
-              textTransform="uppercase"
-              color="$colorMuted"
-            >
-              {slide.tag}
-            </Text>
-          </View>
-
+        <YStack gap={28} paddingTop={16}>
           {/* Image Card */}
           <View
-            height={180}
-            borderRadius={20}
+            height={220}
+            borderRadius={24}
             overflow="hidden"
             backgroundColor="$cardBg"
+            shadowColor="#000"
+            shadowOffset={{ width: 0, height: 4 }}
+            shadowOpacity={0.08}
+            shadowRadius={16}
+            elevation={4}
           >
             <Image
               source={{ uri: slide.image }}
               style={{
                 width: '100%',
                 height: '100%',
-                opacity: isDark ? 0.8 : 1,
               }}
               resizeMode="cover"
             />
-            {/* Icon Overlay */}
+            {/* Dimmed overlay for text clarity */}
+            <View
+              position="absolute"
+              top={0}
+              left={0}
+              right={0}
+              bottom={0}
+              backgroundColor="rgba(0,0,0,0.15)"
+            />
+            {/* Tag */}
+            <View
+              position="absolute"
+              top={16}
+              left={16}
+              backgroundColor="rgba(255,255,255,0.15)"
+              paddingHorizontal={10}
+              paddingVertical={5}
+              borderRadius={6}
+            >
+              <Text
+                fontSize={10}
+                fontWeight="700"
+                letterSpacing={0.8}
+                textTransform="uppercase"
+                color="white"
+              >
+                {slide.tag}
+              </Text>
+            </View>
+            {/* Icon */}
             <View
               position="absolute"
               bottom={16}
-              left={16}
+              right={16}
               width={44}
               height={44}
               borderRadius={12}
-              backgroundColor="$accent"
+              backgroundColor={slide.accent ? '$accent' : 'rgba(255,255,255,0.2)'}
               alignItems="center"
               justifyContent="center"
             >
-              <Icon size={20} color="$accentText" strokeWidth={2} />
+              <Icon size={20} color="white" strokeWidth={2} />
             </View>
           </View>
 
-          {/* Title */}
-          <YStack gap={8}>
+          {/* Title Group */}
+          <YStack gap={10}>
             <Text
-              fontSize={38}
-              fontWeight="600"
-              letterSpacing={-1.5}
-              lineHeight={42}
+              fontSize={40}
+              fontWeight="700"
+              letterSpacing={-1.8}
+              lineHeight={44}
               color="$color"
             >
               {slide.title}
             </Text>
             <Text
               fontSize={18}
-              fontWeight="500"
+              fontWeight="600"
               letterSpacing={-0.3}
               color="$accent"
             >
@@ -193,10 +214,10 @@ const OnboardingSlide = ({
 
           {/* Description */}
           <Text
-            fontSize={15}
-            lineHeight={22}
+            fontSize={16}
+            lineHeight={24}
             color="$colorMuted"
-            maxWidth={320}
+            maxWidth={300}
           >
             {slide.description}
           </Text>
@@ -207,7 +228,7 @@ const OnboardingSlide = ({
 }
 
 // ============================================
-// 間 — DOT (refined)
+// 間 — DOT (refined, thinner)
 // ============================================
 const Dot = ({
   index,
@@ -226,14 +247,14 @@ const Dot = ({
     const width = interpolate(
       scrollX.value,
       inputRange,
-      [6, 20, 6],
+      [6, 24, 6],
       Extrapolation.CLAMP
     )
 
     const opacity = interpolate(
       scrollX.value,
       inputRange,
-      [0.3, 1, 0.3],
+      [0.25, 1, 0.25],
       Extrapolation.CLAMP
     )
 
@@ -259,22 +280,19 @@ const DotIndicator = ({
 }: {
   count: number
   scrollX: Animated.SharedValue<number>
-}) => {
-  return (
-    <XStack gap={6} justifyContent="center" paddingVertical={20}>
-      {Array.from({ length: count }).map((_, i) => (
-        <Dot key={i} index={i} scrollX={scrollX} />
-      ))}
-    </XStack>
-  )
-}
+}) => (
+  <XStack gap={6} justifyContent="center" paddingVertical={16}>
+    {Array.from({ length: count }).map((_, i) => (
+      <Dot key={i} index={i} scrollX={scrollX} />
+    ))}
+  </XStack>
+)
 
 // ============================================
 // 間 — MAIN SCREEN
 // ============================================
 export default function OnboardingScreen() {
   const insets = useSafeAreaInsets()
-  const { isDark, toggle } = useThemeMode()
   const [currentIndex, setCurrentIndex] = useState(0)
   const scrollRef = useRef<RNScrollView>(null)
   const scrollX = useSharedValue(0)
@@ -306,18 +324,13 @@ export default function OnboardingScreen() {
       setCurrentIndex(currentIndex + 1)
     } else {
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
-      router.replace('/(tabs)')
+      router.push('/create-account')
     }
   }
 
   const handleSkip = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
-    router.replace('/(tabs)')
-  }
-
-  const toggleTheme = () => {
-    Haptics.selectionAsync()
-    toggle()
+    router.push('/create-account')
   }
 
   const isLastSlide = currentIndex === slides.length - 1
@@ -328,7 +341,7 @@ export default function OnboardingScreen() {
       <AnimatedXStack
         entering={FadeInDown.delay(100).springify()}
         paddingTop={insets.top + 12}
-        paddingHorizontal={20}
+        paddingHorizontal={24}
         justifyContent="space-between"
         alignItems="center"
       >
@@ -351,31 +364,12 @@ export default function OnboardingScreen() {
           </Text>
         </XStack>
 
-        {/* Theme + Skip */}
-        <XStack gap={10} alignItems="center">
-          <Pressable onPress={toggleTheme}>
-            <View
-              width={40}
-              height={40}
-              borderRadius={9999}
-              backgroundColor="$backgroundHover"
-              alignItems="center"
-              justifyContent="center"
-            >
-              {isDark ? (
-                <Sun size={18} color="$colorMuted" strokeWidth={1.8} />
-              ) : (
-                <Moon size={18} color="$colorMuted" strokeWidth={1.8} />
-              )}
-            </View>
-          </Pressable>
-
-          <Pressable onPress={handleSkip}>
-            <Text fontSize={14} fontWeight="500" color="$accent">
-              Skip
-            </Text>
-          </Pressable>
-        </XStack>
+        {/* Skip */}
+        <Pressable onPress={handleSkip}>
+          <Text fontSize={14} fontWeight="500" color="$accent">
+            Skip
+          </Text>
+        </Pressable>
       </AnimatedXStack>
 
       {/* Slides */}
@@ -396,7 +390,12 @@ export default function OnboardingScreen() {
       </RNScrollView>
 
       {/* Bottom Section */}
-      <YStack paddingHorizontal={20} paddingBottom={insets.bottom + 16} gap={12}>
+      <AnimatedYStack
+        entering={FadeInUp.delay(200).springify()}
+        paddingHorizontal={24}
+        paddingBottom={insets.bottom + 16}
+        gap={12}
+      >
         <DotIndicator count={slides.length} scrollX={scrollX} />
 
         {/* CTA Button */}
@@ -406,7 +405,6 @@ export default function OnboardingScreen() {
               backgroundColor="$accent"
               borderRadius={9999}
               paddingVertical={18}
-              paddingHorizontal={20}
               alignItems="center"
               justifyContent="center"
             >
@@ -416,24 +414,24 @@ export default function OnboardingScreen() {
                 letterSpacing={-0.2}
                 color="$accentText"
               >
-                {isLastSlide ? 'Get Started' : 'Continue'}
+                {isLastSlide ? 'Create Account' : 'Continue'}
               </Text>
             </XStack>
           </Pressable>
         </Animated.View>
 
-        {/* Terms */}
-        <Text textAlign="center" fontSize={11} color="$colorGhost" lineHeight={16}>
-          By continuing, you agree to our{' '}
-          <Text color="$colorMuted" fontWeight="500">
-            Terms
-          </Text>{' '}
-          and{' '}
-          <Text color="$colorMuted" fontWeight="500">
-            Privacy Policy
+        {/* Sign In link */}
+        <XStack justifyContent="center" gap={4} paddingTop={4}>
+          <Text fontSize={13} color="$colorFaint">
+            Already have an account?
           </Text>
-        </Text>
-      </YStack>
+          <Pressable onPress={() => Haptics.selectionAsync()}>
+            <Text fontSize={13} fontWeight="600" color="$accent">
+              Sign In
+            </Text>
+          </Pressable>
+        </XStack>
+      </AnimatedYStack>
     </YStack>
   )
 }

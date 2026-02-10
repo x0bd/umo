@@ -1,11 +1,11 @@
 import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native'
 import { Stack } from 'expo-router'
 import { StatusBar } from 'expo-status-bar'
-import { TamaguiProvider, Theme } from 'tamagui'
 import 'react-native-reanimated'
+import { TamaguiProvider, Theme } from 'tamagui'
 
-import config from '@/tamagui.config'
 import { ThemeModeProvider, useThemeMode } from '@/providers/theme-mode'
+import config from '@/tamagui.config'
 
 // ============================================
 // NAVIGATION THEMES
@@ -62,6 +62,12 @@ function RootLayoutInner() {
               name="onboarding"
               options={{
                 animation: 'fade',
+              }}
+            />
+            <Stack.Screen
+              name="create-account"
+              options={{
+                animation: 'slide_from_right',
               }}
             />
             <Stack.Screen name="(tabs)" />
