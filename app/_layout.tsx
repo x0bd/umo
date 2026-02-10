@@ -14,12 +14,12 @@ const UmoDarkTheme = {
   ...DarkTheme,
   colors: {
     ...DarkTheme.colors,
-    background: '#050505',
-    card: '#050505',
-    border: '#333333',
-    primary: '#FF1A55',
+    background: '#0A0A0B',
+    card: '#111113',
+    border: '#2A2A2E',
+    primary: '#E85D75',
     text: '#FFFFFF',
-    notification: '#FF1A55',
+    notification: '#E85D75',
   },
 }
 
@@ -27,12 +27,12 @@ const UmoLightTheme = {
   ...DefaultTheme,
   colors: {
     ...DefaultTheme.colors,
-    background: '#FAFAFA',
+    background: '#F4F4F5',
     card: '#FFFFFF',
-    border: '#E6E6E6',
-    primary: '#FF1A55',
-    text: '#111111',
-    notification: '#FF1A55',
+    border: '#D4D4D8',
+    primary: '#E85D75',
+    text: '#111113',
+    notification: '#E85D75',
   },
 }
 
@@ -53,7 +53,7 @@ function RootLayoutInner() {
             screenOptions={{
               headerShown: false,
               contentStyle: {
-                backgroundColor: isDark ? '#050505' : '#FAFAFA',
+                backgroundColor: isDark ? '#0A0A0B' : '#F4F4F5',
               },
               animation: 'slide_from_right',
             }}

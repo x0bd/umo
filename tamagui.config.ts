@@ -3,99 +3,101 @@ import { shorthands } from '@tamagui/shorthands'
 import { animations } from '@tamagui/config/v3'
 
 // ============================================
-// SPLTR-INSPIRED DESIGN SYSTEM
-// Dark + Hot Pink + Grey
+// UMO DESIGN SYSTEM
+// Swiss Minimalism × Material You
 // ============================================
 
+// Premium sans-serif with excellent legibility
 const bodyFont = createFont({
-  family: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif",
+  family: "system-ui, -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif",
   size: {
-    1: 10,
+    1: 11,
     2: 12,
-    3: 14,
-    4: 15,
-    5: 16,
-    6: 20,
-    7: 24,
-    8: 32,
-    9: 40,
-    10: 48,
-    11: 56,
-    12: 72,
+    3: 13,
+    4: 14,
+    5: 15,
+    6: 17,
+    7: 20,
+    8: 24,
+    9: 32,
+    10: 40,
+    11: 48,
+    12: 64,
     true: 15,
   },
   lineHeight: {
     1: 14,
     2: 16,
-    3: 18,
-    4: 20,
-    5: 22,
-    6: 26,
-    7: 30,
-    8: 36,
-    9: 44,
-    10: 52,
-    11: 58,
-    12: 76,
+    3: 17,
+    4: 18,
+    5: 20,
+    6: 22,
+    7: 26,
+    8: 30,
+    9: 38,
+    10: 46,
+    11: 54,
+    12: 70,
     true: 20,
   },
   weight: {
     1: '400',
     2: '400',
     3: '400',
-    4: '400',
+    4: '450',
     5: '500',
-    6: '600',
-    7: '700',
-    8: '800',
-    9: '900',
+    6: '550',
+    7: '600',
+    8: '700',
+    9: '800',
   },
   letterSpacing: {
-    1: 0.5,
-    2: 0.5,
-    3: 0,
+    1: 0.4,
+    2: 0.2,
+    3: 0.1,
     4: 0,
-    5: -0.3,
-    6: -0.5,
-    7: -0.8,
-    8: -1.5,
-    9: -2,
-    10: -2,
-    11: -3,
-    12: -4,
+    5: -0.2,
+    6: -0.4,
+    7: -0.6,
+    8: -0.8,
+    9: -1,
+    10: -1.2,
+    11: -1.5,
+    12: -2,
   },
 })
 
+// Refined monospace for numbers
 const monoFont = createFont({
-  family: "'SF Mono', SFMono-Regular, ui-monospace, Menlo, Monaco, 'Cascadia Mono', monospace",
+  family: "'SF Mono', 'JetBrains Mono', 'Fira Code', ui-monospace, Menlo, Monaco, monospace",
   size: {
-    1: 10,
+    1: 11,
     2: 12,
-    3: 14,
-    4: 15,
-    5: 16,
-    6: 20,
-    7: 24,
-    8: 32,
-    9: 40,
-    10: 48,
-    11: 56,
-    12: 72,
+    3: 13,
+    4: 14,
+    5: 15,
+    6: 17,
+    7: 20,
+    8: 24,
+    9: 32,
+    10: 40,
+    11: 48,
+    12: 64,
     true: 15,
   },
   lineHeight: {
     1: 14,
     2: 16,
-    3: 18,
-    4: 20,
-    5: 22,
-    6: 26,
-    7: 30,
-    8: 36,
-    9: 44,
-    10: 52,
-    11: 58,
-    12: 76,
+    3: 17,
+    4: 18,
+    5: 20,
+    6: 22,
+    7: 26,
+    8: 30,
+    9: 38,
+    10: 46,
+    11: 54,
+    12: 70,
     true: 20,
   },
   weight: {
@@ -105,79 +107,86 @@ const monoFont = createFont({
     7: '700',
   },
   letterSpacing: {
-    4: -0.5,
-    5: -0.5,
-    6: -1,
-    7: -1.5,
-    8: -2,
-    9: -2.5,
-    10: -3,
-    11: -3,
-    12: -4,
+    4: -0.3,
+    5: -0.4,
+    6: -0.6,
+    7: -0.8,
+    8: -1,
+    9: -1.2,
+    10: -1.5,
+    11: -1.8,
+    12: -2.2,
   },
 })
 
 const tokens = createTokens({
   color: {
-    // Core dark
-    bgDark: '#050505',
-    bgBlack: '#080808',
-    bgCard: '#0D0D0D',
-
-    // Hot pink accent
-    pink: '#FF1A55',
-    pinkDark: '#E6003D',
-    pinkText: '#450010',
-    pinkLine: '#CC003A',
-    pinkMuted: 'rgba(255, 26, 85, 0.15)',
-    pinkSoft: 'rgba(255, 26, 85, 0.08)',
-
-    // Grey card
-    grey: '#E6E6E6',
-    greyDark: '#D1D1D1',
-    greyMid: '#C4C4C4',
-    greyText: '#111111',
-    greySub: '#555555',
-    greyLine: '#BBBBBB',
-    greyFaint: 'rgba(0,0,0,0.08)',
-
-    // Text
+    // ========== NEUTRALS (Warm-tinted) ==========
+    // Dark Mode Surfaces
+    neutral950: '#0A0A0B',
+    neutral900: '#111113',
+    neutral850: '#161618',
+    neutral800: '#1C1C1F',
+    neutral750: '#232326',
+    neutral700: '#2A2A2E',
+    neutral600: '#3A3A40',
+    neutral500: '#52525B',
+    neutral400: '#71717A',
+    neutral300: '#A1A1AA',
+    neutral200: '#D4D4D8',
+    neutral100: '#E4E4E7',
+    neutral50: '#F4F4F5',
+    neutral25: '#FAFAFA',
     white: '#FFFFFF',
-    whiteDim: 'rgba(255,255,255,0.8)',
-    whiteMuted: 'rgba(255,255,255,0.5)',
-    whiteGhost: 'rgba(255,255,255,0.2)',
     black: '#000000',
-    blackDim: 'rgba(0,0,0,0.6)',
-    blackMuted: 'rgba(0,0,0,0.4)',
 
-    // Accents
-    line: '#333333',
-    lineFaint: 'rgba(255,255,255,0.1)',
-    pill: '#1A1A1A',
-    accent666: '#666666',
-    accent808: '#808080',
-    accent999: '#999999',
+    // ========== ACCENT (Coral/Rose — restrained) ==========
+    accent: '#E85D75',        // Primary accent - warm coral-rose
+    accentMuted: '#D4566B',   // Hover state
+    accentSoft: 'rgba(232, 93, 117, 0.12)',
+    accentGhost: 'rgba(232, 93, 117, 0.06)',
 
-    // Semantic
-    green: '#00E676',
-    greenDark: '#00C853',
-    red: '#FF3B5C',
-    purple: '#7C4DFF',
+    // ========== SEMANTIC ==========
+    success: '#22C55E',
+    successMuted: '#16A34A',
+    successSoft: 'rgba(34, 197, 94, 0.12)',
+
+    warning: '#F59E0B',
+    warningSoft: 'rgba(245, 158, 11, 0.12)',
+
+    error: '#EF4444',
+    errorSoft: 'rgba(239, 68, 68, 0.12)',
+
+    info: '#3B82F6',
+    infoSoft: 'rgba(59, 130, 246, 0.12)',
+
+    // ========== SPECIAL ==========
+    overlay: 'rgba(0,0,0,0.5)',
+    glass: 'rgba(255,255,255,0.05)',
+    glassDark: 'rgba(0,0,0,0.3)',
 
     transparent: 'transparent',
   },
   space: {
     0: 0,
+    0.5: 2,
     1: 4,
+    1.5: 6,
     2: 8,
+    2.5: 10,
     3: 12,
+    3.5: 14,
     4: 16,
     5: 20,
     6: 24,
-    7: 32,
-    8: 40,
-    9: 48,
-    10: 64,
+    7: 28,
+    8: 32,
+    9: 36,
+    10: 40,
+    12: 48,
+    14: 56,
+    16: 64,
+    20: 80,
     true: 16,
   },
   size: {
@@ -188,26 +197,29 @@ const tokens = createTokens({
     4: 16,
     5: 20,
     6: 24,
-    7: 32,
-    8: 40,
-    9: 48,
-    10: 64,
-    11: 80,
-    12: 96,
-    true: 48,
+    7: 28,
+    8: 32,
+    9: 36,
+    10: 40,
+    11: 44,
+    12: 48,
+    14: 56,
+    16: 64,
+    20: 80,
+    true: 44,
   },
   radius: {
     0: 0,
     1: 4,
-    2: 8,
-    3: 12,
-    4: 16,
-    5: 20,
-    6: 24,
-    7: 28,
-    8: 50,
-    true: 28,
+    2: 6,
+    3: 8,
+    4: 12,
+    5: 16,
+    6: 20,
+    7: 24,
+    8: 28,
     full: 9999,
+    true: 16,
   },
   zIndex: {
     0: 0,
@@ -230,114 +242,142 @@ const tamaguiConfig = createTamagui({
   animations,
   themes: {
     dark: {
-      background: tokens.color.bgDark,
-      backgroundStrong: tokens.color.bgBlack,
-      backgroundHover: '#0F0F10',
-      backgroundPress: tokens.color.line,
+      // Surfaces
+      background: tokens.color.neutral950,
+      backgroundStrong: tokens.color.black,
+      backgroundSoft: tokens.color.neutral900,
+      backgroundMuted: tokens.color.neutral850,
+      backgroundHover: tokens.color.neutral800,
+      backgroundPress: tokens.color.neutral750,
       backgroundTransparent: 'rgba(0,0,0,0)',
 
-      surface: tokens.color.bgCard,
-      surfaceHover: '#121214',
+      // Elevated surfaces
+      surface: tokens.color.neutral900,
+      surfaceHover: tokens.color.neutral850,
+      surfaceActive: tokens.color.neutral800,
+      surfaceRaised: tokens.color.neutral850,
 
+      // Text
       color: tokens.color.white,
-      colorSubtle: tokens.color.whiteDim,
-      colorMuted: tokens.color.whiteMuted,
-      colorFaint: tokens.color.whiteGhost,
+      colorStrong: tokens.color.white,
+      colorSoft: tokens.color.neutral200,
+      colorMuted: tokens.color.neutral400,
+      colorFaint: tokens.color.neutral500,
+      colorGhost: tokens.color.neutral600,
 
-      borderColor: tokens.color.line,
-      borderColorSubtle: 'rgba(255,255,255,0.08)',
+      // Borders
+      borderColor: tokens.color.neutral700,
+      borderColorSoft: tokens.color.neutral800,
+      borderColorStrong: tokens.color.neutral600,
+      borderColorAccent: tokens.color.accent,
 
-      // Pink accent
-      pink: tokens.color.pink,
-      pinkDark: tokens.color.pinkDark,
-      pinkText: tokens.color.pinkText,
-      pinkMuted: tokens.color.pinkMuted,
-
-      // Grey card
-      grey: tokens.color.grey,
-      greyText: tokens.color.greyText,
-      greySub: tokens.color.greySub,
+      // Accent
+      accent: tokens.color.accent,
+      accentMuted: tokens.color.accentMuted,
+      accentSoft: tokens.color.accentSoft,
+      accentGhost: tokens.color.accentGhost,
+      accentText: tokens.color.white,
 
       // Semantic
-      green: tokens.color.green,
-      red: tokens.color.red,
+      success: tokens.color.success,
+      successSoft: tokens.color.successSoft,
+      warning: tokens.color.warning,
+      warningSoft: tokens.color.warningSoft,
+      error: tokens.color.error,
+      errorSoft: tokens.color.errorSoft,
+      info: tokens.color.info,
+      infoSoft: tokens.color.infoSoft,
 
-      // Apple-grade materials (used by Dock + Cards)
-      dockBg: 'rgba(13,13,13,0.72)',
-      dockBorder: 'rgba(255,255,255,0.10)',
-      cardBg: '#0F0F10',
-      cardBorder: 'rgba(255,255,255,0.08)',
-      cardTint: 'rgba(255,26,85,0.10)',
-      cardTintStrong: 'rgba(255,26,85,0.16)',
+      // Components
+      cardBg: tokens.color.neutral900,
+      cardBgHover: tokens.color.neutral850,
+      cardBorder: tokens.color.neutral800,
+      cardBorderHover: tokens.color.neutral700,
 
-      // Semantic aliases for shared primitives
-      primary: tokens.color.pink,
-      primaryHover: tokens.color.pinkDark,
-      textPrimary: tokens.color.white,
-      textSecondary: tokens.color.whiteMuted,
-      textTertiary: tokens.color.whiteGhost,
-      success: tokens.color.green,
-      error: tokens.color.red,
+      dockBg: 'rgba(17,17,19,0.85)',
+      dockBorder: tokens.color.neutral800,
 
-      // Onboarding specific
-      cardBg: tokens.color.bgCard,
-      heroText: tokens.color.white,
-      subtleText: tokens.color.whiteMuted,
+      inputBg: tokens.color.neutral850,
+      inputBorder: tokens.color.neutral700,
+      inputBorderFocus: tokens.color.accent,
+
+      // Overlays
+      overlay: tokens.color.overlay,
+      glass: tokens.color.glass,
+
+      // Feature card (accent tinted)
+      featureBg: tokens.color.neutral900,
+      featureBorder: 'rgba(232, 93, 117, 0.15)',
+      featureGlow: 'rgba(232, 93, 117, 0.08)',
     },
     light: {
-      // Apple-like light canvas with pink accents
-      background: '#F5F5F7',
+      // Surfaces
+      background: tokens.color.neutral50,
       backgroundStrong: tokens.color.white,
-      backgroundHover: '#EFEFF2',
-      backgroundPress: tokens.color.greyDark,
+      backgroundSoft: tokens.color.neutral25,
+      backgroundMuted: tokens.color.neutral100,
+      backgroundHover: tokens.color.neutral100,
+      backgroundPress: tokens.color.neutral200,
       backgroundTransparent: 'rgba(255,255,255,0)',
 
+      // Elevated surfaces
       surface: tokens.color.white,
-      surfaceHover: '#F3F4F6',
+      surfaceHover: tokens.color.neutral50,
+      surfaceActive: tokens.color.neutral100,
+      surfaceRaised: tokens.color.white,
 
-      color: tokens.color.greyText,
-      colorSubtle: tokens.color.greySub,
-      colorMuted: tokens.color.accent666,
-      colorFaint: 'rgba(0,0,0,0.25)',
+      // Text
+      color: tokens.color.neutral900,
+      colorStrong: tokens.color.black,
+      colorSoft: tokens.color.neutral700,
+      colorMuted: tokens.color.neutral500,
+      colorFaint: tokens.color.neutral400,
+      colorGhost: tokens.color.neutral300,
 
-      borderColor: tokens.color.greyLine,
-      borderColorSubtle: 'rgba(0,0,0,0.06)',
+      // Borders
+      borderColor: tokens.color.neutral200,
+      borderColorSoft: tokens.color.neutral100,
+      borderColorStrong: tokens.color.neutral300,
+      borderColorAccent: tokens.color.accent,
 
-      // Pink accent stays the same
-      pink: tokens.color.pink,
-      pinkDark: tokens.color.pinkDark,
-      pinkText: tokens.color.pinkText,
-      pinkMuted: tokens.color.pinkMuted,
+      // Accent
+      accent: tokens.color.accent,
+      accentMuted: tokens.color.accentMuted,
+      accentSoft: tokens.color.accentSoft,
+      accentGhost: tokens.color.accentGhost,
+      accentText: tokens.color.white,
 
-      // Grey card becomes slightly darker for contrast
-      grey: '#F2F2F4',
-      greyText: tokens.color.greyText,
-      greySub: tokens.color.greySub,
+      // Semantic
+      success: tokens.color.successMuted,
+      successSoft: tokens.color.successSoft,
+      warning: tokens.color.warning,
+      warningSoft: tokens.color.warningSoft,
+      error: tokens.color.error,
+      errorSoft: tokens.color.errorSoft,
+      info: tokens.color.info,
+      infoSoft: tokens.color.infoSoft,
 
-      green: tokens.color.greenDark,
-      red: tokens.color.red,
-
-      // Apple-grade materials (used by Dock + Cards)
-      dockBg: 'rgba(255,255,255,0.72)',
-      dockBorder: 'rgba(0,0,0,0.08)',
-      cardBg: '#FFFFFF',
-      cardBorder: 'rgba(0,0,0,0.06)',
-      cardTint: 'rgba(255,26,85,0.08)',
-      cardTintStrong: 'rgba(255,26,85,0.12)',
-
-      // Semantic aliases for shared primitives
-      primary: tokens.color.pink,
-      primaryHover: tokens.color.pinkDark,
-      textPrimary: tokens.color.greyText,
-      textSecondary: tokens.color.greySub,
-      textTertiary: tokens.color.accent666,
-      success: tokens.color.greenDark,
-      error: tokens.color.red,
-
-      // Onboarding specific
+      // Components
       cardBg: tokens.color.white,
-      heroText: tokens.color.greyText,
-      subtleText: tokens.color.greySub,
+      cardBgHover: tokens.color.neutral50,
+      cardBorder: tokens.color.neutral200,
+      cardBorderHover: tokens.color.neutral300,
+
+      dockBg: 'rgba(255,255,255,0.88)',
+      dockBorder: tokens.color.neutral200,
+
+      inputBg: tokens.color.white,
+      inputBorder: tokens.color.neutral200,
+      inputBorderFocus: tokens.color.accent,
+
+      // Overlays
+      overlay: 'rgba(0,0,0,0.3)',
+      glass: 'rgba(255,255,255,0.7)',
+
+      // Feature card (accent tinted)
+      featureBg: tokens.color.white,
+      featureBorder: 'rgba(232, 93, 117, 0.12)',
+      featureGlow: 'rgba(232, 93, 117, 0.04)',
     },
   },
 })

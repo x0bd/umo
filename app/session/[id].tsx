@@ -1,9 +1,17 @@
 import { useState, useCallback } from 'react'
-import { Pressable } from 'react-native'
+import { Pressable, Image } from 'react-native'
 import { ScrollView, YStack, XStack, Text, View } from 'tamagui'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { useLocalSearchParams, router } from 'expo-router'
 import * as Haptics from 'expo-haptics'
+import Animated, {
+  FadeInDown,
+  FadeInUp,
+  useSharedValue,
+  useAnimatedStyle,
+  withSpring,
+  withSequence,
+} from 'react-native-reanimated'
 import {
   ArrowLeft,
   ArrowRight,
@@ -11,11 +19,14 @@ import {
   ChevronDown,
   Receipt,
   CreditCard,
+  Utensils,
+  Wine,
+  Coffee,
 } from '@tamagui/lucide-icons'
 import { useThemeMode } from '@/providers/theme-mode'
 
 // ============================================
-// MOCK DATA
+// TYPES & MOCK DATA
 // ============================================
 interface ReceiptItem {
   id: number
@@ -23,15 +34,55 @@ interface ReceiptItem {
   desc: string
   price: number
   category: 'starters' | 'mains' | 'drinks'
+  imageUrl?: string
 }
 
 const receiptItems: ReceiptItem[] = [
-  { id: 1, name: 'Burrata & Figs', desc: 'Aged balsamic, basil oil', price: 18, category: 'starters' },
-  { id: 2, name: 'Castelvetrano', desc: 'Marinated olives, citrus', price: 12, category: 'starters' },
-  { id: 3, name: 'Spicy Vodka Rigatoni', desc: 'Calabrian chili, pecorino', price: 24, category: 'mains' },
-  { id: 4, name: 'Veal Milanese', desc: 'Arugula salad, lemon', price: 28, category: 'mains' },
-  { id: 5, name: 'Negroni', desc: 'Classic build', price: 16, category: 'drinks' },
-  { id: 6, name: 'Aperol Spritz', desc: 'Prosecco, soda', price: 14, category: 'drinks' },
+  {
+    id: 1,
+    name: 'Burrata & Figs',
+    desc: 'Aged balsamic, basil oil',
+    price: 18,
+    category: 'starters',
+    imageUrl: 'https://images.unsplash.com/photo-1608897013039-887f21d8c804?w=80&h=80&fit=crop',
+  },
+  {
+    id: 2,
+    name: 'Castelvetrano Olives',
+    desc: 'Marinated, citrus zest',
+    price: 12,
+    category: 'starters',
+  },
+  {
+    id: 3,
+    name: 'Spicy Vodka Rigatoni',
+    desc: 'Calabrian chili, pecorino',
+    price: 24,
+    category: 'mains',
+    imageUrl: 'https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=80&h=80&fit=crop',
+  },
+  {
+    id: 4,
+    name: 'Veal Milanese',
+    desc: 'Arugula salad, lemon',
+    price: 28,
+    category: 'mains',
+    imageUrl: 'https://images.unsplash.com/photo-1432139555190-58524dae6a55?w=80&h=80&fit=crop',
+  },
+  {
+    id: 5,
+    name: 'Negroni',
+    desc: 'Classic build',
+    price: 16,
+    category: 'drinks',
+  },
+  {
+    id: 6,
+    name: 'Aperol Spritz',
+    desc: 'Prosecco, soda',
+    price: 14,
+    category: 'drinks',
+  },
 ]
 
 const sessionInfo = {
@@ -39,9 +90,22 @@ const sessionInfo = {
   date: 'Sat, Oct 14',
   table: 'Table 4',
   members: 3,
+  headerImage: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400&h=200&fit=crop',
 }
 
 const TAX_RATE = 0.20
+
+const CATEGORY_ICONS = {
+  starters: Utensils,
+  mains: Coffee,
+  drinks: Wine,
+}
+
+// ============================================
+// ANIMATED COMPONENTS
+// ============================================
+const AnimatedYStack = Animated.createAnimatedComponent(YStack)
+const AnimatedXStack = Animated.createAnimatedComponent(XStack)
 
 // ============================================
 // CIRCULAR CHECKBOX
@@ -53,28 +117,34 @@ const CircleCheck = ({
   checked: boolean
   onToggle: () => void
 }) => {
-  const { isDark } = useThemeMode()
+  const scale = useSharedValue(1)
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: scale.value }],
+  }))
+
+  const handlePress = () => {
+    scale.value = withSequence(withSpring(0.85), withSpring(1))
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
+    onToggle()
+  }
 
   return (
-    <Pressable
-      onPress={() => {
-        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
-        onToggle()
-      }}
-      hitSlop={8}
-    >
-      <View
-        width={22}
-        height={22}
-        borderRadius={11}
-        borderWidth={1.5}
-        borderColor={checked ? '$pink' : (isDark ? 'rgba(255,255,255,0.25)' : 'rgba(0,0,0,0.25)')}
-        backgroundColor={checked ? '$pink' : 'transparent'}
-        alignItems="center"
-        justifyContent="center"
-      >
-        {checked && <Check size={12} color="#FFFFFF" strokeWidth={3} />}
-      </View>
+    <Pressable onPress={handlePress} hitSlop={8}>
+      <Animated.View style={animatedStyle}>
+        <View
+          width={24}
+          height={24}
+          borderRadius={12}
+          borderWidth={1.5}
+          borderColor={checked ? '$accent' : '$borderColor'}
+          backgroundColor={checked ? '$accent' : 'transparent'}
+          alignItems="center"
+          justifyContent="center"
+        >
+          {checked && <Check size={13} color="$accentText" strokeWidth={3} />}
+        </View>
+      </Animated.View>
     </Pressable>
   )
 }
@@ -86,62 +156,88 @@ const ItemRow = ({
   item,
   isSelected,
   onToggle,
+  delay = 0,
 }: {
   item: ReceiptItem
   isSelected: boolean
   onToggle: () => void
+  delay?: number
 }) => (
-  <Pressable onPress={onToggle}>
-    <XStack
-      alignItems="center"
-      paddingVertical={14}
-      borderBottomWidth={1}
-      borderBottomColor="$borderColorSubtle"
-      opacity={isSelected ? 1 : 0.4}
-      gap={14}
-    >
-      <CircleCheck checked={isSelected} onToggle={onToggle} />
-      <YStack flex={1} gap={2}>
-        <Text
-          fontSize={15}
-          fontWeight="600"
-          letterSpacing={-0.2}
-          color="$color"
-        >
-          {item.name}
-        </Text>
-        <Text
-          fontSize={13}
-          color="$colorMuted"
-          lineHeight={18}
-        >
-          {item.desc}
-        </Text>
-      </YStack>
-      <Text
-        fontFamily="$mono"
-        fontSize={15}
-        fontWeight="500"
-        color="$color"
-        letterSpacing={-0.3}
+  <AnimatedXStack entering={FadeInDown.delay(delay).springify()}>
+    <Pressable onPress={onToggle} style={{ flex: 1 }}>
+      <XStack
+        alignItems="center"
+        paddingVertical={14}
+        gap={12}
+        opacity={isSelected ? 1 : 0.5}
       >
-        ${item.price}
-      </Text>
-    </XStack>
-  </Pressable>
+        <CircleCheck checked={isSelected} onToggle={onToggle} />
+
+        {/* Image or icon placeholder */}
+        {item.imageUrl ? (
+          <View
+            width={44}
+            height={44}
+            borderRadius={10}
+            overflow="hidden"
+            backgroundColor="$backgroundHover"
+          >
+            <Image
+              source={{ uri: item.imageUrl }}
+              style={{ width: 44, height: 44 }}
+              resizeMode="cover"
+            />
+          </View>
+        ) : (
+          <View
+            width={44}
+            height={44}
+            borderRadius={10}
+            backgroundColor="$backgroundHover"
+            alignItems="center"
+            justifyContent="center"
+          >
+            {(() => {
+              const Icon = CATEGORY_ICONS[item.category]
+              return <Icon size={18} color="$colorMuted" strokeWidth={1.5} />
+            })()}
+          </View>
+        )}
+
+        <YStack flex={1} gap={2}>
+          <Text fontSize={15} fontWeight="600" letterSpacing={-0.2} color="$color">
+            {item.name}
+          </Text>
+          <Text fontSize={12} color="$colorMuted" lineHeight={16}>
+            {item.desc}
+          </Text>
+        </YStack>
+
+        <Text
+          fontFamily="$mono"
+          fontSize={15}
+          fontWeight="500"
+          color="$color"
+          letterSpacing={-0.2}
+        >
+          ${item.price}
+        </Text>
+      </XStack>
+    </Pressable>
+  </AnimatedXStack>
 )
 
 // ============================================
 // CATEGORY HEADER
 // ============================================
 const CategoryHeader = ({ title }: { title: string }) => (
-  <XStack alignItems="center" gap={8} marginTop={8} marginBottom={4}>
-    <ChevronDown size={12} color="$colorMuted" strokeWidth={2.5} />
+  <XStack alignItems="center" gap={6} marginTop={16} marginBottom={8}>
+    <ChevronDown size={12} color="$colorMuted" strokeWidth={2} />
     <Text
       fontSize={11}
-      fontWeight="700"
+      fontWeight="600"
       textTransform="uppercase"
-      letterSpacing={0.5}
+      letterSpacing={0.6}
       color="$colorMuted"
     >
       {title}
@@ -150,62 +246,35 @@ const CategoryHeader = ({ title }: { title: string }) => (
 )
 
 // ============================================
-// FLOW STEP (line connector decoration)
+// SUMMARY ROW
 // ============================================
-const FlowStep = ({
+const SummaryRow = ({
   label,
   value,
-  isLarge = false,
-  isLast = false,
+  isTotal = false,
 }: {
   label: string
   value: string
-  isLarge?: boolean
-  isLast?: boolean
+  isTotal?: boolean
 }) => (
-  <YStack gap={4} position="relative" paddingLeft={20}>
-    {/* Connector dot */}
-    <View
-      position="absolute"
-      left={-4}
-      top={4}
-      width={8}
-      height={8}
-      borderRadius={4}
-      backgroundColor="$pink"
-      opacity={0.6}
-    />
-    {/* Line */}
-    {!isLast && (
-      <View
-        position="absolute"
-        left={-1}
-        top={14}
-        bottom={-12}
-        width={1}
-        backgroundColor="$colorFaint"
-      />
-    )}
+  <XStack justifyContent="space-between" alignItems="center" paddingVertical={isTotal ? 12 : 6}>
     <Text
-      fontSize={11}
-      fontWeight="700"
-      textTransform="uppercase"
-      letterSpacing={0.5}
-      color="$pinkText"
-      opacity={0.7}
+      fontSize={isTotal ? 14 : 13}
+      fontWeight={isTotal ? '600' : '500'}
+      color={isTotal ? '$color' : '$colorMuted'}
     >
       {label}
     </Text>
     <Text
-      fontSize={isLarge ? 42 : 15}
-      fontWeight={isLarge ? '500' : '600'}
-      letterSpacing={isLarge ? -2 : -0.2}
-      color="$pinkText"
-      fontFamily={isLarge ? '$mono' : '$body'}
+      fontFamily="$mono"
+      fontSize={isTotal ? 22 : 14}
+      fontWeight={isTotal ? '700' : '500'}
+      color={isTotal ? '$color' : '$colorMuted'}
+      letterSpacing={isTotal ? -0.5 : 0}
     >
       {value}
     </Text>
-  </YStack>
+  </XStack>
 )
 
 // ============================================
@@ -242,88 +311,100 @@ export default function SessionReceiptScreen() {
   const mains = receiptItems.filter((i) => i.category === 'mains')
   const drinks = receiptItems.filter((i) => i.category === 'drinks')
 
+  const buttonScale = useSharedValue(1)
+
+  const buttonAnimatedStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: buttonScale.value }],
+  }))
+
   const handleProceed = () => {
+    buttonScale.value = withSequence(withSpring(0.97), withSpring(1))
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
     router.push('/session/finalize')
   }
 
   return (
     <YStack flex={1} backgroundColor="$background">
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 140 }}
-      >
-        <YStack
-          paddingTop={insets.top + 12}
-          paddingHorizontal={20}
-          gap={20}
-        >
-          {/* ======== HEADER ======== */}
-          <XStack alignItems="center" justifyContent="space-between">
-            <Pressable
-              onPress={() => {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
-                router.back()
-              }}
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 40 }}>
+        {/* Header Image */}
+        <View height={160} overflow="hidden">
+          <Image
+            source={{ uri: sessionInfo.headerImage }}
+            style={{ width: '100%', height: 160, opacity: isDark ? 0.7 : 0.9 }}
+            resizeMode="cover"
+          />
+          {/* Gradient overlay */}
+          <View
+            position="absolute"
+            bottom={0}
+            left={0}
+            right={0}
+            height={80}
+            backgroundColor="$background"
+            style={{
+              // @ts-ignore
+              background: isDark
+                ? 'linear-gradient(transparent, #0A0A0B)'
+                : 'linear-gradient(transparent, #F4F4F5)',
+            }}
+          />
+          {/* Back button */}
+          <Pressable
+            onPress={() => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
+              router.back()
+            }}
+            style={{ position: 'absolute', top: insets.top + 8, left: 16 }}
+          >
+            <View
+              width={40}
+              height={40}
+              borderRadius={12}
+              backgroundColor="$overlay"
+              alignItems="center"
+              justifyContent="center"
+              // @ts-ignore
+              style={{ backdropFilter: 'blur(10px)' }}
             >
-              <View
-                width={40}
-                height={40}
-                borderRadius={12}
-                backgroundColor="$cardBg"
-                borderWidth={1}
-                borderColor="$cardBorder"
-                alignItems="center"
-                justifyContent="center"
-              >
-                <ArrowLeft size={18} color="$colorMuted" strokeWidth={2} />
-              </View>
-            </Pressable>
+              <ArrowLeft size={18} color="white" strokeWidth={2} />
+            </View>
+          </Pressable>
+        </View>
 
-            <YStack alignItems="flex-end" gap={2}>
-              <Text
-                fontSize={18}
-                fontWeight="500"
-                letterSpacing={-0.5}
-                color="$color"
-              >
-                {sessionInfo.name}
-              </Text>
-              <Text fontSize={13} color="$colorMuted">
-                {sessionInfo.date} · {sessionInfo.table}
-              </Text>
-            </YStack>
-          </XStack>
+        <YStack paddingHorizontal={20} marginTop={-30} gap={20}>
+          {/* Session Info */}
+          <AnimatedYStack entering={FadeInUp.delay(100).springify()} gap={4}>
+            <Text fontSize={26} fontWeight="600" letterSpacing={-0.8} color="$color">
+              {sessionInfo.name}
+            </Text>
+            <Text fontSize={14} color="$colorMuted">
+              {sessionInfo.date} · {sessionInfo.table} · {sessionInfo.members} people
+            </Text>
+          </AnimatedYStack>
 
-          {/* ======== RECEIPT CARD (Grey) ======== */}
-          <YStack
-            backgroundColor={isDark ? '$cardBg' : '#EAEAEA'}
-            borderRadius={28}
-            padding={24}
+          {/* Receipt Card */}
+          <AnimatedYStack
+            entering={FadeInDown.delay(150).springify()}
+            backgroundColor="$cardBg"
+            borderRadius={20}
+            padding={20}
             borderWidth={1}
             borderColor="$cardBorder"
-            gap={4}
           >
-            {/* Card title */}
-            <XStack alignItems="center" gap={10} marginBottom={16}>
+            {/* Card Header */}
+            <XStack alignItems="center" gap={10} marginBottom={8}>
               <View
-                width={36}
-                height={36}
-                borderRadius={12}
-                backgroundColor={isDark ? '$backgroundHover' : 'rgba(0,0,0,0.06)'}
+                width={32}
+                height={32}
+                borderRadius={10}
+                backgroundColor="$backgroundHover"
                 alignItems="center"
                 justifyContent="center"
               >
-                <Receipt size={18} color="$colorMuted" strokeWidth={2} />
+                <Receipt size={16} color="$colorMuted" strokeWidth={1.8} />
               </View>
-              <YStack gap={2}>
-                <Text
-                  fontSize={22}
-                  fontWeight="500"
-                  letterSpacing={-0.8}
-                  color="$color"
-                  lineHeight={24}
-                >
+              <YStack>
+                <Text fontSize={17} fontWeight="600" letterSpacing={-0.3} color="$color">
                   Full Receipt
                 </Text>
                 <Text fontSize={12} color="$colorMuted">
@@ -334,34 +415,37 @@ export default function SessionReceiptScreen() {
 
             {/* Starters */}
             <CategoryHeader title="Starters" />
-            {starters.map((item) => (
+            {starters.map((item, i) => (
               <ItemRow
                 key={item.id}
                 item={item}
                 isSelected={selectedItems.has(item.id)}
                 onToggle={() => toggleItem(item.id)}
+                delay={200 + i * 30}
               />
             ))}
 
             {/* Mains */}
             <CategoryHeader title="Mains" />
-            {mains.map((item) => (
+            {mains.map((item, i) => (
               <ItemRow
                 key={item.id}
                 item={item}
                 isSelected={selectedItems.has(item.id)}
                 onToggle={() => toggleItem(item.id)}
+                delay={280 + i * 30}
               />
             ))}
 
             {/* Drinks */}
             <CategoryHeader title="Drinks" />
-            {drinks.map((item) => (
+            {drinks.map((item, i) => (
               <ItemRow
                 key={item.id}
                 item={item}
                 isSelected={selectedItems.has(item.id)}
                 onToggle={() => toggleItem(item.id)}
+                delay={360 + i * 30}
               />
             ))}
 
@@ -372,10 +456,10 @@ export default function SessionReceiptScreen() {
               marginTop={16}
               paddingTop={12}
               borderTopWidth={1}
-              borderTopColor="$borderColorSubtle"
+              borderTopColor="$borderColorSoft"
             >
-              <Text fontSize={13} fontWeight="500" color="$colorMuted">
-                {selectedItems.size} of {receiptItems.length} items selected
+              <Text fontSize={12} fontWeight="500" color="$colorMuted">
+                {selectedItems.size} of {receiptItems.length} items
               </Text>
               <Pressable
                 onPress={() => {
@@ -387,69 +471,51 @@ export default function SessionReceiptScreen() {
                   }
                 }}
               >
-                <Text fontSize={13} fontWeight="600" color="$pink">
-                  {selectedItems.size === receiptItems.length ? 'Deselect All' : 'Select All'}
+                <Text fontSize={12} fontWeight="600" color="$accent">
+                  {selectedItems.size === receiptItems.length ? 'Clear All' : 'Select All'}
                 </Text>
               </Pressable>
             </XStack>
-          </YStack>
+          </AnimatedYStack>
 
-          {/* ======== SETTLEMENT CARD (Pink) ======== */}
-          <YStack
-            backgroundColor="$pink"
-            borderRadius={28}
-            padding={24}
-            gap={24}
-            shadowColor="$pink"
-            shadowOffset={{ width: 0, height: 8 }}
-            shadowOpacity={0.25}
-            shadowRadius={24}
+          {/* Settlement Summary */}
+          <AnimatedYStack
+            entering={FadeInDown.delay(400).springify()}
+            backgroundColor="$cardBg"
+            borderRadius={20}
+            padding={20}
+            borderWidth={1}
+            borderColor="$cardBorder"
           >
-            {/* Card title */}
-            <XStack alignItems="center" gap={10}>
+            <XStack alignItems="center" gap={10} marginBottom={12}>
               <View
-                width={36}
-                height={36}
-                borderRadius={12}
-                backgroundColor="rgba(69,0,16,0.15)"
+                width={32}
+                height={32}
+                borderRadius={10}
+                backgroundColor="$accentSoft"
                 alignItems="center"
                 justifyContent="center"
               >
-                <CreditCard size={18} color="$pinkText" strokeWidth={2} />
+                <CreditCard size={16} color="$accent" strokeWidth={1.8} />
               </View>
-              <Text
-                fontSize={22}
-                fontWeight="500"
-                letterSpacing={-0.8}
-                color="$pinkText"
-                lineHeight={24}
-              >
+              <Text fontSize={17} fontWeight="600" letterSpacing={-0.3} color="$color">
                 Your Share
               </Text>
             </XStack>
 
-            {/* Flow Steps */}
-            <YStack gap={20}>
-              <FlowStep
-                label="Subtotal"
-                value={`$${subtotal.toFixed(2)}`}
-              />
-              <FlowStep
-                label="Tax & Tip (20%)"
-                value={`$${tax.toFixed(2)}`}
-              />
-              <FlowStep
-                label="Total Due"
-                value={`$${total.toFixed(2)}`}
-                isLarge
-                isLast
-              />
+            <YStack gap={4} borderTopWidth={1} borderTopColor="$borderColorSoft" paddingTop={12}>
+              <SummaryRow label="Subtotal" value={`$${subtotal.toFixed(2)}`} />
+              <SummaryRow label="Tax & Tip (20%)" value={`$${tax.toFixed(2)}`} />
+              <View height={1} backgroundColor="$borderColorSoft" marginVertical={8} />
+              <SummaryRow label="Total Due" value={`$${total.toFixed(2)}`} isTotal />
             </YStack>
+          </AnimatedYStack>
 
-            {/* Pay Button */}
-            <Pressable onPress={handleProceed}>
+          {/* Proceed Button */}
+          <Animated.View style={buttonAnimatedStyle}>
+            <Pressable onPress={handleProceed} disabled={total === 0}>
               <XStack
-                backgroundColor="rgba(0,0,0,0.85)"
+                backgroundColor={total > 0 ? '$accent' : '$backgroundHover'}
                 borderRadius={16}
                 paddingVertical={18}
                 paddingHorizontal={20}
@@ -459,27 +525,26 @@ export default function SessionReceiptScreen() {
                 <Text
                   fontSize={16}
                   fontWeight="600"
-                  color="#FFFFFF"
-                  letterSpacing={-0.3}
+                  color={total > 0 ? '$accentText' : '$colorMuted'}
+                  letterSpacing={-0.2}
                 >
                   {total > 0 ? 'Proceed to Pay' : 'Select Items'}
                 </Text>
                 <View
                   width={28}
                   height={28}
-                  borderRadius={14}
-                  backgroundColor="rgba(255,255,255,0.15)"
+                  borderRadius={8}
+                  backgroundColor={total > 0 ? 'rgba(255,255,255,0.2)' : '$backgroundPress'}
                   alignItems="center"
                   justifyContent="center"
                 >
-                  <ArrowRight size={14} color="#FFFFFF" strokeWidth={2.5} />
+                  <ArrowRight size={14} color={total > 0 ? '$accentText' : '$colorMuted'} strokeWidth={2.5} />
                 </View>
               </XStack>
             </Pressable>
-          </YStack>
+          </Animated.View>
         </YStack>
       </ScrollView>
     </YStack>
   )
 }
-

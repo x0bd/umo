@@ -1,10 +1,23 @@
 import { useState, useRef } from 'react'
-import { Dimensions, Animated, Pressable } from 'react-native'
+import { Dimensions, Pressable, Image } from 'react-native'
 import { YStack, XStack, Text, View } from 'tamagui'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { router } from 'expo-router'
 import * as Haptics from 'expo-haptics'
-import { 
+import Animated, {
+  FadeIn,
+  FadeInDown,
+  FadeInUp,
+  useSharedValue,
+  useAnimatedStyle,
+  withSpring,
+  withSequence,
+  withTiming,
+  useAnimatedScrollHandler,
+  interpolate,
+  Extrapolation,
+} from 'react-native-reanimated'
+import {
   ArrowRight,
   Wallet,
   Users,
@@ -18,243 +31,281 @@ import { useThemeMode } from '@/providers/theme-mode'
 const { width: SCREEN_WIDTH } = Dimensions.get('window')
 
 // ============================================
-// ONBOARDING SLIDES DATA
+// SLIDE DATA
 // ============================================
 const slides = [
   {
     id: 1,
-    tag: 'WELCOME',
+    tag: 'Welcome',
     title: 'Split bills.\nSettle debts.',
-    subtitle: 'The Zimbabwean way.',
-    description: 'Handle USD/ZiG conversions and settle up instantly via EcoCash, OneMoney, or Innbucks.',
+    subtitle: 'The simple way.',
+    description: 'Handle multi-currency splits and settle up instantly via mobile money.',
     icon: Wallet,
-    accentColor: '#FF1A55',
+    image: 'https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?w=400&h=300&fit=crop',
   },
   {
     id: 2,
-    tag: 'MULTI-CURRENCY',
+    tag: 'Multi-Currency',
     title: 'Real-time\nexchange rates.',
     subtitle: 'USD ↔ ZiG',
-    description: 'Set a "Table Rate" for your session. See every split in both currencies automatically.',
+    description: 'See every split in both currencies. Rates update automatically.',
     icon: RefreshCw,
-    accentColor: '#00E676',
+    image: 'https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=400&h=300&fit=crop',
   },
   {
     id: 3,
-    tag: 'SQUAD',
-    title: 'Friends.\nNo friction.',
-    subtitle: 'Micro-ledger built-in.',
-    description: 'Track IOUs, running tabs, and small change amounts that can\'t be settled immediately.',
+    tag: 'Friends',
+    title: 'Track IOUs.\nNo friction.',
+    subtitle: 'Built-in ledger.',
+    description: 'Running tabs, small change, amounts that can\'t be settled immediately.',
     icon: Users,
-    accentColor: '#7C4DFF',
+    image: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=400&h=300&fit=crop',
   },
   {
     id: 4,
-    tag: 'PAYNOW',
+    tag: 'Pay Now',
     title: 'One tap.\nSettled.',
-    subtitle: 'Powered by Paynow.',
-    description: 'Trigger EcoCash or OneMoney prompts directly from the app. No more awkward "I\'ll pay you later".',
+    subtitle: 'Mobile money.',
+    description: 'Trigger EcoCash or OneMoney prompts directly. No more "I\'ll pay you later".',
     icon: Zap,
-    accentColor: '#FF1A55',
+    image: 'https://images.unsplash.com/photo-1563986768494-4dee2763ff3f?w=400&h=300&fit=crop',
   },
 ]
 
 // ============================================
+// ANIMATED COMPONENTS
+// ============================================
+const AnimatedView = Animated.createAnimatedComponent(View)
+const AnimatedYStack = Animated.createAnimatedComponent(YStack)
+const AnimatedXStack = Animated.createAnimatedComponent(XStack)
+const AnimatedScrollView = Animated.createAnimatedComponent(Animated.ScrollView)
+
+// ============================================
 // SLIDE COMPONENT
 // ============================================
-const OnboardingSlide = ({ 
-  slide, 
-  index, 
-  currentIndex,
-  theme,
-}: { 
+const OnboardingSlide = ({
+  slide,
+  index,
+  scrollX,
+}: {
   slide: typeof slides[0]
   index: number
-  currentIndex: number
-  theme: 'light' | 'dark'
+  scrollX: Animated.SharedValue<number>
 }) => {
+  const { isDark } = useThemeMode()
   const Icon = slide.icon
-  const isDark = theme === 'dark'
+
+  const animatedStyle = useAnimatedStyle(() => {
+    const inputRange = [
+      (index - 1) * SCREEN_WIDTH,
+      index * SCREEN_WIDTH,
+      (index + 1) * SCREEN_WIDTH,
+    ]
+
+    const opacity = interpolate(
+      scrollX.value,
+      inputRange,
+      [0.3, 1, 0.3],
+      Extrapolation.CLAMP
+    )
+
+    const translateY = interpolate(
+      scrollX.value,
+      inputRange,
+      [30, 0, 30],
+      Extrapolation.CLAMP
+    )
+
+    return {
+      opacity,
+      transform: [{ translateY }],
+    }
+  })
 
   return (
-    <YStack
-      width={SCREEN_WIDTH}
-      paddingHorizontal={24}
-      paddingTop={60}
-      gap={32}
-    >
-      {/* Tag Pill */}
-      <View
-        alignSelf="flex-start"
-        backgroundColor={isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.05)'}
-        paddingHorizontal={12}
-        paddingVertical={6}
-        borderRadius={100}
-      >
-        <Text
-          fontSize={10}
-          fontWeight="700"
-          letterSpacing={1.5}
-          textTransform="uppercase"
-          color={isDark ? '$whiteMuted' : '$greySub'}
-        >
-          {slide.tag}
-        </Text>
-      </View>
-
-      {/* Icon Container */}
-      <View
-        width={80}
-        height={80}
-        borderRadius={24}
-        backgroundColor={slide.accentColor}
-        alignItems="center"
-        justifyContent="center"
-        shadowColor={slide.accentColor}
-        shadowOffset={{ width: 0, height: 12 }}
-        shadowOpacity={0.4}
-        shadowRadius={24}
-      >
-        <Icon size={36} color="#FFFFFF" strokeWidth={2} />
-      </View>
-
-      {/* Title */}
-      <YStack gap={8}>
-        <Text
-          fontSize={48}
-          fontWeight="500"
-          letterSpacing={-2}
-          lineHeight={50}
-          color={isDark ? '$white' : '$greyText'}
-        >
-          {slide.title}
-        </Text>
-        <Text
-          fontSize={20}
-          fontWeight="600"
-          letterSpacing={-0.5}
-          color={slide.accentColor}
-        >
-          {slide.subtitle}
-        </Text>
-      </YStack>
-
-      {/* Description */}
-      <Text
-        fontSize={16}
-        lineHeight={24}
-        color={isDark ? '$whiteMuted' : '$greySub'}
-        maxWidth={320}
-      >
-        {slide.description}
-      </Text>
-
-      {/* Flow Decoration */}
-      <YStack position="relative" marginTop={20} paddingLeft={20}>
-        <View
-          position="absolute"
-          left={0}
-          top={0}
-          bottom={0}
-          width={1}
-          backgroundColor={isDark ? '$lineFaint' : '$greyLine'}
-        >
+    <View width={SCREEN_WIDTH} paddingHorizontal={24}>
+      <Animated.View style={animatedStyle}>
+        <YStack gap={24} paddingTop={20}>
+          {/* Tag */}
           <View
-            position="absolute"
-            bottom={0}
-            left={-3}
-            width={7}
-            height={7}
-            borderRightWidth={1}
-            borderBottomWidth={1}
-            borderColor={isDark ? '$line' : '$greyLine'}
-            style={{ transform: [{ rotate: '45deg' }] }}
-          />
-        </View>
-        <XStack gap={12} paddingVertical={12}>
+            alignSelf="flex-start"
+            backgroundColor="$backgroundHover"
+            paddingHorizontal={12}
+            paddingVertical={6}
+            borderRadius={8}
+            borderWidth={1}
+            borderColor="$borderColorSoft"
+          >
+            <Text
+              fontSize={11}
+              fontWeight="600"
+              letterSpacing={0.6}
+              textTransform="uppercase"
+              color="$colorMuted"
+            >
+              {slide.tag}
+            </Text>
+          </View>
+
+          {/* Image Card */}
           <View
-            width={8}
-            height={8}
-            borderRadius={4}
-            backgroundColor={slide.accentColor}
-          />
-          <Text fontSize={13} fontWeight="500" color={isDark ? '$whiteDim' : '$greySub'}>
-            Step {index + 1} of {slides.length}
+            height={180}
+            borderRadius={20}
+            overflow="hidden"
+            backgroundColor="$cardBg"
+          >
+            <Image
+              source={{ uri: slide.image }}
+              style={{
+                width: '100%',
+                height: '100%',
+                opacity: isDark ? 0.8 : 1,
+              }}
+              resizeMode="cover"
+            />
+            {/* Icon Overlay */}
+            <View
+              position="absolute"
+              bottom={16}
+              left={16}
+              width={48}
+              height={48}
+              borderRadius={14}
+              backgroundColor="$accent"
+              alignItems="center"
+              justifyContent="center"
+              shadowColor="$accent"
+              shadowOffset={{ width: 0, height: 4 }}
+              shadowOpacity={0.3}
+              shadowRadius={12}
+            >
+              <Icon size={22} color="$accentText" strokeWidth={2} />
+            </View>
+          </View>
+
+          {/* Title */}
+          <YStack gap={8}>
+            <Text
+              fontSize={38}
+              fontWeight="600"
+              letterSpacing={-1.5}
+              lineHeight={42}
+              color="$color"
+            >
+              {slide.title}
+            </Text>
+            <Text
+              fontSize={18}
+              fontWeight="500"
+              letterSpacing={-0.3}
+              color="$accent"
+            >
+              {slide.subtitle}
+            </Text>
+          </YStack>
+
+          {/* Description */}
+          <Text
+            fontSize={15}
+            lineHeight={22}
+            color="$colorMuted"
+            maxWidth={320}
+          >
+            {slide.description}
           </Text>
-        </XStack>
-      </YStack>
-    </YStack>
+        </YStack>
+      </Animated.View>
+    </View>
   )
 }
 
 // ============================================
 // DOT INDICATOR
 // ============================================
-const DotIndicator = ({ 
-  count, 
-  activeIndex,
-  theme,
-}: { 
+const DotIndicator = ({
+  count,
+  scrollX,
+}: {
   count: number
-  activeIndex: number
-  theme: 'light' | 'dark'
+  scrollX: Animated.SharedValue<number>
 }) => {
-  const isDark = theme === 'dark'
-
   return (
     <XStack gap={8} justifyContent="center" paddingVertical={20}>
-      {Array.from({ length: count }).map((_, i) => (
-        <View
-          key={i}
-          width={i === activeIndex ? 24 : 8}
-          height={8}
-          borderRadius={4}
-          backgroundColor={i === activeIndex 
-            ? '$pink' 
-            : isDark ? '$lineFaint' : '$greyLine'
-          }
-          animation="quick"
-        />
-      ))}
+      {Array.from({ length: count }).map((_, i) => {
+        const animatedStyle = useAnimatedStyle(() => {
+          const inputRange = [
+            (i - 1) * SCREEN_WIDTH,
+            i * SCREEN_WIDTH,
+            (i + 1) * SCREEN_WIDTH,
+          ]
+
+          const width = interpolate(
+            scrollX.value,
+            inputRange,
+            [8, 24, 8],
+            Extrapolation.CLAMP
+          )
+
+          const opacity = interpolate(
+            scrollX.value,
+            inputRange,
+            [0.3, 1, 0.3],
+            Extrapolation.CLAMP
+          )
+
+          return { width, opacity }
+        })
+
+        return (
+          <AnimatedView
+            key={i}
+            height={8}
+            borderRadius={4}
+            backgroundColor="$accent"
+            style={animatedStyle}
+          />
+        )
+      })}
     </XStack>
   )
 }
 
 // ============================================
-// MAIN ONBOARDING SCREEN
+// MAIN SCREEN
 // ============================================
 export default function OnboardingScreen() {
   const insets = useSafeAreaInsets()
-  const [currentIndex, setCurrentIndex] = useState(0)
-  const scrollRef = useRef<any>(null)
-  const scrollX = useRef(new Animated.Value(0)).current
-
   const { isDark, toggle } = useThemeMode()
-  const theme = isDark ? 'dark' : 'light'
+  const [currentIndex, setCurrentIndex] = useState(0)
+  const scrollRef = useRef<Animated.ScrollView>(null)
+  const scrollX = useSharedValue(0)
 
-  const handleScroll = Animated.event(
-    [{ nativeEvent: { contentOffset: { x: scrollX } } }],
-    { 
-      useNativeDriver: false,
-      listener: (event: any) => {
-        const index = Math.round(event.nativeEvent.contentOffset.x / SCREEN_WIDTH)
-        if (index !== currentIndex) {
-          setCurrentIndex(index)
-          Haptics.selectionAsync()
-        }
-      }
-    }
-  )
+  const scrollHandler = useAnimatedScrollHandler({
+    onScroll: (event) => {
+      scrollX.value = event.contentOffset.x
+    },
+    onMomentumEnd: (event) => {
+      const index = Math.round(event.contentOffset.x / SCREEN_WIDTH)
+      setCurrentIndex(index)
+    },
+  })
+
+  const buttonScale = useSharedValue(1)
+
+  const buttonAnimatedStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: buttonScale.value }],
+  }))
 
   const handleNext = () => {
+    buttonScale.value = withSequence(withSpring(0.97), withSpring(1))
+
     if (currentIndex < slides.length - 1) {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
-      scrollRef.current?.scrollTo({ 
-        x: (currentIndex + 1) * SCREEN_WIDTH, 
-        animated: true 
+      scrollRef.current?.scrollTo({
+        x: (currentIndex + 1) * SCREEN_WIDTH,
+        animated: true,
       })
     } else {
-      // Navigate to main app
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
       router.replace('/(tabs)')
     }
@@ -273,157 +324,139 @@ export default function OnboardingScreen() {
   const isLastSlide = currentIndex === slides.length - 1
 
   return (
-    <YStack 
-      flex={1} 
-      backgroundColor="$background"
-    >
+    <YStack flex={1} backgroundColor="$background">
       {/* Header */}
-      <XStack
+      <AnimatedXStack
+        entering={FadeInDown.delay(100).springify()}
         paddingTop={insets.top + 12}
         paddingHorizontal={20}
         justifyContent="space-between"
         alignItems="center"
       >
         {/* Logo */}
-        <XStack alignItems="center" gap={6}>
+        <XStack alignItems="center" gap={8}>
           <View
-            width={28}
-            height={28}
-            borderRadius={8}
-            backgroundColor="$pink"
+            width={32}
+            height={32}
+            borderRadius={10}
+            backgroundColor="$accent"
             alignItems="center"
             justifyContent="center"
           >
-            <Text fontSize={14} fontWeight="800" color="#FFF">U</Text>
+            <Text fontSize={16} fontWeight="800" color="$accentText">
+              U
+            </Text>
           </View>
-          <Text
-            fontSize={18}
-            fontWeight="700"
-            letterSpacing={-0.5}
-            color={isDark ? '$white' : '$greyText'}
-          >
+          <Text fontSize={20} fontWeight="700" letterSpacing={-0.5} color="$color">
             umo
           </Text>
         </XStack>
 
-        {/* Theme Toggle + Skip */}
-        <XStack gap={12} alignItems="center">
+        {/* Theme + Skip */}
+        <XStack gap={10} alignItems="center">
           <Pressable onPress={toggleTheme}>
             <View
-              paddingHorizontal={10}
-              paddingVertical={8}
-              borderRadius={999}
+              width={40}
+              height={40}
+              borderRadius={12}
+              backgroundColor="$cardBg"
               borderWidth={1}
-              borderColor="$borderColorSubtle"
-              backgroundColor="$surface"
+              borderColor="$cardBorder"
+              alignItems="center"
+              justifyContent="center"
             >
-              <XStack alignItems="center" gap={8}>
-                {isDark ? (
-                  <Sun size={14} color="$colorMuted" strokeWidth={2.5} />
-                ) : (
-                  <Moon size={14} color="$colorMuted" strokeWidth={2.5} />
-                )}
-                <Text fontSize={11} fontWeight="600" color="$colorMuted" letterSpacing={-0.2}>
-                  {isDark ? 'Light' : 'Dark'}
-                </Text>
-              </XStack>
+              {isDark ? (
+                <Sun size={18} color="$colorMuted" strokeWidth={1.8} />
+              ) : (
+                <Moon size={18} color="$colorMuted" strokeWidth={1.8} />
+              )}
             </View>
           </Pressable>
 
           <Pressable onPress={handleSkip}>
-            <Text
-              fontSize={14}
-              fontWeight="500"
-              color="$colorMuted"
+            <View
+              paddingHorizontal={14}
+              paddingVertical={10}
+              borderRadius={10}
+              backgroundColor="$backgroundHover"
             >
-              Skip
-            </Text>
+              <Text fontSize={14} fontWeight="500" color="$colorMuted">
+                Skip
+              </Text>
+            </View>
           </Pressable>
         </XStack>
-      </XStack>
+      </AnimatedXStack>
 
       {/* Slides */}
-      <Animated.ScrollView
+      <AnimatedScrollView
         ref={scrollRef}
         horizontal
         pagingEnabled
         showsHorizontalScrollIndicator={false}
-        onScroll={handleScroll}
+        onScroll={scrollHandler}
         scrollEventThrottle={16}
         decelerationRate="fast"
         style={{ flex: 1 }}
       >
         {slides.map((slide, index) => (
-          <OnboardingSlide
-            key={slide.id}
-            slide={slide}
-            index={index}
-            currentIndex={currentIndex}
-            theme={theme}
-          />
+          <OnboardingSlide key={slide.id} slide={slide} index={index} scrollX={scrollX} />
         ))}
-      </Animated.ScrollView>
+      </AnimatedScrollView>
 
       {/* Bottom Section */}
-      <YStack 
-        paddingHorizontal={20} 
-        paddingBottom={insets.bottom + 20}
-        gap={16}
-      >
-        <DotIndicator 
-          count={slides.length} 
-          activeIndex={currentIndex}
-          theme={theme}
-        />
+      <YStack paddingHorizontal={20} paddingBottom={insets.bottom + 16} gap={12}>
+        <DotIndicator count={slides.length} scrollX={scrollX} />
 
         {/* CTA Button */}
-        <Pressable onPress={handleNext}>
-          <XStack
-            backgroundColor={isDark ? '$white' : '$pink'}
-            borderRadius={50}
-            paddingVertical={20}
-            paddingHorizontal={24}
-            alignItems="center"
-            justifyContent="space-between"
-          >
-            <Text 
-              fontSize={16} 
-              fontWeight="600" 
-              letterSpacing={-0.5}
-              color={isDark ? '$black' : '$white'}
-            >
-              {isLastSlide ? 'Get Started' : 'Continue'}
-            </Text>
-            <View
-              width={32}
-              height={32}
+        <Animated.View style={buttonAnimatedStyle}>
+          <Pressable onPress={handleNext}>
+            <XStack
+              backgroundColor="$accent"
               borderRadius={16}
-              backgroundColor={isDark ? '$black' : 'rgba(255,255,255,0.2)'}
+              paddingVertical={18}
+              paddingHorizontal={20}
               alignItems="center"
-              justifyContent="center"
+              justifyContent="space-between"
             >
-              {isLastSlide ? (
-                <Zap size={16} color="#FFFFFF" strokeWidth={2.5} />
-              ) : (
-                <ArrowRight size={16} color="#FFFFFF" strokeWidth={2.5} />
-              )}
-            </View>
-          </XStack>
-        </Pressable>
+              <Text
+                fontSize={16}
+                fontWeight="600"
+                letterSpacing={-0.2}
+                color="$accentText"
+              >
+                {isLastSlide ? 'Get Started' : 'Continue'}
+              </Text>
+              <View
+                width={28}
+                height={28}
+                borderRadius={8}
+                backgroundColor="rgba(255,255,255,0.2)"
+                alignItems="center"
+                justifyContent="center"
+              >
+                {isLastSlide ? (
+                  <Zap size={14} color="$accentText" strokeWidth={2.5} />
+                ) : (
+                  <ArrowRight size={14} color="$accentText" strokeWidth={2.5} />
+                )}
+              </View>
+            </XStack>
+          </Pressable>
+        </Animated.View>
 
         {/* Terms */}
-        <Text
-          textAlign="center"
-          fontSize={12}
-          color="$colorFaint"
-          lineHeight={18}
-        >
+        <Text textAlign="center" fontSize={11} color="$colorGhost" lineHeight={16}>
           By continuing, you agree to our{' '}
-          <Text color="$pink" fontWeight="500">Terms</Text> and{' '}
-          <Text color="$pink" fontWeight="500">Privacy Policy</Text>
+          <Text color="$colorMuted" fontWeight="500">
+            Terms
+          </Text>{' '}
+          and{' '}
+          <Text color="$colorMuted" fontWeight="500">
+            Privacy Policy
+          </Text>
         </Text>
       </YStack>
     </YStack>
   )
 }
-
