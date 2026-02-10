@@ -1,20 +1,23 @@
 import { Tabs } from 'expo-router';
 import { Platform } from 'react-native';
-import { Home, Activity, Users, User } from '@tamagui/lucide-icons';
+import { Home, Activity } from '@tamagui/lucide-icons';
 
 import { HapticTab } from '@/components/haptic-tab';
+import { useThemeMode } from '@/providers/theme-mode';
 
 export default function TabLayout() {
+  const { isDark } = useThemeMode();
+
   return (
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: '#FF1A55',
-        tabBarInactiveTintColor: '#666666',
+        tabBarInactiveTintColor: isDark ? 'rgba(255,255,255,0.45)' : 'rgba(0,0,0,0.45)',
         headerShown: false,
         tabBarButton: HapticTab,
         tabBarStyle: {
-          backgroundColor: '#050505',
-          borderTopColor: '#1A1A1A',
+          backgroundColor: isDark ? '#050505' : '#FFFFFF',
+          borderTopColor: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)',
           borderTopWidth: 1,
           paddingTop: 8,
           paddingBottom: Platform.OS === 'ios' ? 28 : 12,

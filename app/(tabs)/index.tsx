@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Pressable } from 'react-native'
-import { ScrollView, YStack, XStack, Text, View, styled, useThemeName } from 'tamagui'
+import { ScrollView, YStack, XStack, Text, View, styled } from 'tamagui'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { 
   ArrowUpRight,
@@ -14,7 +14,7 @@ import {
   Sun,
   Moon,
 } from '@tamagui/lucide-icons'
-import { useThemeMode } from '../_layout'
+import { useThemeMode } from '@/providers/theme-mode'
 
 // ============================================
 // SPLTR-INSPIRED COMPONENTS
@@ -255,7 +255,6 @@ const members = [
 export default function HomeScreen() {
   const insets = useSafeAreaInsets()
   const { isDark, toggle } = useThemeMode()
-  const themeName = useThemeName()
 
   return (
     <ScrollView 

@@ -1,11 +1,8 @@
 import { ScrollView, YStack, XStack, Text, View } from 'tamagui'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { 
-  ArrowUpRight, 
-  ArrowDownLeft, 
   Clock, 
   Check,
-  ChevronRight,
 } from '@tamagui/lucide-icons'
 
 // ============================================
@@ -66,7 +63,7 @@ const ActivityCard = ({
 
   return (
     <XStack
-      backgroundColor={isActive ? '#FF1A55' : '#E6E6E6'}
+      backgroundColor={isActive ? '$pink' : '$grey'}
       borderRadius={28}
       padding={24}
       pressStyle={{ scale: 0.98, opacity: 0.9 }}
@@ -92,8 +89,8 @@ const ActivityCard = ({
             fontWeight="700"
             letterSpacing={1}
             textTransform="uppercase"
-            color={isActive ? '#450010' : '#111111'}
-            backgroundColor={isActive ? 'rgba(69,0,16,0.15)' : 'rgba(0,0,0,0.08)'}
+            color={isActive ? '$pinkText' : '$greyText'}
+            backgroundColor={isActive ? '$pinkMuted' : '$greyFaint'}
             paddingHorizontal={4}
             paddingVertical={10}
             borderRadius={100}
@@ -112,14 +109,15 @@ const ActivityCard = ({
             fontSize={24} 
             fontWeight="500" 
             letterSpacing={-1} 
-            color={isActive ? '#450010' : '#111111'}
+            color={isActive ? '$pinkText' : '$greyText'}
             lineHeight={26}
           >
             {activity.title}
           </Text>
           <Text 
             fontSize={14} 
-            color={isActive ? 'rgba(69,0,16,0.6)' : '#555555'}
+            color={isActive ? '$pinkText' : '$greySub'}
+            opacity={isActive ? 0.6 : 1}
             marginTop={2}
           >
             {activity.subtitle}
@@ -135,7 +133,8 @@ const ActivityCard = ({
             top={6}
             bottom={6}
             width={1}
-            backgroundColor={isActive ? 'rgba(69,0,16,0.2)' : 'rgba(0,0,0,0.15)'}
+            backgroundColor={isActive ? '$pinkLine' : '$greyLine'}
+            opacity={0.25}
           />
 
           <YStack gap={16}>
@@ -145,7 +144,8 @@ const ActivityCard = ({
                 fontWeight="600" 
                 textTransform="uppercase" 
                 letterSpacing={0.5}
-                color={isActive ? 'rgba(69,0,16,0.5)' : '#555555'}
+                color={isActive ? '$pinkText' : '$greySub'}
+                opacity={isActive ? 0.5 : 1}
               >
                 Total
               </Text>
@@ -153,7 +153,7 @@ const ActivityCard = ({
                 fontSize={18} 
                 fontWeight="500" 
                 letterSpacing={-0.5}
-                color={isActive ? '#450010' : '#111111'}
+                color={isActive ? '$pinkText' : '$greyText'}
               >
                 {activity.amount}
               </Text>
@@ -166,7 +166,8 @@ const ActivityCard = ({
                   fontWeight="600" 
                   textTransform="uppercase" 
                   letterSpacing={0.5}
-                  color={isActive ? 'rgba(69,0,16,0.5)' : '#555555'}
+                  color={isActive ? '$pinkText' : '$greySub'}
+                  opacity={isActive ? 0.5 : 1}
                 >
                   Your Share
                 </Text>
@@ -174,7 +175,7 @@ const ActivityCard = ({
                   fontSize={32} 
                   fontWeight="600" 
                   letterSpacing={-1.5}
-                  color={isActive ? '#450010' : '#111111'}
+                  color={isActive ? '$pinkText' : '$greyText'}
                   lineHeight={36}
                 >
                   {activity.yourShare}
@@ -185,7 +186,8 @@ const ActivityCard = ({
                 <Text 
                   fontSize={13} 
                   fontWeight="500"
-                  color={isActive ? 'rgba(69,0,16,0.6)' : '#555555'}
+                  color={isActive ? '$pinkText' : '$greySub'}
+                  opacity={isActive ? 0.6 : 1}
                 >
                   {activity.members} people
                 </Text>
@@ -196,12 +198,12 @@ const ActivityCard = ({
 
         {/* Status row */}
         <XStack justifyContent="space-between" alignItems="center" marginTop={4}>
-          <Text fontSize={13} color={isActive ? 'rgba(69,0,16,0.5)' : '#555555'}>
+          <Text fontSize={13} color={isActive ? '$pinkText' : '$greySub'} opacity={isActive ? 0.5 : 1}>
             {activity.date}
           </Text>
           {isSettled ? (
             <XStack 
-              backgroundColor={isActive ? 'rgba(69,0,16,0.15)' : '#000'} 
+              backgroundColor={isActive ? '$pinkMuted' : '$black'} 
               paddingHorizontal={10} 
               paddingVertical={4} 
               borderRadius={6}
@@ -219,8 +221,14 @@ const ActivityCard = ({
               gap={4}
               opacity={0.5}
             >
-              <Clock size={13} color={isActive ? '#450010' : '#111'} strokeWidth={2} />
-              <Text fontSize={10} fontWeight="700" letterSpacing={0.5} textTransform="uppercase" color={isActive ? '#450010' : '#111'}>
+              <Clock size={13} color={isActive ? '$pinkText' : '$greyText'} strokeWidth={2} />
+              <Text
+                fontSize={10}
+                fontWeight="700"
+                letterSpacing={0.5}
+                textTransform="uppercase"
+                color={isActive ? '$pinkText' : '$greyText'}
+              >
                 {activity.status === 'active' ? 'In Progress' : 'Pending'}
               </Text>
             </XStack>
@@ -236,7 +244,7 @@ export default function ActivityScreen() {
 
   return (
     <ScrollView 
-      backgroundColor="#050505" 
+      backgroundColor="$background" 
       showsVerticalScrollIndicator={false}
       style={{
         // @ts-ignore
@@ -258,13 +266,13 @@ export default function ActivityScreen() {
             fontSize={48} 
             fontWeight="500" 
             letterSpacing={-2} 
-            color="#FFFFFF"
+            color="$color"
             lineHeight={48}
           >
             Your{'\n'}
-            <Text color="#666666">Splits</Text>
+            <Text color="$colorMuted">Splits</Text>
           </Text>
-          <Text fontSize={15} color="rgba(255,255,255,0.5)" marginTop={8} lineHeight={22}>
+          <Text fontSize={15} color="$colorMuted" marginTop={8} lineHeight={22}>
             Track and settle group expenses.{'\n'}All amounts in USD.
           </Text>
         </YStack>
@@ -273,31 +281,31 @@ export default function ActivityScreen() {
         <XStack gap={12}>
           <YStack 
             flex={1} 
-            backgroundColor="#0D0D0D" 
+            backgroundColor="$surface" 
             borderRadius={16} 
             padding={16}
             borderWidth={1}
-            borderColor="rgba(255,255,255,0.06)"
+            borderColor="$borderColorSubtle"
           >
-            <Text fontSize={12} fontWeight="600" textTransform="uppercase" letterSpacing={0.5} color="rgba(255,255,255,0.4)">
+            <Text fontSize={12} fontWeight="600" textTransform="uppercase" letterSpacing={0.5} color="$colorMuted">
               You Owe
             </Text>
-            <Text fontFamily="$mono" fontSize={24} fontWeight="600" letterSpacing={-1} color="#FF1A55" marginTop={4}>
+            <Text fontFamily="$mono" fontSize={24} fontWeight="600" letterSpacing={-1} color="$pink" marginTop={4}>
               $68.75
             </Text>
           </YStack>
           <YStack 
             flex={1} 
-            backgroundColor="#0D0D0D" 
+            backgroundColor="$surface" 
             borderRadius={16} 
             padding={16}
             borderWidth={1}
-            borderColor="rgba(255,255,255,0.06)"
+            borderColor="$borderColorSubtle"
           >
-            <Text fontSize={12} fontWeight="600" textTransform="uppercase" letterSpacing={0.5} color="rgba(255,255,255,0.4)">
+            <Text fontSize={12} fontWeight="600" textTransform="uppercase" letterSpacing={0.5} color="$colorMuted">
               Owed to You
             </Text>
-            <Text fontFamily="$mono" fontSize={24} fontWeight="600" letterSpacing={-1} color="#00E676" marginTop={4}>
+            <Text fontFamily="$mono" fontSize={24} fontWeight="600" letterSpacing={-1} color="$green" marginTop={4}>
               $95.00
             </Text>
           </YStack>

@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react'
 import { Dimensions, Animated, Pressable } from 'react-native'
-import { ScrollView, YStack, XStack, Text, View, useTheme } from 'tamagui'
+import { YStack, XStack, Text, View } from 'tamagui'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { router } from 'expo-router'
 import * as Haptics from 'expo-haptics'
@@ -10,8 +10,10 @@ import {
   Users,
   Zap,
   RefreshCw,
-  ChevronRight,
+  Sun,
+  Moon,
 } from '@tamagui/lucide-icons'
+import { useThemeMode } from '@/providers/theme-mode'
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window')
 
@@ -72,7 +74,6 @@ const OnboardingSlide = ({
   theme: 'light' | 'dark'
 }) => {
   const Icon = slide.icon
-  const isActive = index === currentIndex
   const isDark = theme === 'dark'
 
   return (
@@ -228,9 +229,8 @@ export default function OnboardingScreen() {
   const scrollRef = useRef<any>(null)
   const scrollX = useRef(new Animated.Value(0)).current
 
-  // Toggle for demo — in real app, use useColorScheme or context
-  const [isDarkMode, setIsDarkMode] = useState(true)
-  const theme = isDarkMode ? 'dark' : 'light'
+  const { isDark, toggle } = useThemeMode()
+  const theme = isDark ? 'dark' : 'light'
 
   const handleScroll = Animated.event(
     [{ nativeEvent: { contentOffset: { x: scrollX } } }],
@@ -267,7 +267,7 @@ export default function OnboardingScreen() {
 
   const toggleTheme = () => {
     Haptics.selectionAsync()
-    setIsDarkMode(!isDarkMode)
+    toggle()
   }
 
   const isLastSlide = currentIndex === slides.length - 1
@@ -275,7 +275,7 @@ export default function OnboardingScreen() {
   return (
     <YStack 
       flex={1} 
-      backgroundColor={isDarkMode ? '$bgDark' : '$backgroundStrong'}
+      backgroundColor="$background"
     >
       {/* Header */}
       <XStack
@@ -310,19 +310,23 @@ export default function OnboardingScreen() {
         <XStack gap={12} alignItems="center">
           <Pressable onPress={toggleTheme}>
             <View
-              paddingHorizontal={12}
-              paddingVertical={6}
-              borderRadius={100}
+              paddingHorizontal={10}
+              paddingVertical={8}
+              borderRadius={999}
               borderWidth={1}
-              borderColor={isDarkMode ? '$lineFaint' : '$greyLine'}
+              borderColor="$borderColorSubtle"
+              backgroundColor="$surface"
             >
-              <Text
-                fontSize={11}
-                fontWeight="600"
-                color={isDarkMode ? '$whiteMuted' : '$greySub'}
-              >
-                {isDarkMode ? '☀️ Light' : '🌙 Dark'}
-              </Text>
+              <XStack alignItems="center" gap={8}>
+                {isDark ? (
+                  <Sun size={14} color="$colorMuted" strokeWidth={2.5} />
+                ) : (
+                  <Moon size={14} color="$colorMuted" strokeWidth={2.5} />
+                )}
+                <Text fontSize={11} fontWeight="600" color="$colorMuted" letterSpacing={-0.2}>
+                  {isDark ? 'Light' : 'Dark'}
+                </Text>
+              </XStack>
             </View>
           </Pressable>
 
@@ -330,7 +334,7 @@ export default function OnboardingScreen() {
             <Text
               fontSize={14}
               fontWeight="500"
-              color={isDarkMode ? '$whiteMuted' : '$greySub'}
+              color="$colorMuted"
             >
               Skip
             </Text>
@@ -375,7 +379,7 @@ export default function OnboardingScreen() {
         {/* CTA Button */}
         <Pressable onPress={handleNext}>
           <XStack
-            backgroundColor={isDarkMode ? '$white' : '$pink'}
+            backgroundColor={isDark ? '$white' : '$pink'}
             borderRadius={50}
             paddingVertical={20}
             paddingHorizontal={24}
@@ -386,7 +390,7 @@ export default function OnboardingScreen() {
               fontSize={16} 
               fontWeight="600" 
               letterSpacing={-0.5}
-              color={isDarkMode ? '$black' : '$white'}
+              color={isDark ? '$black' : '$white'}
             >
               {isLastSlide ? 'Get Started' : 'Continue'}
             </Text>
@@ -394,14 +398,14 @@ export default function OnboardingScreen() {
               width={32}
               height={32}
               borderRadius={16}
-              backgroundColor={isDarkMode ? '$black' : 'rgba(255,255,255,0.2)'}
+              backgroundColor={isDark ? '$black' : 'rgba(255,255,255,0.2)'}
               alignItems="center"
               justifyContent="center"
             >
               {isLastSlide ? (
-                <Zap size={16} color={isDarkMode ? '#FFFFFF' : '#FFFFFF'} strokeWidth={2.5} />
+                <Zap size={16} color="#FFFFFF" strokeWidth={2.5} />
               ) : (
-                <ArrowRight size={16} color={isDarkMode ? '#FFFFFF' : '#FFFFFF'} strokeWidth={2.5} />
+                <ArrowRight size={16} color="#FFFFFF" strokeWidth={2.5} />
               )}
             </View>
           </XStack>
@@ -411,7 +415,7 @@ export default function OnboardingScreen() {
         <Text
           textAlign="center"
           fontSize={12}
-          color={isDarkMode ? '$whiteGhost' : '$greyLine'}
+          color="$colorFaint"
           lineHeight={18}
         >
           By continuing, you agree to our{' '}

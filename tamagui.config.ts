@@ -162,6 +162,7 @@ const tokens = createTokens({
     green: '#00E676',
     greenDark: '#00C853',
     red: '#FF3B5C',
+    purple: '#7C4DFF',
 
     transparent: 'transparent',
   },
@@ -261,6 +262,15 @@ const tamaguiConfig = createTamagui({
       green: tokens.color.green,
       red: tokens.color.red,
 
+      // Semantic aliases for shared primitives
+      primary: tokens.color.pink,
+      primaryHover: tokens.color.pinkDark,
+      textPrimary: tokens.color.white,
+      textSecondary: tokens.color.whiteMuted,
+      textTertiary: tokens.color.whiteGhost,
+      success: tokens.color.green,
+      error: tokens.color.red,
+
       // Onboarding specific
       cardBg: tokens.color.bgCard,
       heroText: tokens.color.white,
@@ -298,6 +308,15 @@ const tamaguiConfig = createTamagui({
 
       green: tokens.color.greenDark,
       red: tokens.color.red,
+
+      // Semantic aliases for shared primitives
+      primary: tokens.color.pink,
+      primaryHover: tokens.color.pinkDark,
+      textPrimary: tokens.color.greyText,
+      textSecondary: tokens.color.greySub,
+      textTertiary: tokens.color.accent666,
+      success: tokens.color.greenDark,
+      error: tokens.color.red,
 
       // Onboarding specific
       cardBg: tokens.color.white,
