@@ -232,12 +232,12 @@ const tamaguiConfig = createTamagui({
     dark: {
       background: tokens.color.bgDark,
       backgroundStrong: tokens.color.bgBlack,
-      backgroundHover: tokens.color.bgCard,
+      backgroundHover: '#0F0F10',
       backgroundPress: tokens.color.line,
       backgroundTransparent: 'rgba(0,0,0,0)',
 
       surface: tokens.color.bgCard,
-      surfaceHover: tokens.color.line,
+      surfaceHover: '#121214',
 
       color: tokens.color.white,
       colorSubtle: tokens.color.whiteDim,
@@ -245,7 +245,7 @@ const tamaguiConfig = createTamagui({
       colorFaint: tokens.color.whiteGhost,
 
       borderColor: tokens.color.line,
-      borderColorSubtle: tokens.color.lineFaint,
+      borderColorSubtle: 'rgba(255,255,255,0.08)',
 
       // Pink accent
       pink: tokens.color.pink,
@@ -262,6 +262,14 @@ const tamaguiConfig = createTamagui({
       green: tokens.color.green,
       red: tokens.color.red,
 
+      // Apple-grade materials (used by Dock + Cards)
+      dockBg: 'rgba(13,13,13,0.72)',
+      dockBorder: 'rgba(255,255,255,0.10)',
+      cardBg: '#0F0F10',
+      cardBorder: 'rgba(255,255,255,0.08)',
+      cardTint: 'rgba(255,26,85,0.10)',
+      cardTintStrong: 'rgba(255,26,85,0.16)',
+
       // Semantic aliases for shared primitives
       primary: tokens.color.pink,
       primaryHover: tokens.color.pinkDark,
@@ -277,23 +285,23 @@ const tamaguiConfig = createTamagui({
       subtleText: tokens.color.whiteMuted,
     },
     light: {
-      // Clean white background with pink accents
-      background: '#FAFAFA',
+      // Apple-like light canvas with pink accents
+      background: '#F5F5F7',
       backgroundStrong: tokens.color.white,
-      backgroundHover: tokens.color.grey,
+      backgroundHover: '#EFEFF2',
       backgroundPress: tokens.color.greyDark,
       backgroundTransparent: 'rgba(255,255,255,0)',
 
       surface: tokens.color.white,
-      surfaceHover: tokens.color.grey,
+      surfaceHover: '#F3F4F6',
 
       color: tokens.color.greyText,
       colorSubtle: tokens.color.greySub,
       colorMuted: tokens.color.accent666,
-      colorFaint: tokens.color.greyLine,
+      colorFaint: 'rgba(0,0,0,0.25)',
 
       borderColor: tokens.color.greyLine,
-      borderColorSubtle: tokens.color.greyFaint,
+      borderColorSubtle: 'rgba(0,0,0,0.06)',
 
       // Pink accent stays the same
       pink: tokens.color.pink,
@@ -302,12 +310,20 @@ const tamaguiConfig = createTamagui({
       pinkMuted: tokens.color.pinkMuted,
 
       // Grey card becomes slightly darker for contrast
-      grey: '#F0F0F0',
+      grey: '#F2F2F4',
       greyText: tokens.color.greyText,
       greySub: tokens.color.greySub,
 
       green: tokens.color.greenDark,
       red: tokens.color.red,
+
+      // Apple-grade materials (used by Dock + Cards)
+      dockBg: 'rgba(255,255,255,0.72)',
+      dockBorder: 'rgba(0,0,0,0.08)',
+      cardBg: '#FFFFFF',
+      cardBorder: 'rgba(0,0,0,0.06)',
+      cardTint: 'rgba(255,26,85,0.08)',
+      cardTintStrong: 'rgba(255,26,85,0.12)',
 
       // Semantic aliases for shared primitives
       primary: tokens.color.pink,

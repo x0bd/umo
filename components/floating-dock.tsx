@@ -1,5 +1,5 @@
 import { Pressable } from 'react-native'
-import { XStack, View, Text } from 'tamagui'
+import { XStack, View } from 'tamagui'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { Home, Activity, Sun, Moon, Plus } from '@tamagui/lucide-icons'
 import { usePathname, router } from 'expo-router'
@@ -8,34 +8,32 @@ import { useThemeMode } from '@/providers/theme-mode'
 
 interface DockItemProps {
   icon: typeof Home
-  label: string
   isActive: boolean
   onPress: () => void
 }
 
-const DockItem = ({ icon: Icon, label, isActive, onPress }: DockItemProps) => {
-  const { isDark } = useThemeMode()
-  
+const DockItem = ({ icon: Icon, isActive, onPress }: DockItemProps) => {
   return (
     <Pressable 
       onPress={() => {
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
         onPress()
       }}
-      style={{ alignItems: 'center', gap: 4 }}
     >
       <View
-        width={44}
-        height={44}
-        borderRadius={14}
-        backgroundColor={isActive ? '$pink' : 'transparent'}
+        width={46}
+        height={46}
+        borderRadius={16}
+        backgroundColor={isActive ? '$cardTintStrong' : 'transparent'}
         alignItems="center"
         justifyContent="center"
+        borderWidth={isActive ? 1 : 0}
+        borderColor={isActive ? '$pink' : 'transparent'}
       >
         <Icon 
-          size={22} 
-          color={isActive ? '#FFFFFF' : isDark ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.5)'} 
-          strokeWidth={isActive ? 2.5 : 1.8} 
+          size={22}
+          color={isActive ? '$pink' : '$colorMuted'}
+          strokeWidth={isActive ? 2.5 : 2}
         />
       </View>
     </Pressable>
@@ -59,31 +57,30 @@ export function FloatingDock() {
       alignItems="center"
     >
       <XStack
-        backgroundColor={isDark ? 'rgba(20,20,20,0.95)' : 'rgba(255,255,255,0.95)'}
+        backgroundColor="$dockBg"
         borderRadius={999}
-        paddingHorizontal={8}
-        paddingVertical={8}
-        gap={4}
+        paddingHorizontal={10}
+        paddingVertical={10}
+        gap={10}
         alignItems="center"
         justifyContent="center"
         borderWidth={1}
-        borderColor={isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.08)'}
+        borderColor="$dockBorder"
         shadowColor="#000"
         shadowOffset={{ width: 0, height: 8 }}
-        shadowOpacity={isDark ? 0.5 : 0.15}
-        shadowRadius={24}
+        shadowOpacity={isDark ? 0.35 : 0.12}
+        shadowRadius={28}
         elevation={12}
         // Backdrop blur effect (web)
         style={{
           // @ts-ignore
-          backdropFilter: 'blur(20px)',
-          WebkitBackdropFilter: 'blur(20px)',
+          backdropFilter: 'blur(24px)',
+          WebkitBackdropFilter: 'blur(24px)',
         }}
       >
         {/* Home */}
         <DockItem 
           icon={Home} 
-          label="Home" 
           isActive={isHome}
           onPress={() => router.push('/')}
         />
@@ -96,17 +93,19 @@ export function FloatingDock() {
           }}
         >
           <View
-            width={52}
-            height={52}
-            borderRadius={16}
+            width={54}
+            height={54}
+            borderRadius={18}
             backgroundColor="$pink"
             alignItems="center"
             justifyContent="center"
-            marginHorizontal={8}
-            shadowColor="#FF1A55"
+            marginHorizontal={2}
+            borderWidth={1}
+            borderColor="rgba(255,255,255,0.20)"
+            shadowColor="#000"
             shadowOffset={{ width: 0, height: 4 }}
-            shadowOpacity={0.4}
-            shadowRadius={12}
+            shadowOpacity={isDark ? 0.35 : 0.18}
+            shadowRadius={16}
           >
             <Plus size={26} color="#FFFFFF" strokeWidth={2.5} />
           </View>
@@ -115,7 +114,6 @@ export function FloatingDock() {
         {/* Activity */}
         <DockItem 
           icon={Activity} 
-          label="Activity" 
           isActive={isActivity}
           onPress={() => router.push('/explore')}
         />
@@ -128,17 +126,19 @@ export function FloatingDock() {
           }}
         >
           <View
-            width={44}
-            height={44}
-            borderRadius={14}
-            backgroundColor={isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.05)'}
+            width={46}
+            height={46}
+            borderRadius={16}
+            backgroundColor="$backgroundHover"
+            borderWidth={1}
+            borderColor="$borderColorSubtle"
             alignItems="center"
             justifyContent="center"
           >
             {isDark ? (
-              <Sun size={20} color="rgba(255,255,255,0.5)" strokeWidth={1.8} />
+              <Sun size={20} color="$colorMuted" strokeWidth={2} />
             ) : (
-              <Moon size={20} color="rgba(0,0,0,0.5)" strokeWidth={1.8} />
+              <Moon size={20} color="$colorMuted" strokeWidth={2} />
             )}
           </View>
         </Pressable>

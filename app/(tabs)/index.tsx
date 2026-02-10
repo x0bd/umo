@@ -9,9 +9,17 @@ import {
   ChevronRight,
   Users,
   Zap,
+  Sparkles,
 } from '@tamagui/lucide-icons'
 import { useThemeMode } from '@/providers/theme-mode'
 import { router } from 'expo-router'
+
+const R = {
+  card: 24,
+  cardSm: 20,
+  chip: 999,
+  icon: 16,
+}
 
 // ============================================
 // SECTION HEADER
@@ -29,7 +37,7 @@ const SectionHeader = ({
     <Text
       fontSize={13}
       fontWeight="700"
-      letterSpacing={1}
+      letterSpacing={0.8}
       textTransform="uppercase"
       color="$colorMuted"
     >
@@ -52,13 +60,13 @@ const SectionHeader = ({
 // BALANCE CARD
 // ============================================
 const BalanceCard = () => {
-  const { isDark } = useThemeMode()
-  
   return (
     <YStack
       backgroundColor="$pink"
-      borderRadius={24}
+      borderRadius={R.card}
       padding={24}
+      borderWidth={1}
+      borderColor="rgba(0,0,0,0.08)"
     >
       <XStack justifyContent="space-between" alignItems="flex-start" marginBottom={20}>
         <YStack>
@@ -85,10 +93,10 @@ const BalanceCard = () => {
           </Text>
         </YStack>
         <View
-          backgroundColor="rgba(69,0,16,0.15)"
+          backgroundColor="$pinkMuted"
           paddingHorizontal={10}
           paddingVertical={6}
-          borderRadius={100}
+          borderRadius={R.chip}
         >
           <Text fontSize={11} fontWeight="700" color="$pinkText" letterSpacing={0.5}>
             USD
@@ -100,9 +108,11 @@ const BalanceCard = () => {
       <XStack gap={12}>
         <YStack 
           flex={1} 
-          backgroundColor="rgba(69,0,16,0.1)" 
-          borderRadius={16} 
+          backgroundColor="$pinkSoft" 
+          borderRadius={R.icon} 
           padding={14}
+          borderWidth={1}
+          borderColor="rgba(0,0,0,0.06)"
         >
           <XStack alignItems="center" gap={6} marginBottom={4}>
             <ArrowUpRight size={14} color="$pinkText" strokeWidth={2.5} />
@@ -116,9 +126,11 @@ const BalanceCard = () => {
         </YStack>
         <YStack 
           flex={1} 
-          backgroundColor="rgba(69,0,16,0.1)" 
-          borderRadius={16} 
+          backgroundColor="$pinkSoft" 
+          borderRadius={R.icon} 
           padding={14}
+          borderWidth={1}
+          borderColor="rgba(0,0,0,0.06)"
         >
           <XStack alignItems="center" gap={6} marginBottom={4}>
             <ArrowDownLeft size={14} color="$pinkText" strokeWidth={2.5} />
@@ -143,20 +155,20 @@ const ExchangeRateCard = () => {
   
   return (
     <XStack
-      backgroundColor="$surface"
-      borderRadius={20}
+      backgroundColor="$cardBg"
+      borderRadius={R.cardSm}
       padding={16}
       alignItems="center"
       justifyContent="space-between"
       borderWidth={1}
-      borderColor="$borderColorSubtle"
+      borderColor="$cardBorder"
     >
       <XStack alignItems="center" gap={12}>
         <View
           width={40}
           height={40}
           borderRadius={12}
-          backgroundColor={isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.04)'}
+          backgroundColor="$backgroundHover"
           alignItems="center"
           justifyContent="center"
         >
@@ -179,8 +191,10 @@ const ExchangeRateCard = () => {
         <View
           paddingHorizontal={12}
           paddingVertical={8}
-          borderRadius={100}
-          backgroundColor={isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.04)'}
+          borderRadius={R.chip}
+          backgroundColor="$backgroundHover"
+          borderWidth={1}
+          borderColor="$borderColorSubtle"
         >
           <Text fontSize={11} fontWeight="600" color="$colorMuted">Update</Text>
         </View>
@@ -205,30 +219,30 @@ const ActiveSplitCard = ({
   members: number
   isLive?: boolean
 }) => {
-  const { isDark } = useThemeMode()
-  
   return (
-    <Pressable onPress={() => router.push('/modal')}>
+    <Pressable onPress={() => router.push(`/session/${title.replace(/\s+/g, '-').toLowerCase()}`)}>
       <XStack
-        backgroundColor="$grey"
-        borderRadius={20}
+        backgroundColor={isLive ? '$cardTint' : '$cardBg'}
+        borderRadius={R.cardSm}
         padding={18}
         alignItems="center"
         justifyContent="space-between"
+        borderWidth={1}
+        borderColor={isLive ? '$pink' : '$cardBorder'}
       >
         <XStack alignItems="center" gap={14}>
           <View
             width={44}
             height={44}
             borderRadius={14}
-            backgroundColor={isLive ? '$pink' : '$greyDark'}
+            backgroundColor={isLive ? '$pink' : '$backgroundHover'}
             alignItems="center"
             justifyContent="center"
           >
             {isLive ? (
               <Zap size={20} color="#FFFFFF" strokeWidth={2} />
             ) : (
-              <Users size={20} color="$greyText" strokeWidth={2} />
+              <Users size={20} color="$colorMuted" strokeWidth={2} />
             )}
           </View>
           <YStack gap={2}>
@@ -249,7 +263,7 @@ const ActiveSplitCard = ({
                 </View>
               )}
             </XStack>
-            <Text fontSize={13} color="$greySub">
+            <Text fontSize={13} color="$colorMuted">
               {venue} · {members} people
             </Text>
           </YStack>
@@ -258,7 +272,7 @@ const ActiveSplitCard = ({
           <Text fontFamily="$mono" fontSize={18} fontWeight="600" color="$greyText" letterSpacing={-0.5}>
             {amount}
           </Text>
-          <Text fontSize={11} color="$greySub">Your share</Text>
+          <Text fontSize={11} color="$colorMuted">Your share</Text>
         </YStack>
       </XStack>
     </Pressable>
@@ -284,14 +298,14 @@ const FriendAvatar = ({
       <View
         width={52}
         height={52}
-        borderRadius={16}
-        backgroundColor="$grey"
+        borderRadius={R.icon}
+        backgroundColor="$cardBg"
         alignItems="center"
         justifyContent="center"
         borderWidth={2}
         borderColor={isOwed ? '$green' : '$pink'}
       >
-        <Text fontSize={16} fontWeight="600" color="$greyText">
+        <Text fontSize={16} fontWeight="600" color="$color">
           {initials}
         </Text>
       </View>
@@ -344,7 +358,7 @@ export default function HomeScreen() {
               letterSpacing={-1}
               color="$color"
             >
-              Tino 👋
+              Tino
             </Text>
           </YStack>
           
@@ -355,11 +369,11 @@ export default function HomeScreen() {
                 width={40}
                 height={40}
                 borderRadius={12}
-                backgroundColor={isDark ? '$surface' : '$grey'}
+                backgroundColor="$cardBg"
                 alignItems="center"
                 justifyContent="center"
                 borderWidth={1}
-                borderColor="$borderColorSubtle"
+                borderColor="$cardBorder"
               >
                 <Bell size={20} color="$colorMuted" strokeWidth={1.8} />
               </View>
@@ -369,11 +383,13 @@ export default function HomeScreen() {
                 width={44}
                 height={44}
                 borderRadius={14}
-                backgroundColor="$pink"
+                backgroundColor="$cardBg"
+                borderWidth={1}
+                borderColor="$cardBorder"
                 alignItems="center"
                 justifyContent="center"
               >
-                <Text fontSize={16} fontWeight="700" color="#FFF">TM</Text>
+                <Text fontSize={14} fontWeight="700" color="$color">TM</Text>
               </View>
             </Pressable>
           </XStack>

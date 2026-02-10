@@ -13,6 +13,12 @@ import {
 } from '@tamagui/lucide-icons'
 import { useThemeMode } from '@/providers/theme-mode'
 
+const R = {
+  card: 20,
+  icon: 16,
+  chip: 999,
+}
+
 // ============================================
 // ACTIVITY DATA
 // ============================================
@@ -71,7 +77,6 @@ const ActivityCard = ({
 }: { 
   activity: typeof activities[0] 
 }) => {
-  const { isDark } = useThemeMode()
   const isActive = activity.status === 'active'
   const isSettled = activity.status === 'settled'
   const Icon = activity.icon
@@ -79,25 +84,29 @@ const ActivityCard = ({
   return (
     <Pressable>
       <XStack
-        backgroundColor={isActive ? '$pink' : '$grey'}
-        borderRadius={20}
+        backgroundColor={isActive ? '$cardTint' : '$cardBg'}
+        borderRadius={R.card}
         padding={18}
         alignItems="center"
         gap={14}
+        borderWidth={1}
+        borderColor={isActive ? '$pink' : '$cardBorder'}
       >
         {/* Icon */}
         <View
           width={48}
           height={48}
-          borderRadius={14}
-          backgroundColor={isActive ? 'rgba(69,0,16,0.15)' : '$greyDark'}
+          borderRadius={R.icon}
+          backgroundColor={isActive ? '$pinkMuted' : '$backgroundHover'}
           alignItems="center"
           justifyContent="center"
+          borderWidth={1}
+          borderColor={isActive ? 'rgba(0,0,0,0.08)' : '$borderColorSubtle'}
         >
           {isActive ? (
             <Zap size={22} color="$pinkText" strokeWidth={2} />
           ) : (
-            <Icon size={22} color="$greyText" strokeWidth={1.8} />
+            <Icon size={22} color="$colorMuted" strokeWidth={1.8} />
           )}
         </View>
 
@@ -108,7 +117,7 @@ const ActivityCard = ({
               fontSize={16} 
               fontWeight="600" 
               letterSpacing={-0.3} 
-              color={isActive ? '$pinkText' : '$greyText'}
+              color="$color"
               numberOfLines={1}
               flex={1}
             >
@@ -116,7 +125,7 @@ const ActivityCard = ({
             </Text>
             {isActive && (
               <View
-                backgroundColor="rgba(69,0,16,0.2)"
+                backgroundColor="$pinkMuted"
                 paddingHorizontal={6}
                 paddingVertical={2}
                 borderRadius={4}
@@ -144,16 +153,15 @@ const ActivityCard = ({
           </XStack>
           <Text 
             fontSize={13} 
-            color={isActive ? '$pinkText' : '$greySub'}
-            opacity={isActive ? 0.6 : 1}
+            color="$colorMuted"
             numberOfLines={1}
           >
             {activity.venue} · {activity.members} people
           </Text>
           <Text 
             fontSize={11} 
-            color={isActive ? '$pinkText' : '$greySub'}
-            opacity={isActive ? 0.5 : 0.7}
+            color="$colorMuted"
+            opacity={0.7}
           >
             {activity.date}
           </Text>
@@ -165,12 +173,12 @@ const ActivityCard = ({
             fontFamily="$mono" 
             fontSize={18} 
             fontWeight="600" 
-            color={isActive ? '$pinkText' : '$greyText'}
+            color="$color"
             letterSpacing={-0.5}
           >
             {activity.yourShare}
           </Text>
-          <Text fontSize={10} color={isActive ? '$pinkText' : '$greySub'} opacity={0.6}>
+          <Text fontSize={10} color="$colorMuted" opacity={0.7}>
             of {activity.amount}
           </Text>
         </YStack>
@@ -178,7 +186,7 @@ const ActivityCard = ({
         {/* Chevron */}
         <ChevronRight 
           size={18} 
-          color={isActive ? '$pinkText' : '$greySub'} 
+          color="$colorMuted"
           strokeWidth={2}
           opacity={0.5}
         />
