@@ -1,279 +1,242 @@
+import { Pressable } from 'react-native'
 import { ScrollView, YStack, XStack, Text, View } from 'tamagui'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { 
   Clock, 
   Check,
+  ChevronRight,
+  Users,
+  Zap,
+  Car,
+  ShoppingBag,
+  Utensils,
 } from '@tamagui/lucide-icons'
+import { useThemeMode } from '@/providers/theme-mode'
 
 // ============================================
-// ACTIVITY SCREEN — SPLTR AESTHETIC
-// Dark bg, flow lines, tight typography
+// ACTIVITY DATA
 // ============================================
-
 const activities = [
   { 
     id: 1, 
     title: 'Lunch Split', 
-    subtitle: 'Nando\'s — Table 6',
+    venue: 'Nando\'s — Table 6',
     amount: '$142.50', 
     yourShare: '$47.50',
     members: 3,
-    date: 'Today',
+    date: 'Today, 1:30 PM',
     status: 'active' as const,
+    icon: Utensils,
   },
   { 
     id: 2, 
     title: 'Uber Ride', 
-    subtitle: 'Airport → CBD',
+    venue: 'Airport → CBD',
     amount: '$24.00', 
     yourShare: '$8.00',
     members: 3,
     date: 'Yesterday',
     status: 'settled' as const,
+    icon: Car,
   },
   { 
     id: 3, 
     title: 'BBQ Night', 
-    subtitle: 'Braai @ Rudo\'s',
+    venue: 'Braai @ Rudo\'s',
     amount: '$85.00', 
     yourShare: '$21.25',
     members: 4,
     date: 'Feb 5',
     status: 'pending' as const,
+    icon: Users,
   },
   { 
     id: 4, 
     title: 'Groceries', 
-    subtitle: 'Pick n Pay',
+    venue: 'Pick n Pay',
     amount: '$62.30', 
     yourShare: '$31.15',
     members: 2,
     date: 'Feb 3',
     status: 'settled' as const,
+    icon: ShoppingBag,
   },
 ]
 
+// ============================================
+// ACTIVITY CARD (Full-width, no vertical pill)
+// ============================================
 const ActivityCard = ({ 
   activity 
 }: { 
   activity: typeof activities[0] 
 }) => {
+  const { isDark } = useThemeMode()
   const isActive = activity.status === 'active'
   const isSettled = activity.status === 'settled'
+  const Icon = activity.icon
 
   return (
-    <XStack
-      backgroundColor={isActive ? '$pink' : '$grey'}
-      borderRadius={28}
-      padding={24}
-      pressStyle={{ scale: 0.98, opacity: 0.9 }}
-    >
-      {/* Side pill */}
-      <YStack 
-        width={24} 
-        alignItems="center" 
-        justifyContent="flex-start"
-        flexShrink={0}
-        marginRight={8}
+    <Pressable>
+      <XStack
+        backgroundColor={isActive ? '$pink' : '$grey'}
+        borderRadius={20}
+        padding={18}
+        alignItems="center"
+        gap={14}
       >
+        {/* Icon */}
         <View
-          style={{
-            // @ts-ignore
-            writingMode: 'vertical-rl',
-            textOrientation: 'mixed',
-            transform: [{ rotate: '180deg' }],
-          }}
+          width={48}
+          height={48}
+          borderRadius={14}
+          backgroundColor={isActive ? 'rgba(69,0,16,0.15)' : '$greyDark'}
+          alignItems="center"
+          justifyContent="center"
         >
-          <Text
-            fontSize={9}
-            fontWeight="700"
-            letterSpacing={1}
-            textTransform="uppercase"
-            color={isActive ? '$pinkText' : '$greyText'}
-            backgroundColor={isActive ? '$pinkMuted' : '$greyFaint'}
-            paddingHorizontal={4}
-            paddingVertical={10}
-            borderRadius={100}
-            // @ts-ignore
-            whiteSpace="nowrap"
-          >
-            {activity.status === 'settled' ? 'Done' : activity.status === 'active' ? 'Live' : 'Owed'}
-          </Text>
+          {isActive ? (
+            <Zap size={22} color="$pinkText" strokeWidth={2} />
+          ) : (
+            <Icon size={22} color="$greyText" strokeWidth={1.8} />
+          )}
         </View>
-      </YStack>
 
-      {/* Content */}
-      <YStack flex={1} gap={16}>
-        <YStack>
+        {/* Content */}
+        <YStack flex={1} gap={4}>
+          <XStack alignItems="center" gap={8}>
+            <Text 
+              fontSize={16} 
+              fontWeight="600" 
+              letterSpacing={-0.3} 
+              color={isActive ? '$pinkText' : '$greyText'}
+              numberOfLines={1}
+              flex={1}
+            >
+              {activity.title}
+            </Text>
+            {isActive && (
+              <View
+                backgroundColor="rgba(69,0,16,0.2)"
+                paddingHorizontal={6}
+                paddingVertical={2}
+                borderRadius={4}
+              >
+                <Text fontSize={9} fontWeight="700" color="$pinkText" letterSpacing={0.5}>
+                  LIVE
+                </Text>
+              </View>
+            )}
+            {isSettled && (
+              <View
+                backgroundColor="$black"
+                paddingHorizontal={6}
+                paddingVertical={2}
+                borderRadius={4}
+              >
+                <XStack alignItems="center" gap={3}>
+                  <Check size={10} color="#FFF" strokeWidth={3} />
+                  <Text fontSize={9} fontWeight="700" color="#FFF" letterSpacing={0.5}>
+                    DONE
+                  </Text>
+                </XStack>
+              </View>
+            )}
+          </XStack>
           <Text 
-            fontSize={24} 
-            fontWeight="500" 
-            letterSpacing={-1} 
-            color={isActive ? '$pinkText' : '$greyText'}
-            lineHeight={26}
-          >
-            {activity.title}
-          </Text>
-          <Text 
-            fontSize={14} 
+            fontSize={13} 
             color={isActive ? '$pinkText' : '$greySub'}
             opacity={isActive ? 0.6 : 1}
-            marginTop={2}
+            numberOfLines={1}
           >
-            {activity.subtitle}
+            {activity.venue} · {activity.members} people
           </Text>
-        </YStack>
-
-        {/* Flow line section */}
-        <YStack position="relative" paddingLeft={20}>
-          {/* Vertical line */}
-          <View
-            position="absolute"
-            left={0}
-            top={6}
-            bottom={6}
-            width={1}
-            backgroundColor={isActive ? '$pinkLine' : '$greyLine'}
-            opacity={0.25}
-          />
-
-          <YStack gap={16}>
-            <YStack>
-              <Text 
-                fontSize={12} 
-                fontWeight="600" 
-                textTransform="uppercase" 
-                letterSpacing={0.5}
-                color={isActive ? '$pinkText' : '$greySub'}
-                opacity={isActive ? 0.5 : 1}
-              >
-                Total
-              </Text>
-              <Text 
-                fontSize={18} 
-                fontWeight="500" 
-                letterSpacing={-0.5}
-                color={isActive ? '$pinkText' : '$greyText'}
-              >
-                {activity.amount}
-              </Text>
-            </YStack>
-
-            <XStack justifyContent="space-between" alignItems="flex-end">
-              <YStack>
-                <Text 
-                  fontSize={12} 
-                  fontWeight="600" 
-                  textTransform="uppercase" 
-                  letterSpacing={0.5}
-                  color={isActive ? '$pinkText' : '$greySub'}
-                  opacity={isActive ? 0.5 : 1}
-                >
-                  Your Share
-                </Text>
-                <Text 
-                  fontSize={32} 
-                  fontWeight="600" 
-                  letterSpacing={-1.5}
-                  color={isActive ? '$pinkText' : '$greyText'}
-                  lineHeight={36}
-                >
-                  {activity.yourShare}
-                </Text>
-              </YStack>
-
-              <XStack gap={4} alignItems="center" marginBottom={4}>
-                <Text 
-                  fontSize={13} 
-                  fontWeight="500"
-                  color={isActive ? '$pinkText' : '$greySub'}
-                  opacity={isActive ? 0.6 : 1}
-                >
-                  {activity.members} people
-                </Text>
-              </XStack>
-            </XStack>
-          </YStack>
-        </YStack>
-
-        {/* Status row */}
-        <XStack justifyContent="space-between" alignItems="center" marginTop={4}>
-          <Text fontSize={13} color={isActive ? '$pinkText' : '$greySub'} opacity={isActive ? 0.5 : 1}>
+          <Text 
+            fontSize={11} 
+            color={isActive ? '$pinkText' : '$greySub'}
+            opacity={isActive ? 0.5 : 0.7}
+          >
             {activity.date}
           </Text>
-          {isSettled ? (
-            <XStack 
-              backgroundColor={isActive ? '$pinkMuted' : '$black'} 
-              paddingHorizontal={10} 
-              paddingVertical={4} 
-              borderRadius={6}
-              gap={4}
-              alignItems="center"
-            >
-              <Check size={12} color="#FFF" strokeWidth={3} />
-              <Text fontSize={10} fontWeight="700" letterSpacing={0.5} textTransform="uppercase" color="#FFF">
-                Settled
-              </Text>
-            </XStack>
-          ) : (
-            <XStack 
-              alignItems="center" 
-              gap={4}
-              opacity={0.5}
-            >
-              <Clock size={13} color={isActive ? '$pinkText' : '$greyText'} strokeWidth={2} />
-              <Text
-                fontSize={10}
-                fontWeight="700"
-                letterSpacing={0.5}
-                textTransform="uppercase"
-                color={isActive ? '$pinkText' : '$greyText'}
-              >
-                {activity.status === 'active' ? 'In Progress' : 'Pending'}
-              </Text>
-            </XStack>
-          )}
-        </XStack>
-      </YStack>
-    </XStack>
+        </YStack>
+
+        {/* Amount */}
+        <YStack alignItems="flex-end" gap={2}>
+          <Text 
+            fontFamily="$mono" 
+            fontSize={18} 
+            fontWeight="600" 
+            color={isActive ? '$pinkText' : '$greyText'}
+            letterSpacing={-0.5}
+          >
+            {activity.yourShare}
+          </Text>
+          <Text fontSize={10} color={isActive ? '$pinkText' : '$greySub'} opacity={0.6}>
+            of {activity.amount}
+          </Text>
+        </YStack>
+
+        {/* Chevron */}
+        <ChevronRight 
+          size={18} 
+          color={isActive ? '$pinkText' : '$greySub'} 
+          strokeWidth={2}
+          opacity={0.5}
+        />
+      </XStack>
+    </Pressable>
   )
 }
 
+// ============================================
+// SECTION HEADER
+// ============================================
+const SectionHeader = ({ title }: { title: string }) => (
+  <Text
+    fontSize={13}
+    fontWeight="700"
+    letterSpacing={1}
+    textTransform="uppercase"
+    color="$colorMuted"
+    marginBottom={12}
+  >
+    {title}
+  </Text>
+)
+
+// ============================================
+// MAIN SCREEN
+// ============================================
 export default function ActivityScreen() {
   const insets = useSafeAreaInsets()
+  const { isDark } = useThemeMode()
+
+  const activeItems = activities.filter(a => a.status === 'active')
+  const pendingItems = activities.filter(a => a.status === 'pending')
+  const settledItems = activities.filter(a => a.status === 'settled')
 
   return (
     <ScrollView 
       backgroundColor="$background" 
       showsVerticalScrollIndicator={false}
-      style={{
-        // @ts-ignore
-        WebkitFontSmoothing: 'antialiased',
-      }}
+      contentContainerStyle={{ paddingBottom: 120 }}
     >
       <YStack
-        paddingTop={insets.top + 24}
-        paddingBottom={insets.bottom + 100}
+        paddingTop={insets.top + 16}
         paddingHorizontal={20}
-        gap={20}
-        maxWidth={450}
-        marginHorizontal="auto"
-        width="100%"
+        gap={24}
       >
         {/* Header */}
-        <YStack paddingBottom={12} gap={4}>
-          <Text 
-            fontSize={48} 
-            fontWeight="500" 
-            letterSpacing={-2} 
-            color="$color"
-            lineHeight={48}
-          >
-            Your{'\n'}
-            <Text color="$colorMuted">Splits</Text>
+        <YStack gap={4}>
+          <Text fontSize={14} color="$colorMuted" fontWeight="500">
+            Your activity
           </Text>
-          <Text fontSize={15} color="$colorMuted" marginTop={8} lineHeight={22}>
-            Track and settle group expenses.{'\n'}All amounts in USD.
+          <Text 
+            fontSize={28} 
+            fontWeight="600" 
+            letterSpacing={-1} 
+            color="$color"
+          >
+            All Splits
           </Text>
         </YStack>
 
@@ -290,7 +253,7 @@ export default function ActivityScreen() {
             <Text fontSize={12} fontWeight="600" textTransform="uppercase" letterSpacing={0.5} color="$colorMuted">
               You Owe
             </Text>
-            <Text fontFamily="$mono" fontSize={24} fontWeight="600" letterSpacing={-1} color="$pink" marginTop={4}>
+            <Text fontFamily="$mono" fontSize={22} fontWeight="600" letterSpacing={-1} color="$pink" marginTop={4}>
               $68.75
             </Text>
           </YStack>
@@ -305,21 +268,47 @@ export default function ActivityScreen() {
             <Text fontSize={12} fontWeight="600" textTransform="uppercase" letterSpacing={0.5} color="$colorMuted">
               Owed to You
             </Text>
-            <Text fontFamily="$mono" fontSize={24} fontWeight="600" letterSpacing={-1} color="$green" marginTop={4}>
+            <Text fontFamily="$mono" fontSize={22} fontWeight="600" letterSpacing={-1} color="$green" marginTop={4}>
               $95.00
             </Text>
           </YStack>
         </XStack>
 
-        {/* Activity cards */}
-        <YStack gap={16}>
-          {activities.map((activity) => (
-            <ActivityCard key={activity.id} activity={activity} />
-          ))}
-        </YStack>
+        {/* Active */}
+        {activeItems.length > 0 && (
+          <YStack>
+            <SectionHeader title="Active Now" />
+            <YStack gap={10}>
+              {activeItems.map((activity) => (
+                <ActivityCard key={activity.id} activity={activity} />
+              ))}
+            </YStack>
+          </YStack>
+        )}
 
-        {/* Bottom spacer */}
-        <View height={20} />
+        {/* Pending */}
+        {pendingItems.length > 0 && (
+          <YStack>
+            <SectionHeader title="Pending Settlement" />
+            <YStack gap={10}>
+              {pendingItems.map((activity) => (
+                <ActivityCard key={activity.id} activity={activity} />
+              ))}
+            </YStack>
+          </YStack>
+        )}
+
+        {/* Settled */}
+        {settledItems.length > 0 && (
+          <YStack>
+            <SectionHeader title="Completed" />
+            <YStack gap={10}>
+              {settledItems.map((activity) => (
+                <ActivityCard key={activity.id} activity={activity} />
+              ))}
+            </YStack>
+          </YStack>
+        )}
       </YStack>
     </ScrollView>
   )

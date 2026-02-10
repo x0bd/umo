@@ -300,7 +300,7 @@ export default function OnboardingScreen() {
             fontSize={18}
             fontWeight="700"
             letterSpacing={-0.5}
-            color={isDarkMode ? '$white' : '$greyText'}
+            color={isDark ? '$white' : '$greyText'}
           >
             umo
           </Text>
