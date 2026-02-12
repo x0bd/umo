@@ -6,11 +6,11 @@ import {
   Share2,
   X,
 } from '@tamagui/lucide-icons'
-import * as Clipboard from 'expo-clipboard'
 import * as Haptics from 'expo-haptics'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useState } from 'react'
 import { Pressable, Share } from 'react-native'
+import * as Clipboard from 'expo-clipboard'
 import Animated, {
   FadeIn,
   FadeInDown,

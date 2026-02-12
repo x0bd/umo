@@ -229,19 +229,19 @@ const BillItemRow = ({
       entering={FadeInDown.delay(delay).springify()}
       exiting={FadeOut.duration(200)}
       layout={Layout.springify()}
-      style={animatedStyle}
     >
-      <Pressable onPress={handlePress}>
-        <XStack
-          backgroundColor="$cardBg"
-          borderRadius={16}
-          padding={14}
-          alignItems="center"
-          gap={12}
-          borderWidth={1}
-          borderColor={isClaimed ? '$accent' : '$cardBorder'}
-          opacity={isClaimed ? 1 : 0.7}
-        >
+      <Animated.View style={animatedStyle}>
+        <Pressable onPress={handlePress}>
+          <XStack
+            backgroundColor="$cardBg"
+            borderRadius={16}
+            padding={14}
+            alignItems="center"
+            gap={12}
+            borderWidth={1}
+            borderColor={isClaimed ? '$accent' : '$cardBorder'}
+            opacity={isClaimed ? 1 : 0.7}
+          >
           {/* Checkbox */}
           <View
             width={24}
@@ -310,8 +310,9 @@ const BillItemRow = ({
               </View>
             </Pressable>
           )}
-        </XStack>
-      </Pressable>
+          </XStack>
+        </Pressable>
+      </Animated.View>
     </Animated.View>
   )
 }
