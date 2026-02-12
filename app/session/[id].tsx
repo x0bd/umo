@@ -1,20 +1,19 @@
 import {
   ArrowLeft,
   Check,
-  DollarSign,
   Divide,
   Hand,
-  Minus,
   Plus,
   QrCode,
   Receipt,
   Trash2,
+  UserPlus,
   Users,
 } from '@tamagui/lucide-icons'
 import * as Haptics from 'expo-haptics'
 import { router, useLocalSearchParams } from 'expo-router'
 import { useCallback, useRef, useState } from 'react'
-import { Pressable, TextInput, Keyboard } from 'react-native'
+import { Pressable, TextInput, Keyboard, Image } from 'react-native'
 import Animated, {
   FadeIn,
   FadeInDown,
@@ -37,6 +36,7 @@ interface BillItem {
   name: string
   amount: number
   claimedBy: string[] // user IDs who claimed this item
+  addedBy: string // who added this item
 }
 
 interface Member {
@@ -44,9 +44,37 @@ interface Member {
   name: string
   avatar: string
   isHost: boolean
+  isMe: boolean
 }
 
 type SplitMode = 'items' | 'equal' | 'custom'
+
+// ============================================
+// MOCK DATA - In production, this comes from real-time sync
+// ============================================
+const MOCK_MEMBERS: Member[] = [
+  {
+    id: 'me',
+    name: 'You',
+    avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=80&h=80&fit=crop',
+    isHost: true,
+    isMe: true,
+  },
+  {
+    id: 'user-2',
+    name: 'Tino',
+    avatar: 'https://images.unsplash.com/photo-1599566150163-29194dcabd36?w=80&h=80&fit=crop',
+    isHost: false,
+    isMe: false,
+  },
+  {
+    id: 'user-3',
+    name: 'Fari',
+    avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&h=80&fit=crop',
+    isHost: false,
+    isMe: false,
+  },
+]
 
 // ============================================
 // ANIMATED COMPONENTS
@@ -129,86 +157,108 @@ const SplitModeSelector = ({
 }
 
 // ============================================
-// MEMBER COUNT STEPPER
+// MEMBER AVATAR
 // ============================================
-const MemberStepper = ({
-  count,
-  onChange,
+const MemberAvatar = ({
+  member,
+  size = 44,
+  showBorder = false,
 }: {
-  count: number
-  onChange: (count: number) => void
+  member: Member
+  size?: number
+  showBorder?: boolean
+}) => (
+  <View
+    width={size}
+    height={size}
+    borderRadius={size / 2}
+    overflow="hidden"
+    borderWidth={showBorder ? 2 : 0}
+    borderColor={member.isHost ? '$accent' : '$success'}
+  >
+    <Image
+      source={{ uri: member.avatar }}
+      style={{ width: size, height: size }}
+      resizeMode="cover"
+    />
+  </View>
+)
+
+// ============================================
+// MEMBERS IN SESSION
+// ============================================
+const MembersInSession = ({
+  members,
+  onInvite,
+}: {
+  members: Member[]
+  onInvite: () => void
 }) => {
-  const handleDecrement = () => {
-    if (count > 1) {
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
-      onChange(count - 1)
-    }
-  }
-
-  const handleIncrement = () => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
-    onChange(count + 1)
-  }
-
   return (
-    <XStack
+    <AnimatedXStack
+      entering={FadeIn.delay(100)}
       backgroundColor="$cardBg"
-      borderRadius={14}
+      borderRadius={16}
+      padding={14}
+      alignItems="center"
+      gap={12}
       borderWidth={1}
       borderColor="$cardBorder"
-      padding={4}
-      alignItems="center"
-      gap={4}
     >
-      <Pressable onPress={handleDecrement}>
-        <View
-          width={40}
-          height={40}
-          borderRadius={10}
-          backgroundColor={count > 1 ? '$backgroundHover' : 'transparent'}
-          alignItems="center"
-          justifyContent="center"
-          opacity={count > 1 ? 1 : 0.3}
-        >
-          <Minus size={18} color="$colorMuted" strokeWidth={2} />
-        </View>
-      </Pressable>
-
-      <XStack
-        flex={1}
-        alignItems="center"
-        justifyContent="center"
-        gap={8}
-        paddingHorizontal={12}
-      >
-        <Users size={16} color="$accent" strokeWidth={2} />
-        <Text
-          fontFamily="$mono"
-          fontSize={24}
-          fontWeight="700"
-          letterSpacing={-0.5}
-          color="$color"
-        >
-          {count}
-        </Text>
-        <Text fontSize={14} color="$colorMuted">
-          {count === 1 ? 'person' : 'people'}
-        </Text>
+      {/* Avatar Stack */}
+      <XStack>
+        {members.slice(0, 4).map((member, index) => (
+          <View
+            key={member.id}
+            marginLeft={index > 0 ? -12 : 0}
+            zIndex={members.length - index}
+          >
+            <MemberAvatar member={member} size={36} showBorder />
+          </View>
+        ))}
+        {members.length > 4 && (
+          <View
+            marginLeft={-12}
+            width={36}
+            height={36}
+            borderRadius={18}
+            backgroundColor="$backgroundHover"
+            alignItems="center"
+            justifyContent="center"
+            borderWidth={2}
+            borderColor="$cardBg"
+          >
+            <Text fontSize={11} fontWeight="600" color="$colorMuted">
+              +{members.length - 4}
+            </Text>
+          </View>
+        )}
       </XStack>
 
-      <Pressable onPress={handleIncrement}>
+      {/* Info */}
+      <YStack flex={1} gap={2}>
+        <Text fontSize={14} fontWeight="600" letterSpacing={-0.2} color="$color">
+          {members.length} {members.length === 1 ? 'person' : 'people'} in session
+        </Text>
+        <Text fontSize={12} color="$colorMuted">
+          {members.map((m) => m.isMe ? 'You' : m.name).join(', ')}
+        </Text>
+      </YStack>
+
+      {/* Invite Button */}
+      <Pressable onPress={onInvite}>
         <View
           width={40}
           height={40}
-          borderRadius={10}
-          backgroundColor="$backgroundHover"
+          borderRadius={12}
+          backgroundColor="$accentSoft"
           alignItems="center"
           justifyContent="center"
         >
-          <Plus size={18} color="$accent" strokeWidth={2} />
+          <UserPlus size={18} color="$accent" strokeWidth={2} />
         </View>
       </Pressable>
-    </XStack>
+    </AnimatedXStack>
   )
 }
 
@@ -491,18 +541,20 @@ const BillItemRow = ({
   currency,
   isHost,
   isClaimed,
+  canClaim,
   onToggleClaim,
   onDelete,
-  memberCount,
+  members,
   delay = 0,
 }: {
   item: BillItem
   currency: string
   isHost: boolean
   isClaimed: boolean
+  canClaim: boolean
   onToggleClaim: () => void
   onDelete: () => void
-  memberCount: number
+  members: Member[]
   delay?: number
 }) => {
   const scale = useSharedValue(1)
@@ -515,7 +567,13 @@ const BillItemRow = ({
   const claimCount = item.claimedBy.length
   const splitAmount = claimCount > 0 ? item.amount / claimCount : item.amount
 
+  // Get member names who claimed
+  const claimedMembers = item.claimedBy
+    .map((id) => members.find((m) => m.id === id))
+    .filter(Boolean) as Member[]
+
   const handlePress = () => {
+    if (!canClaim) return
     scale.value = withSequence(withSpring(0.98), withSpring(1))
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
     onToggleClaim()
@@ -528,7 +586,7 @@ const BillItemRow = ({
       layout={Layout.springify()}
     >
       <Animated.View style={animatedStyle}>
-        <Pressable onPress={handlePress}>
+        <Pressable onPress={handlePress} disabled={!canClaim}>
           <XStack
             backgroundColor="$cardBg"
             borderRadius={16}
@@ -537,21 +595,23 @@ const BillItemRow = ({
             gap={12}
             borderWidth={1}
             borderColor={isClaimed ? '$accent' : '$cardBorder'}
-            opacity={isClaimed ? 1 : 0.7}
+            opacity={canClaim ? (isClaimed ? 1 : 0.7) : 0.5}
           >
-            {/* Checkbox */}
-            <View
-              width={24}
-              height={24}
-              borderRadius={8}
-              borderWidth={1.5}
-              borderColor={isClaimed ? '$accent' : '$borderColor'}
-              backgroundColor={isClaimed ? '$accent' : 'transparent'}
-              alignItems="center"
-              justifyContent="center"
-            >
-              {isClaimed && <Check size={14} color="$accentText" strokeWidth={3} />}
-            </View>
+            {/* Checkbox (only in items mode) */}
+            {canClaim && (
+              <View
+                width={24}
+                height={24}
+                borderRadius={8}
+                borderWidth={1.5}
+                borderColor={isClaimed ? '$accent' : '$borderColor'}
+                backgroundColor={isClaimed ? '$accent' : 'transparent'}
+                alignItems="center"
+                justifyContent="center"
+              >
+                {isClaimed && <Check size={14} color="$accentText" strokeWidth={3} />}
+              </View>
+            )}
 
             {/* Item Info */}
             <YStack flex={1} gap={2}>
@@ -563,14 +623,41 @@ const BillItemRow = ({
               >
                 {item.name}
               </Text>
-              {claimCount > 0 && (
-                <XStack alignItems="center" gap={4}>
-                  <Users size={10} color="$colorMuted" strokeWidth={2} />
+              {claimCount > 0 ? (
+                <XStack alignItems="center" gap={6}>
+                  {/* Mini avatar stack */}
+                  <XStack>
+                    {claimedMembers.slice(0, 3).map((member, idx) => (
+                      <View
+                        key={member.id}
+                        marginLeft={idx > 0 ? -6 : 0}
+                        zIndex={3 - idx}
+                      >
+                        <View
+                          width={16}
+                          height={16}
+                          borderRadius={8}
+                          overflow="hidden"
+                          borderWidth={1}
+                          borderColor="$cardBg"
+                        >
+                          <Image
+                            source={{ uri: member.avatar }}
+                            style={{ width: 16, height: 16 }}
+                          />
+                        </View>
+                      </View>
+                    ))}
+                  </XStack>
                   <Text fontSize={11} color="$colorMuted">
                     {claimCount} {claimCount === 1 ? 'person' : 'people'}
                     {claimCount > 1 && ` · ${currencySymbol}${splitAmount.toFixed(2)} each`}
                   </Text>
                 </XStack>
+              ) : (
+                <Text fontSize={11} color="$colorFaint">
+                  Not claimed yet
+                </Text>
               )}
             </YStack>
 
@@ -622,7 +709,7 @@ const SummaryCard = ({
   yourShare,
   currency,
   mode,
-  memberCount,
+  members,
   itemCount,
   claimedCount,
 }: {
@@ -630,7 +717,7 @@ const SummaryCard = ({
   yourShare: number
   currency: string
   mode: SplitMode
-  memberCount: number
+  members: Member[]
   itemCount?: number
   claimedCount?: number
 }) => {
@@ -639,7 +726,7 @@ const SummaryCard = ({
   const getModeLabel = () => {
     switch (mode) {
       case 'equal':
-        return `Split equally · ${memberCount} people`
+        return `Split equally · ${members.length} people`
       case 'custom':
         return 'Custom amount'
       default:
@@ -712,7 +799,7 @@ const SummaryCard = ({
 // ============================================
 // EMPTY STATE
 // ============================================
-const EmptyState = ({ mode }: { mode: SplitMode }) => (
+const EmptyState = () => (
   <AnimatedYStack
     entering={FadeIn.delay(200)}
     flex={1}
@@ -736,9 +823,7 @@ const EmptyState = ({ mode }: { mode: SplitMode }) => (
         No items yet
       </Text>
       <Text fontSize={14} color="$colorMuted" textAlign="center" maxWidth={240}>
-        {mode === 'items'
-          ? 'Add items from the receipt to get started'
-          : 'Add items to calculate the total bill'}
+        Add items from the receipt to get started
       </Text>
     </YStack>
   </AnimatedYStack>
@@ -749,35 +834,18 @@ const EmptyState = ({ mode }: { mode: SplitMode }) => (
 // ============================================
 const EqualSplitView = ({
   total,
-  memberCount,
-  onMemberCountChange,
+  members,
   currency,
 }: {
   total: number
-  memberCount: number
-  onMemberCountChange: (count: number) => void
+  members: Member[]
   currency: string
 }) => {
   const currencySymbol = currency === 'USD' ? '$' : 'Z$'
-  const perPerson = memberCount > 0 ? total / memberCount : 0
+  const perPerson = members.length > 0 ? total / members.length : 0
 
   return (
     <AnimatedYStack entering={FadeIn.delay(100)} gap={16}>
-      {/* Member Stepper */}
-      <YStack gap={8}>
-        <Text
-          fontSize={12}
-          fontWeight="500"
-          letterSpacing={0.6}
-          textTransform="uppercase"
-          color="$colorMuted"
-          paddingLeft={4}
-        >
-          Number of People
-        </Text>
-        <MemberStepper count={memberCount} onChange={onMemberCountChange} />
-      </YStack>
-
       {/* Per Person Display */}
       {total > 0 && (
         <AnimatedYStack
@@ -786,7 +854,7 @@ const EqualSplitView = ({
           borderRadius={20}
           padding={24}
           alignItems="center"
-          gap={8}
+          gap={12}
           borderWidth={1}
           borderColor="$cardBorder"
         >
@@ -809,9 +877,59 @@ const EqualSplitView = ({
             {currencySymbol}{perPerson.toFixed(2)}
           </Text>
           <Text fontSize={13} color="$colorFaint">
-            {currencySymbol}{total.toFixed(2)} ÷ {memberCount} = {currencySymbol}{perPerson.toFixed(2)}
+            {currencySymbol}{total.toFixed(2)} ÷ {members.length} people
           </Text>
+
+          {/* Member breakdown */}
+          <View
+            marginTop={8}
+            width="100%"
+            borderTopWidth={1}
+            borderTopColor="$borderColorSoft"
+            paddingTop={16}
+          >
+            {members.map((member) => (
+              <XStack
+                key={member.id}
+                alignItems="center"
+                justifyContent="space-between"
+                paddingVertical={8}
+              >
+                <XStack alignItems="center" gap={10}>
+                  <MemberAvatar member={member} size={32} />
+                  <Text fontSize={14} fontWeight="500" color="$color">
+                    {member.isMe ? 'You' : member.name}
+                  </Text>
+                </XStack>
+                <Text
+                  fontFamily="$mono"
+                  fontSize={14}
+                  fontWeight="600"
+                  color="$color"
+                >
+                  {currencySymbol}{perPerson.toFixed(2)}
+                </Text>
+              </XStack>
+            ))}
+          </View>
         </AnimatedYStack>
+      )}
+
+      {total === 0 && (
+        <YStack
+          backgroundColor="$cardBg"
+          borderRadius={16}
+          padding={20}
+          alignItems="center"
+          gap={8}
+          borderWidth={1}
+          borderColor="$cardBorder"
+        >
+          <Users size={24} color="$colorMuted" strokeWidth={1.5} />
+          <Text fontSize={14} color="$colorMuted" textAlign="center">
+            Add items to see the equal split
+          </Text>
+        </YStack>
       )}
     </AnimatedYStack>
   )
@@ -839,20 +957,21 @@ export default function BillSessionScreen() {
   // State
   const [items, setItems] = useState<BillItem[]>([])
   const [splitMode, setSplitMode] = useState<SplitMode>('items')
-  const [memberCount, setMemberCount] = useState(2)
   const [customAmount, setCustomAmount] = useState('')
+  const [members] = useState<Member[]>(MOCK_MEMBERS) // In production, this syncs in real-time
 
-  // Add item
+  // Add item (anyone can add)
   const handleAddItem = useCallback((name: string, amount: number) => {
     const newItem: BillItem = {
       id: `item-${Date.now()}`,
       name,
       amount,
       claimedBy: [],
+      addedBy: currentUserId,
     }
     setItems((prev) => [...prev, newItem])
     Keyboard.dismiss()
-  }, [])
+  }, [currentUserId])
 
   // Toggle claim
   const handleToggleClaim = useCallback(
@@ -884,7 +1003,7 @@ export default function BillSessionScreen() {
   const yourShare = (() => {
     switch (splitMode) {
       case 'equal':
-        return memberCount > 0 ? total / memberCount : 0
+        return members.length > 0 ? total / members.length : 0
       case 'custom':
         return parseFloat(customAmount) || 0
       default:
@@ -991,23 +1110,25 @@ export default function BillSessionScreen() {
       {/* Content */}
       <ScrollView
         flex={1}
-        contentContainerStyle={{ padding: 16, paddingBottom: 280 }}
+        contentContainerStyle={{ padding: 16, paddingBottom: 320 }}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
       >
         <YStack gap={16}>
+          {/* Members in Session */}
+          <MembersInSession members={members} onInvite={handleShare} />
+
           {/* Split Mode Selector */}
           <SplitModeSelector mode={splitMode} onChange={setSplitMode} />
 
-          {/* Add Item Input (Host only, always shown for adding total) */}
-          {isHost && <AddItemInput onAdd={handleAddItem} currency={currency} />}
+          {/* Add Item Input (everyone can add) */}
+          <AddItemInput onAdd={handleAddItem} currency={currency} />
 
           {/* Mode-specific content */}
           {splitMode === 'equal' && (
             <EqualSplitView
               total={total}
-              memberCount={memberCount}
-              onMemberCountChange={setMemberCount}
+              members={members}
               currency={currency}
             />
           )}
@@ -1021,9 +1142,9 @@ export default function BillSessionScreen() {
             />
           )}
 
-          {/* Items List (shown for 'items' mode, or as reference for other modes) */}
+          {/* Items List */}
           {items.length === 0 ? (
-            <EmptyState mode={splitMode} />
+            <EmptyState />
           ) : (
             <YStack gap={8}>
               <XStack alignItems="center" justifyContent="space-between" paddingHorizontal={4}>
@@ -1053,11 +1174,10 @@ export default function BillSessionScreen() {
                   currency={currency}
                   isHost={isHost}
                   isClaimed={item.claimedBy.includes(currentUserId)}
-                  onToggleClaim={() =>
-                    splitMode === 'items' && handleToggleClaim(item.id)
-                  }
+                  canClaim={splitMode === 'items'}
+                  onToggleClaim={() => handleToggleClaim(item.id)}
                   onDelete={() => handleDeleteItem(item.id)}
-                  memberCount={memberCount}
+                  members={members}
                   delay={index * 30}
                 />
               ))}
@@ -1086,7 +1206,7 @@ export default function BillSessionScreen() {
             yourShare={yourShare}
             currency={currency}
             mode={splitMode}
-            memberCount={memberCount}
+            members={members}
             itemCount={items.length}
             claimedCount={claimedCount}
           />
