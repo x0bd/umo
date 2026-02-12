@@ -1,119 +1,212 @@
-import { useThemeMode } from '@/providers/theme-mode'
 import {
-    ArrowLeft,
-    Check,
-    ChevronDown,
-    Coffee,
-    CreditCard,
-    Receipt,
-    Utensils,
-    Wine
+  ArrowLeft,
+  Check,
+  Minus,
+  Plus,
+  QrCode,
+  Share2,
+  Trash2,
+  Users,
 } from '@tamagui/lucide-icons'
 import * as Haptics from 'expo-haptics'
 import { router, useLocalSearchParams } from 'expo-router'
-import { useCallback, useState } from 'react'
-import { Image, Pressable } from 'react-native'
+import { useCallback, useRef, useState } from 'react'
+import { Pressable, TextInput, Keyboard } from 'react-native'
 import Animated, {
-    FadeInDown,
-    FadeInUp,
-    useAnimatedStyle,
-    useSharedValue,
-    withSequence,
-    withSpring,
+  FadeIn,
+  FadeInDown,
+  FadeInUp,
+  FadeOut,
+  Layout,
+  useAnimatedStyle,
+  useSharedValue,
+  withSequence,
+  withSpring,
 } from 'react-native-reanimated'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import { ScrollView, Text, View, XStack, YStack } from 'tamagui'
+import { ScrollView, Text, View, XStack, YStack, useTheme } from 'tamagui'
 
 // ============================================
-// TYPES & MOCK DATA
+// TYPES
 // ============================================
-interface ReceiptItem {
-  id: number
+interface BillItem {
+  id: string
   name: string
-  desc: string
-  price: number
-  category: 'starters' | 'mains' | 'drinks'
-  imageUrl?: string
+  amount: number
+  claimedBy: string[] // user IDs who claimed this item
 }
 
-const receiptItems: ReceiptItem[] = [
-  {
-    id: 1,
-    name: 'Burrata & Figs',
-    desc: 'Aged balsamic, basil oil',
-    price: 18,
-    category: 'starters',
-    imageUrl: 'https://images.unsplash.com/photo-1608897013039-887f21d8c804?w=80&h=80&fit=crop',
-  },
-  {
-    id: 2,
-    name: 'Castelvetrano Olives',
-    desc: 'Marinated, citrus zest',
-    price: 12,
-    category: 'starters',
-  },
-  {
-    id: 3,
-    name: 'Spicy Vodka Rigatoni',
-    desc: 'Calabrian chili, pecorino',
-    price: 24,
-    category: 'mains',
-    imageUrl: 'https://images.unsplash.com/photo-1621996346565-e3dbc646d9a9?w=80&h=80&fit=crop',
-  },
-  {
-    id: 4,
-    name: 'Veal Milanese',
-    desc: 'Arugula salad, lemon',
-    price: 28,
-    category: 'mains',
-    imageUrl: 'https://images.unsplash.com/photo-1432139555190-58524dae6a55?w=80&h=80&fit=crop',
-  },
-  {
-    id: 5,
-    name: 'Negroni',
-    desc: 'Classic build',
-    price: 16,
-    category: 'drinks',
-  },
-  {
-    id: 6,
-    name: 'Aperol Spritz',
-    desc: 'Prosecco, soda',
-    price: 14,
-    category: 'drinks',
-  },
-]
-
-const sessionInfo = {
-  name: "Mario's Italian",
-  date: 'Sat, Oct 14',
-  table: 'Table 4',
-  members: 3,
-  headerImage: 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400&h=200&fit=crop',
-}
-
-const TAX_RATE = 0.20
-
-const CATEGORY_ICONS = {
-  starters: Utensils,
-  mains: Coffee,
-  drinks: Wine,
+interface Member {
+  id: string
+  name: string
+  avatar: string
+  isHost: boolean
 }
 
 // ============================================
 // ANIMATED COMPONENTS
 // ============================================
 const AnimatedYStack = Animated.createAnimatedComponent(YStack)
+const AnimatedXStack = Animated.createAnimatedComponent(XStack)
+const AnimatedView = Animated.createAnimatedComponent(View)
 
 // ============================================
-// 間 — CIRCULAR CHECKBOX
+// ADD ITEM INPUT
 // ============================================
-const CircleCheck = ({
-  checked,
-  onToggle,
+const AddItemInput = ({
+  onAdd,
+  currency,
 }: {
-  checked: boolean
-  onToggle: () => void
+  onAdd: (name: string, amount: number) => void
+  currency: string
+}) => {
+  const theme = useTheme()
+  const [name, setName] = useState('')
+  const [amount, setAmount] = useState('')
+  const [isFocused, setIsFocused] = useState(false)
+  const amountRef = useRef<TextInput>(null)
+
+  const canAdd = name.trim().length > 0 && parseFloat(amount) > 0
+
+  const handleAdd = () => {
+    if (!canAdd) return
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
+    onAdd(name.trim(), parseFloat(amount))
+    setName('')
+    setAmount('')
+  }
+
+  const handleNameSubmit = () => {
+    amountRef.current?.focus()
+  }
+
+  const currencySymbol = currency === 'USD' ? '$' : 'Z$'
+
+  return (
+    <AnimatedYStack
+      entering={FadeInDown.delay(100).springify()}
+      backgroundColor="$cardBg"
+      borderRadius={20}
+      borderWidth={1}
+      borderColor={isFocused ? '$accent' : '$cardBorder'}
+      padding={16}
+      gap={12}
+    >
+      <XStack alignItems="center" gap={8}>
+        <Plus size={16} color="$accent" strokeWidth={2} />
+        <Text
+          fontSize={13}
+          fontWeight="600"
+          letterSpacing={-0.2}
+          color="$color"
+        >
+          Add Item
+        </Text>
+      </XStack>
+
+      <XStack gap={12} alignItems="center">
+        {/* Name Input */}
+        <View flex={1}>
+          <TextInput
+            placeholder="Item name"
+            placeholderTextColor={theme.colorFaint?.val}
+            value={name}
+            onChangeText={setName}
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => setIsFocused(false)}
+            onSubmitEditing={handleNameSubmit}
+            returnKeyType="next"
+            style={{
+              fontSize: 16,
+              fontWeight: '500',
+              color: theme.color?.val,
+              letterSpacing: -0.2,
+              backgroundColor: theme.backgroundHover?.val,
+              paddingHorizontal: 14,
+              paddingVertical: 12,
+              borderRadius: 12,
+            }}
+          />
+        </View>
+
+        {/* Amount Input */}
+        <XStack
+          backgroundColor="$backgroundHover"
+          borderRadius={12}
+          paddingHorizontal={14}
+          paddingVertical={12}
+          alignItems="center"
+          gap={4}
+          width={100}
+        >
+          <Text fontSize={14} fontWeight="500" color="$colorMuted">
+            {currencySymbol}
+          </Text>
+          <TextInput
+            ref={amountRef}
+            placeholder="0.00"
+            placeholderTextColor={theme.colorFaint?.val}
+            value={amount}
+            onChangeText={setAmount}
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => setIsFocused(false)}
+            keyboardType="decimal-pad"
+            returnKeyType="done"
+            onSubmitEditing={handleAdd}
+            style={{
+              flex: 1,
+              fontSize: 16,
+              fontWeight: '600',
+              color: theme.color?.val,
+              letterSpacing: -0.3,
+              textAlign: 'right',
+            }}
+          />
+        </XStack>
+
+        {/* Add Button */}
+        <Pressable onPress={handleAdd} disabled={!canAdd}>
+          <View
+            width={44}
+            height={44}
+            borderRadius={12}
+            backgroundColor={canAdd ? '$accent' : '$backgroundHover'}
+            alignItems="center"
+            justifyContent="center"
+          >
+            <Check
+              size={18}
+              color={canAdd ? '$accentText' : '$colorMuted'}
+              strokeWidth={2.5}
+            />
+          </View>
+        </Pressable>
+      </XStack>
+    </AnimatedYStack>
+  )
+}
+
+// ============================================
+// BILL ITEM ROW
+// ============================================
+const BillItemRow = ({
+  item,
+  currency,
+  isHost,
+  isClaimed,
+  onToggleClaim,
+  onDelete,
+  memberCount,
+  delay = 0,
+}: {
+  item: BillItem
+  currency: string
+  isHost: boolean
+  isClaimed: boolean
+  onToggleClaim: () => void
+  onDelete: () => void
+  memberCount: number
+  delay?: number
 }) => {
   const scale = useSharedValue(1)
 
@@ -121,398 +214,506 @@ const CircleCheck = ({
     transform: [{ scale: scale.value }],
   }))
 
+  const currencySymbol = currency === 'USD' ? '$' : 'Z$'
+  const claimCount = item.claimedBy.length
+  const splitAmount = claimCount > 0 ? item.amount / claimCount : item.amount
+
   const handlePress = () => {
-    scale.value = withSequence(withSpring(0.85), withSpring(1))
+    scale.value = withSequence(withSpring(0.98), withSpring(1))
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
-    onToggle()
+    onToggleClaim()
   }
 
   return (
-    <Pressable onPress={handlePress} hitSlop={8}>
-      <Animated.View style={animatedStyle}>
-        <View
-          width={24}
-          height={24}
-          borderRadius={12}
-          borderWidth={1}
-          borderColor={checked ? '$accent' : '$borderColor'}
-          backgroundColor={checked ? '$accent' : 'transparent'}
+    <Animated.View
+      entering={FadeInDown.delay(delay).springify()}
+      exiting={FadeOut.duration(200)}
+      layout={Layout.springify()}
+      style={animatedStyle}
+    >
+      <Pressable onPress={handlePress}>
+        <XStack
+          backgroundColor="$cardBg"
+          borderRadius={16}
+          padding={14}
           alignItems="center"
-          justifyContent="center"
+          gap={12}
+          borderWidth={1}
+          borderColor={isClaimed ? '$accent' : '$cardBorder'}
+          opacity={isClaimed ? 1 : 0.7}
         >
-          {checked && <Check size={13} color="$accentText" strokeWidth={3} />}
-        </View>
-      </Animated.View>
-    </Pressable>
+          {/* Checkbox */}
+          <View
+            width={24}
+            height={24}
+            borderRadius={8}
+            borderWidth={1.5}
+            borderColor={isClaimed ? '$accent' : '$borderColor'}
+            backgroundColor={isClaimed ? '$accent' : 'transparent'}
+            alignItems="center"
+            justifyContent="center"
+          >
+            {isClaimed && <Check size={14} color="$accentText" strokeWidth={3} />}
+          </View>
+
+          {/* Item Info */}
+          <YStack flex={1} gap={2}>
+            <Text
+              fontSize={15}
+              fontWeight="600"
+              letterSpacing={-0.2}
+              color="$color"
+            >
+              {item.name}
+            </Text>
+            {claimCount > 0 && (
+              <XStack alignItems="center" gap={4}>
+                <Users size={10} color="$colorMuted" strokeWidth={2} />
+                <Text fontSize={11} color="$colorMuted">
+                  {claimCount} {claimCount === 1 ? 'person' : 'people'}
+                  {claimCount > 1 && ` · ${currencySymbol}${splitAmount.toFixed(2)} each`}
+                </Text>
+              </XStack>
+            )}
+          </YStack>
+
+          {/* Amount */}
+          <Text
+            fontFamily="$mono"
+            fontSize={16}
+            fontWeight="600"
+            letterSpacing={-0.3}
+            color="$color"
+          >
+            {currencySymbol}{item.amount.toFixed(2)}
+          </Text>
+
+          {/* Delete (Host only) */}
+          {isHost && (
+            <Pressable
+              onPress={(e) => {
+                e.stopPropagation()
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
+                onDelete()
+              }}
+              hitSlop={8}
+            >
+              <View
+                width={32}
+                height={32}
+                borderRadius={8}
+                backgroundColor="$errorSoft"
+                alignItems="center"
+                justifyContent="center"
+              >
+                <Trash2 size={14} color="$error" strokeWidth={2} />
+              </View>
+            </Pressable>
+          )}
+        </XStack>
+      </Pressable>
+    </Animated.View>
   )
 }
 
 // ============================================
-// 間 — ITEM ROW
+// SUMMARY CARD
 // ============================================
-const ItemRow = ({
-  item,
-  isSelected,
-  onToggle,
-  delay = 0,
+const SummaryCard = ({
+  total,
+  yourShare,
+  currency,
+  itemCount,
+  claimedCount,
 }: {
-  item: ReceiptItem
-  isSelected: boolean
-  onToggle: () => void
-  delay?: number
-}) => (
-  <Animated.View entering={FadeInDown.delay(delay).springify()}>
-    <Pressable onPress={onToggle} style={{ flex: 1 }}>
-      <XStack
-        alignItems="center"
-        paddingVertical={14}
-        gap={12}
-        opacity={isSelected ? 1 : 0.5}
-      >
-        <CircleCheck checked={isSelected} onToggle={onToggle} />
+  total: number
+  yourShare: number
+  currency: string
+  itemCount: number
+  claimedCount: number
+}) => {
+  const currencySymbol = currency === 'USD' ? '$' : 'Z$'
 
-        {item.imageUrl ? (
-          <View
-            width={44}
-            height={44}
-            borderRadius={10}
-            overflow="hidden"
-            backgroundColor="$backgroundHover"
-          >
-            <Image
-              source={{ uri: item.imageUrl }}
-              style={{ width: 44, height: 44 }}
-              resizeMode="cover"
-            />
-          </View>
-        ) : (
-          <View
-            width={44}
-            height={44}
-            borderRadius={10}
-            backgroundColor="$backgroundHover"
-            alignItems="center"
-            justifyContent="center"
-          >
-            {(() => {
-              const Icon = CATEGORY_ICONS[item.category]
-              return <Icon size={18} color="$colorMuted" strokeWidth={1.5} />
-            })()}
-          </View>
-        )}
+  return (
+    <AnimatedYStack
+      entering={FadeInUp.delay(150).springify()}
+      backgroundColor="$accent"
+      borderRadius={24}
+      padding={20}
+      gap={16}
+    >
+      {/* Your Share */}
+      <YStack gap={4}>
+        <Text
+          fontSize={12}
+          fontWeight="500"
+          letterSpacing={0.4}
+          textTransform="uppercase"
+          color="rgba(255,255,255,0.7)"
+        >
+          Your Share
+        </Text>
+        <Text
+          fontFamily="$mono"
+          fontSize={40}
+          fontWeight="700"
+          letterSpacing={-1.5}
+          color="$accentText"
+        >
+          {currencySymbol}{yourShare.toFixed(2)}
+        </Text>
+      </YStack>
 
-        <YStack flex={1} gap={2}>
-          <Text fontSize={15} fontWeight="600" letterSpacing={-0.2} color="$color">
-            {item.name}
+      {/* Divider */}
+      <View height={1} backgroundColor="rgba(255,255,255,0.15)" />
+
+      {/* Stats Row */}
+      <XStack justifyContent="space-between">
+        <YStack gap={2}>
+          <Text fontSize={11} color="rgba(255,255,255,0.6)">
+            Bill Total
           </Text>
-          <Text fontSize={12} color="$colorMuted" lineHeight={16}>
-            {item.desc}
+          <Text
+            fontFamily="$mono"
+            fontSize={16}
+            fontWeight="600"
+            color="$accentText"
+          >
+            {currencySymbol}{total.toFixed(2)}
           </Text>
         </YStack>
 
-        <Text
-          fontFamily="$mono"
-          fontSize={15}
-          fontWeight="500"
-          color="$color"
-          letterSpacing={-0.2}
-        >
-          ${item.price}
-        </Text>
+        <YStack gap={2} alignItems="flex-end">
+          <Text fontSize={11} color="rgba(255,255,255,0.6)">
+            Items Claimed
+          </Text>
+          <Text fontSize={16} fontWeight="600" color="$accentText">
+            {claimedCount} of {itemCount}
+          </Text>
+        </YStack>
       </XStack>
-    </Pressable>
-  </Animated.View>
+    </AnimatedYStack>
+  )
+}
+
+// ============================================
+// EMPTY STATE
+// ============================================
+const EmptyState = () => (
+  <AnimatedYStack
+    entering={FadeIn.delay(200)}
+    flex={1}
+    alignItems="center"
+    justifyContent="center"
+    gap={12}
+    paddingVertical={60}
+  >
+    <View
+      width={64}
+      height={64}
+      borderRadius={20}
+      backgroundColor="$backgroundHover"
+      alignItems="center"
+      justifyContent="center"
+    >
+      <Plus size={28} color="$colorMuted" strokeWidth={1.5} />
+    </View>
+    <YStack alignItems="center" gap={4}>
+      <Text fontSize={17} fontWeight="600" color="$color" letterSpacing={-0.3}>
+        No items yet
+      </Text>
+      <Text fontSize={14} color="$colorMuted" textAlign="center" maxWidth={240}>
+        Add items from the receipt to get started
+      </Text>
+    </YStack>
+  </AnimatedYStack>
 )
 
 // ============================================
-// 間 — CATEGORY HEADER
+// MAIN SCREEN
 // ============================================
-const CategoryHeader = ({ title }: { title: string }) => (
-  <XStack alignItems="center" gap={6} marginTop={16} marginBottom={8}>
-    <ChevronDown size={12} color="$colorMuted" strokeWidth={2} />
-    <Text
-      fontSize={11}
-      fontWeight="500"
-      textTransform="uppercase"
-      letterSpacing={0.8}
-      color="$colorMuted"
-    >
-      {title}
-    </Text>
-  </XStack>
-)
-
-// ============================================
-// 間 — SUMMARY ROW
-// ============================================
-const SummaryRow = ({
-  label,
-  value,
-  isTotal = false,
-}: {
-  label: string
-  value: string
-  isTotal?: boolean
-}) => (
-  <XStack justifyContent="space-between" alignItems="center" paddingVertical={isTotal ? 12 : 6}>
-    <Text
-      fontSize={isTotal ? 14 : 13}
-      fontWeight={isTotal ? '600' : '500'}
-      color={isTotal ? '$color' : '$colorMuted'}
-    >
-      {label}
-    </Text>
-    <Text
-      fontFamily="$mono"
-      fontSize={isTotal ? 22 : 14}
-      fontWeight={isTotal ? '700' : '500'}
-      color={isTotal ? '$color' : '$colorMuted'}
-      letterSpacing={isTotal ? -0.5 : 0}
-    >
-      {value}
-    </Text>
-  </XStack>
-)
-
-// ============================================
-// 間 — MAIN SCREEN
-// ============================================
-export default function SessionReceiptScreen() {
+export default function BillSessionScreen() {
   const insets = useSafeAreaInsets()
-  const { id } = useLocalSearchParams<{ id: string }>()
-  const { isDark } = useThemeMode()
+  const params = useLocalSearchParams<{
+    id: string
+    name?: string
+    currency?: string
+    venue?: string
+    isHost?: string
+  }>()
 
-  const [selectedItems, setSelectedItems] = useState<Set<number>>(new Set())
+  const billName = params.name || 'Bill'
+  const currency = params.currency || 'USD'
+  const venue = params.venue
+  const isHost = params.isHost === 'true'
+  const currentUserId = 'me' // TODO: Get from auth
 
-  const toggleItem = useCallback((itemId: number) => {
-    setSelectedItems((prev) => {
-      const next = new Set(prev)
-      if (next.has(itemId)) {
-        next.delete(itemId)
-      } else {
-        next.add(itemId)
-      }
-      return next
-    })
+  // State
+  const [items, setItems] = useState<BillItem[]>([])
+  const [members] = useState<Member[]>([
+    { id: 'me', name: 'You', avatar: 'Y', isHost: true },
+  ])
+
+  // Add item
+  const handleAddItem = useCallback((name: string, amount: number) => {
+    const newItem: BillItem = {
+      id: `item-${Date.now()}`,
+      name,
+      amount,
+      claimedBy: [],
+    }
+    setItems((prev) => [...prev, newItem])
+    Keyboard.dismiss()
+  }, [])
+
+  // Toggle claim
+  const handleToggleClaim = useCallback(
+    (itemId: string) => {
+      setItems((prev) =>
+        prev.map((item) => {
+          if (item.id !== itemId) return item
+          const isClaimed = item.claimedBy.includes(currentUserId)
+          return {
+            ...item,
+            claimedBy: isClaimed
+              ? item.claimedBy.filter((id) => id !== currentUserId)
+              : [...item.claimedBy, currentUserId],
+          }
+        })
+      )
+    },
+    [currentUserId]
+  )
+
+  // Delete item
+  const handleDeleteItem = useCallback((itemId: string) => {
+    setItems((prev) => prev.filter((item) => item.id !== itemId))
   }, [])
 
   // Calculations
-  const subtotal = receiptItems
-    .filter((item) => selectedItems.has(item.id))
-    .reduce((sum, item) => sum + item.price, 0)
-  const tax = subtotal * TAX_RATE
-  const total = subtotal + tax
+  const total = items.reduce((sum, item) => sum + item.amount, 0)
+  const yourShare = items.reduce((sum, item) => {
+    if (!item.claimedBy.includes(currentUserId)) return sum
+    return sum + item.amount / item.claimedBy.length
+  }, 0)
+  const claimedCount = items.filter((item) =>
+    item.claimedBy.includes(currentUserId)
+  ).length
 
-  // Group items by category
-  const starters = receiptItems.filter((i) => i.category === 'starters')
-  const mains = receiptItems.filter((i) => i.category === 'mains')
-  const drinks = receiptItems.filter((i) => i.category === 'drinks')
+  // Navigation
+  const handleBack = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
+    router.back()
+  }
+
+  const handleShare = () => {
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
+    router.push({
+      pathname: '/session/share',
+      params: { id: params.id, name: billName },
+    })
+  }
 
   const buttonScale = useSharedValue(1)
-
   const buttonAnimatedStyle = useAnimatedStyle(() => ({
     transform: [{ scale: buttonScale.value }],
   }))
 
   const handleProceed = () => {
     buttonScale.value = withSequence(withSpring(0.97), withSpring(1))
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium)
+    Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success)
     router.push('/session/finalize')
   }
 
+  const currencySymbol = currency === 'USD' ? '$' : 'Z$'
+
   return (
     <YStack flex={1} backgroundColor="$background">
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 40 }}>
-        {/* Header Image */}
-        <View height={160} overflow="hidden">
-          <Image
-            source={{ uri: sessionInfo.headerImage }}
-            style={{ width: '100%', height: 160, opacity: isDark ? 0.7 : 0.9 }}
-            resizeMode="cover"
-          />
-          {/* Gradient fade — solid block for native compat */}
-          <View
-            position="absolute"
-            bottom={0}
-            left={0}
-            right={0}
-            height={60}
-            backgroundColor="$background"
-            opacity={0.85}
-          />
-          {/* Back button */}
-          <Pressable
-            onPress={() => {
-              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
-              router.back()
-            }}
-            style={{ position: 'absolute', top: insets.top + 8, left: 16 }}
-          >
+      {/* Header */}
+      <AnimatedXStack
+        entering={FadeInUp.delay(50).springify()}
+        paddingTop={insets.top + 8}
+        paddingHorizontal={16}
+        paddingBottom={12}
+        alignItems="center"
+        justifyContent="space-between"
+        backgroundColor="$background"
+        borderBottomWidth={1}
+        borderBottomColor="$borderColorSoft"
+      >
+        <XStack alignItems="center" gap={12}>
+          <Pressable onPress={handleBack}>
             <View
               width={40}
               height={40}
-              borderRadius={9999}
-              backgroundColor="rgba(0,0,0,0.4)"
+              borderRadius={12}
+              backgroundColor="$backgroundHover"
               alignItems="center"
               justifyContent="center"
             >
-              <ArrowLeft size={18} color="white" strokeWidth={2} />
+              <ArrowLeft size={18} color="$color" strokeWidth={2} />
             </View>
           </Pressable>
-        </View>
 
-        <YStack paddingHorizontal={20} marginTop={-30} gap={20}>
-          {/* Session Info */}
-          <AnimatedYStack entering={FadeInUp.delay(100).springify()} gap={4}>
-            <Text fontSize={26} fontWeight="600" letterSpacing={-0.8} color="$color">
-              {sessionInfo.name}
-            </Text>
-            <Text fontSize={14} color="$colorMuted">
-              {sessionInfo.date} · {sessionInfo.table} · {sessionInfo.members} people
-            </Text>
-          </AnimatedYStack>
-
-          {/* Receipt Card */}
-          <AnimatedYStack
-            entering={FadeInDown.delay(150).springify()}
-            backgroundColor="$cardBg"
-            borderRadius={20}
-            padding={20}
-            shadowColor="#000"
-            shadowOffset={{ width: 0, height: 2 }}
-            shadowOpacity={0.06}
-            shadowRadius={12}
-            elevation={3}
-          >
-            {/* Card Header */}
-            <XStack alignItems="center" gap={10} marginBottom={8}>
-              <Receipt size={16} color="$colorMuted" strokeWidth={1.8} />
-              <YStack>
-                <Text fontSize={17} fontWeight="600" letterSpacing={-0.3} color="$color">
-                  Full Receipt
-                </Text>
-                <Text fontSize={12} color="$colorMuted">
-                  Tap items you ordered
-                </Text>
-              </YStack>
-            </XStack>
-
-            {/* Starters */}
-            <CategoryHeader title="Starters" />
-            {starters.map((item, i) => (
-              <ItemRow
-                key={item.id}
-                item={item}
-                isSelected={selectedItems.has(item.id)}
-                onToggle={() => toggleItem(item.id)}
-                delay={200 + i * 30}
-              />
-            ))}
-
-            {/* Mains */}
-            <CategoryHeader title="Mains" />
-            {mains.map((item, i) => (
-              <ItemRow
-                key={item.id}
-                item={item}
-                isSelected={selectedItems.has(item.id)}
-                onToggle={() => toggleItem(item.id)}
-                delay={280 + i * 30}
-              />
-            ))}
-
-            {/* Drinks */}
-            <CategoryHeader title="Drinks" />
-            {drinks.map((item, i) => (
-              <ItemRow
-                key={item.id}
-                item={item}
-                isSelected={selectedItems.has(item.id)}
-                onToggle={() => toggleItem(item.id)}
-                delay={360 + i * 30}
-              />
-            ))}
-
-            {/* Selection count */}
-            <XStack
-              justifyContent="space-between"
-              alignItems="center"
-              marginTop={16}
-              paddingTop={12}
-              borderTopWidth={1}
-              borderTopColor="$borderColorSoft"
+          <YStack gap={1}>
+            <Text
+              fontSize={18}
+              fontWeight="600"
+              letterSpacing={-0.3}
+              color="$color"
             >
-              <Text fontSize={12} fontWeight="500" color="$colorMuted">
-                {selectedItems.size} of {receiptItems.length} items
+              {billName}
+            </Text>
+            {venue && (
+              <Text fontSize={12} color="$colorMuted">
+                {venue}
               </Text>
-              <Pressable
-                onPress={() => {
-                  Haptics.selectionAsync()
-                  if (selectedItems.size === receiptItems.length) {
-                    setSelectedItems(new Set())
-                  } else {
-                    setSelectedItems(new Set(receiptItems.map((i) => i.id)))
-                  }
-                }}
-              >
-                <Text fontSize={12} fontWeight="600" color="$accent">
-                  {selectedItems.size === receiptItems.length ? 'Clear All' : 'Select All'}
-                </Text>
-              </Pressable>
-            </XStack>
-          </AnimatedYStack>
+            )}
+          </YStack>
+        </XStack>
 
-          {/* Settlement Summary */}
-          <AnimatedYStack
-            entering={FadeInDown.delay(400).springify()}
-            backgroundColor="$cardBg"
-            borderRadius={20}
-            padding={20}
-            shadowColor="#000"
-            shadowOffset={{ width: 0, height: 2 }}
-            shadowOpacity={0.06}
-            shadowRadius={12}
-            elevation={3}
-          >
-            <XStack alignItems="center" gap={10} marginBottom={12}>
-              <CreditCard size={16} color="$accent" strokeWidth={1.8} />
-              <Text fontSize={17} fontWeight="600" letterSpacing={-0.3} color="$color">
-                Your Share
-              </Text>
-            </XStack>
+        <XStack gap={8}>
+          {/* Share */}
+          <Pressable onPress={handleShare}>
+            <View
+              width={40}
+              height={40}
+              borderRadius={12}
+              backgroundColor="$accentSoft"
+              alignItems="center"
+              justifyContent="center"
+            >
+              <QrCode size={18} color="$accent" strokeWidth={2} />
+            </View>
+          </Pressable>
+        </XStack>
+      </AnimatedXStack>
 
-            <YStack gap={4} borderTopWidth={1} borderTopColor="$borderColorSoft" paddingTop={12}>
-              <SummaryRow label="Subtotal" value={`$${subtotal.toFixed(2)}`} />
-              <SummaryRow label="Tax & Tip (20%)" value={`$${tax.toFixed(2)}`} />
-              <View height={1} backgroundColor="$borderColorSoft" marginVertical={8} />
-              <SummaryRow label="Total Due" value={`$${total.toFixed(2)}`} isTotal />
-            </YStack>
-          </AnimatedYStack>
+      {/* Content */}
+      <ScrollView
+        flex={1}
+        contentContainerStyle={{ padding: 16, paddingBottom: 120 }}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+      >
+        <YStack gap={16}>
+          {/* Add Item Input (Host only) */}
+          {isHost && <AddItemInput onAdd={handleAddItem} currency={currency} />}
 
-          {/* Proceed Button */}
-          <Animated.View style={buttonAnimatedStyle}>
-            <Pressable onPress={handleProceed} disabled={total === 0}>
-              <XStack
-                backgroundColor={total > 0 ? '$accent' : '$backgroundHover'}
-                borderRadius={9999}
-                paddingVertical={18}
-                paddingHorizontal={20}
-                alignItems="center"
-                justifyContent="center"
-              >
+          {/* Items List */}
+          {items.length === 0 ? (
+            <EmptyState />
+          ) : (
+            <YStack gap={8}>
+              <XStack alignItems="center" justifyContent="space-between" paddingHorizontal={4}>
                 <Text
-                  fontSize={16}
-                  fontWeight="600"
-                  color={total > 0 ? '$accentText' : '$colorMuted'}
-                  letterSpacing={-0.2}
+                  fontSize={12}
+                  fontWeight="500"
+                  letterSpacing={0.6}
+                  textTransform="uppercase"
+                  color="$colorMuted"
                 >
-                  {total > 0 ? 'Proceed to Pay' : 'Select Items'}
+                  Items
+                </Text>
+                <Text
+                  fontSize={12}
+                  fontWeight="500"
+                  color="$colorFaint"
+                >
+                  Tap to claim
                 </Text>
               </XStack>
-            </Pressable>
-          </Animated.View>
+
+              {items.map((item, index) => (
+                <BillItemRow
+                  key={item.id}
+                  item={item}
+                  currency={currency}
+                  isHost={isHost}
+                  isClaimed={item.claimedBy.includes(currentUserId)}
+                  onToggleClaim={() => handleToggleClaim(item.id)}
+                  onDelete={() => handleDeleteItem(item.id)}
+                  memberCount={members.length}
+                  delay={index * 30}
+                />
+              ))}
+            </YStack>
+          )}
+
+          {/* Running Total */}
+          {items.length > 0 && (
+            <AnimatedXStack
+              entering={FadeIn.delay(100)}
+              justifyContent="space-between"
+              alignItems="center"
+              paddingHorizontal={4}
+              paddingTop={8}
+            >
+              <Text fontSize={14} fontWeight="500" color="$colorMuted">
+                Running Total
+              </Text>
+              <Text
+                fontFamily="$mono"
+                fontSize={20}
+                fontWeight="700"
+                letterSpacing={-0.5}
+                color="$color"
+              >
+                {currencySymbol}{total.toFixed(2)}
+              </Text>
+            </AnimatedXStack>
+          )}
         </YStack>
       </ScrollView>
+
+      {/* Bottom Action */}
+      {items.length > 0 && (
+        <YStack
+          position="absolute"
+          bottom={0}
+          left={0}
+          right={0}
+          paddingHorizontal={16}
+          paddingBottom={insets.bottom + 16}
+          paddingTop={16}
+          backgroundColor="$background"
+          borderTopWidth={1}
+          borderTopColor="$borderColorSoft"
+        >
+          {/* Summary */}
+          <SummaryCard
+            total={total}
+            yourShare={yourShare}
+            currency={currency}
+            itemCount={items.length}
+            claimedCount={claimedCount}
+          />
+
+          {/* Proceed Button */}
+          {yourShare > 0 && (
+            <Animated.View style={[buttonAnimatedStyle, { marginTop: 12 }]}>
+              <Pressable onPress={handleProceed}>
+                <XStack
+                  backgroundColor="$color"
+                  borderRadius={9999}
+                  paddingVertical={16}
+                  alignItems="center"
+                  justifyContent="center"
+                >
+                  <Text
+                    fontSize={15}
+                    fontWeight="600"
+                    letterSpacing={-0.2}
+                    color="$background"
+                  >
+                    Continue to Settlement
+                  </Text>
+                </XStack>
+              </Pressable>
+            </Animated.View>
+          )}
+        </YStack>
+      )}
     </YStack>
   )
 }

@@ -14,7 +14,9 @@ export default function SessionLayout() {
         animation: 'slide_from_right',
       }}
     >
+      <Stack.Screen name="new" options={{ animation: 'slide_from_bottom' }} />
       <Stack.Screen name="[id]" />
+      <Stack.Screen name="share" options={{ presentation: 'modal', animation: 'slide_from_bottom' }} />
       <Stack.Screen name="finalize" />
     </Stack>
   )

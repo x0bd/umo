@@ -74,6 +74,13 @@ function RootLayoutInner() {
             <Stack.Screen name="session" />
             <Stack.Screen name="settings" />
             <Stack.Screen
+              name="join"
+              options={{
+                presentation: 'modal',
+                animation: 'slide_from_bottom',
+              }}
+            />
+            <Stack.Screen
               name="modal"
               options={{
                 presentation: 'modal',

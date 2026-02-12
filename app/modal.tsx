@@ -2,7 +2,6 @@ import {
     ArrowRight,
     Link,
     Receipt,
-    Scan,
     X
 } from '@tamagui/lucide-icons'
 import * as Haptics from 'expo-haptics'
@@ -271,8 +270,8 @@ export default function ModalScreen() {
         <YStack gap={10}>
           <ActionRow
             icon={Receipt}
-            title="Manual Entry"
-            description="Add items and amounts yourself"
+            title="Create New Bill"
+            description="Add items and split with friends"
             onPress={() => {
               router.back()
               setTimeout(() => router.push('/session/new'), 100)
@@ -281,21 +280,14 @@ export default function ModalScreen() {
             delay={100}
           />
           <ActionRow
-            icon={Scan}
-            title="Scan Receipt"
-            description="Use your camera to capture the bill"
-            onPress={() => {
-              router.back()
-              setTimeout(() => router.push('/session/scan'), 100)
-            }}
-            delay={150}
-          />
-          <ActionRow
             icon={Link}
             title="Join a Split"
             description="Enter a code from a friend"
-            onPress={close}
-            delay={200}
+            onPress={() => {
+              router.back()
+              setTimeout(() => router.push('/join'), 100)
+            }}
+            delay={150}
           />
         </YStack>
 
