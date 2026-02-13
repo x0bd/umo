@@ -1,25 +1,23 @@
 import {
-  ArrowRight,
-  Camera,
-  Hash,
-  QrCode,
-  X,
+    Camera,
+    QrCode,
+    X
 } from '@tamagui/lucide-icons'
 import * as Haptics from 'expo-haptics'
 import { router } from 'expo-router'
 import { useRef, useState } from 'react'
 import { Pressable, TextInput } from 'react-native'
 import Animated, {
-  FadeIn,
-  FadeInDown,
-  FadeInUp,
-  useAnimatedStyle,
-  useSharedValue,
-  withSequence,
-  withSpring,
+    FadeIn,
+    FadeInDown,
+    FadeInUp,
+    useAnimatedStyle,
+    useSharedValue,
+    withSequence,
+    withSpring,
 } from 'react-native-reanimated'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import { Text, View, XStack, YStack, useTheme } from 'tamagui'
+import { Text, View, XStack, YStack } from 'tamagui'
 
 // ============================================
 // ANIMATED COMPONENTS
@@ -28,7 +26,7 @@ const AnimatedYStack = Animated.createAnimatedComponent(YStack)
 const AnimatedXStack = Animated.createAnimatedComponent(XStack)
 
 // ============================================
-// CODE INPUT BOX
+// 間 — CODE INPUT BOX
 // ============================================
 const CodeInputBox = ({
   value,
@@ -40,19 +38,22 @@ const CodeInputBox = ({
   index: number
 }) => (
   <View
-    width={56}
+    width={60}
     height={72}
-    borderRadius={16}
-    borderWidth={2}
-    borderColor={isFocused ? '$accent' : value ? '$borderColor' : '$borderColorSoft'}
+    borderRadius={20}
     backgroundColor={value ? '$cardBg' : '$backgroundHover'}
     alignItems="center"
     justifyContent="center"
+    shadowColor="#000"
+    shadowOffset={{ width: 0, height: 2 }}
+    shadowOpacity={value ? 0.04 : 0}
+    shadowRadius={8}
+    // No borders
   >
     <Text
       fontFamily="$mono"
-      fontSize={28}
-      fontWeight="700"
+      fontSize={32}
+      fontWeight="600"
       letterSpacing={0}
       color="$color"
     >
@@ -62,7 +63,7 @@ const CodeInputBox = ({
       <View
         position="absolute"
         width={2}
-        height={28}
+        height={24}
         backgroundColor="$accent"
         borderRadius={1}
       />
@@ -71,11 +72,10 @@ const CodeInputBox = ({
 )
 
 // ============================================
-// MAIN SCREEN
+// 間 — MAIN SCREEN
 // ============================================
 export default function JoinScreen() {
   const insets = useSafeAreaInsets()
-  const theme = useTheme()
   const inputRef = useRef<TextInput>(null)
 
   const [code, setCode] = useState('')
@@ -108,14 +108,12 @@ export default function JoinScreen() {
     // Simulate API call
     await new Promise((resolve) => setTimeout(resolve, 800))
 
-    // For now, navigate to the session
-    // In production, this would validate the code first
     setIsLoading(false)
     router.replace({
       pathname: '/session/[id]',
       params: {
         id: `session-${code}`,
-        name: 'Joined Bill', // Would come from API
+        name: 'Joined Bill',
         currency: 'USD',
         isHost: 'false',
       },
@@ -124,8 +122,7 @@ export default function JoinScreen() {
 
   const handleScanQR = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)
-    // TODO: Open camera for QR scanning
-    // For now, just focus the input
+    // TODO: Open camera logic
     inputRef.current?.focus()
   }
 
@@ -138,13 +135,12 @@ export default function JoinScreen() {
     inputRef.current?.focus()
   }
 
-  // Split code into 4 characters
   const codeChars = code.padEnd(4, ' ').split('')
   const focusedIndex = code.length < 4 ? code.length : -1
 
   return (
     <YStack flex={1} backgroundColor="$background">
-      {/* Hidden TextInput for keyboard */}
+      {/* Hidden TextInput */}
       <TextInput
         ref={inputRef}
         value={code}
@@ -177,26 +173,23 @@ export default function JoinScreen() {
           alignItems="center"
           marginBottom={40}
         >
-          <YStack gap={4}>
-            <XStack alignItems="center" gap={6}>
-              <Hash size={12} color="$accent" strokeWidth={2.5} />
-              <Text
-                fontSize={11}
-                fontWeight="600"
-                letterSpacing={0.8}
-                textTransform="uppercase"
-                color="$colorMuted"
-              >
-                Enter Code
-              </Text>
-            </XStack>
+          <YStack gap={2}>
             <Text
-              fontSize={28}
+              fontSize={11}
+              fontWeight="500"
+              letterSpacing={0.8}
+              textTransform="uppercase"
+              color="$accent"
+            >
+              Enter Code
+            </Text>
+            <Text
+              fontSize={26}
               fontWeight="600"
               letterSpacing={-0.8}
               color="$color"
             >
-              Join a Split
+              Join Split
             </Text>
           </YStack>
 
@@ -218,16 +211,16 @@ export default function JoinScreen() {
         <AnimatedYStack
           entering={FadeInDown.delay(100).springify()}
           alignItems="center"
-          gap={20}
-          marginTop={40}
+          gap={24}
+          marginTop={20}
         >
-          <Text fontSize={15} color="$colorMuted" textAlign="center">
-            Enter the 4-character code from your friend
+          <Text fontSize={15} color="$colorMuted" textAlign="center" lineHeight={22}>
+            Ask your friend for the 4-digit code{'\n'}to join their bill.
           </Text>
 
           {/* Code Boxes */}
           <Pressable onPress={focusInput}>
-            <XStack gap={10}>
+            <XStack gap={12}>
               {codeChars.map((char, index) => (
                 <CodeInputBox
                   key={index}
@@ -269,38 +262,50 @@ export default function JoinScreen() {
             <XStack
               backgroundColor="$cardBg"
               borderRadius={20}
-              padding={20}
+              padding={16}
               alignItems="center"
               gap={16}
-              borderWidth={1}
-              borderColor="$cardBorder"
+              shadowColor="#000"
+              shadowOffset={{ width: 0, height: 2 }}
+              shadowOpacity={0.06}
+              shadowRadius={12}
+              elevation={2}
             >
               <View
-                width={56}
-                height={56}
-                borderRadius={16}
+                width={52}
+                height={52}
+                borderRadius={14}
                 backgroundColor="$accentSoft"
                 alignItems="center"
                 justifyContent="center"
               >
-                <QrCode size={24} color="$accent" strokeWidth={1.8} />
+                <QrCode size={22} color="$accent" strokeWidth={2} />
               </View>
 
               <YStack flex={1} gap={2}>
                 <Text
-                  fontSize={17}
+                  fontSize={16}
                   fontWeight="600"
-                  letterSpacing={-0.3}
+                  letterSpacing={-0.2}
                   color="$color"
                 >
                   Scan QR Code
                 </Text>
                 <Text fontSize={13} color="$colorMuted" lineHeight={18}>
-                  Point your camera at a friend's QR code
+                  Point camera at a code
                 </Text>
               </YStack>
 
-              <Camera size={20} color="$colorMuted" strokeWidth={1.8} />
+              <View
+                width={36}
+                height={36}
+                borderRadius={9999}
+                backgroundColor="$backgroundHover"
+                alignItems="center"
+                justifyContent="center"
+              >
+                <Camera size={16} color="$colorMuted" strokeWidth={2} />
+              </View>
             </XStack>
           </Pressable>
         </AnimatedYStack>
@@ -318,32 +323,15 @@ export default function JoinScreen() {
               paddingHorizontal={24}
               alignItems="center"
               justifyContent="center"
-              opacity={isLoading ? 0.7 : 1}
             >
-              {isLoading ? (
-                <Text
-                  fontSize={16}
-                  fontWeight="600"
-                  letterSpacing={-0.2}
-                  color="$accentText"
-                >
-                  Joining...
-                </Text>
-              ) : (
-                <XStack alignItems="center" gap={8}>
-                  <Text
-                    fontSize={16}
-                    fontWeight="600"
-                    letterSpacing={-0.2}
-                    color={canJoin ? '$accentText' : '$colorMuted'}
-                  >
-                    Join Split
-                  </Text>
-                  {canJoin && (
-                    <ArrowRight size={18} color="$accentText" strokeWidth={2} />
-                  )}
-                </XStack>
-              )}
+              <Text
+                fontSize={16}
+                fontWeight="600"
+                letterSpacing={-0.2}
+                color={canJoin ? '$accentText' : '$colorMuted'}
+              >
+                {isLoading ? 'Joining...' : 'Join Split'}
+              </Text>
             </XStack>
           </Pressable>
         </Animated.View>
@@ -351,4 +339,3 @@ export default function JoinScreen() {
     </YStack>
   )
 }
-
