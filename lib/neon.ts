@@ -4,12 +4,10 @@
  * Set EXPO_PUBLIC_NEON_AUTH_URL and EXPO_PUBLIC_NEON_DATA_API_URL
  * in your .env file after creating a Neon project with Auth enabled.
  *
- * We import `expo-standard-web-crypto` once here to polyfill `global.crypto`
- * in React Native so Neon Auth can use Web Crypto APIs safely.
+ * The crypto polyfill is set up in index.js (app entry point)
+ * which runs before any route module loads.
  */
-import { createClient } from '@neondatabase/neon-js';
-import { crypto } from 'expo-standard-web-crypto';
-(globalThis as any).crypto ??= crypto
+import { createClient } from '@neondatabase/neon-js'
 
 export const neonClient = createClient({
   auth: {
