@@ -1,14 +1,14 @@
 import { relations } from 'drizzle-orm'
 import {
-    index,
-    integer,
-    numeric,
-    pgSchema,
-    pgTable,
-    text,
-    timestamp,
-    uuid,
-    varchar
+  index,
+  integer,
+  numeric,
+  pgSchema,
+  pgTable,
+  text,
+  timestamp,
+  uuid,
+  varchar,
 } from 'drizzle-orm/pg-core'
 
 // ============================================
@@ -16,9 +16,10 @@ import {
 // ============================================
 const neonAuth = pgSchema('neon_auth')
 
-export const neonAuthUsers = neonAuth.table('users_sync', {
+export const neonAuthUsers = neonAuth.table('user', {
+  // Neon Auth user IDs are UUIDs – mirror that here so FKs can attach cleanly
   id: uuid('id').primaryKey(),
-  email: text('email'),
+  email: text('email').notNull(),
   name: text('name'),
   image: text('image'),
   createdAt: timestamp('created_at'),
@@ -119,7 +120,7 @@ export const itemClaims = pgTable(
     itemId: uuid('item_id')
       .notNull()
       .references(() => items.id, { onDelete: 'cascade' }),
-    userId: uuid('user_id')
+    userId: text('user_id')
       .notNull()
       .references(() => neonAuthUsers.id),
     share: numeric('share', { precision: 5, scale: 2 })
