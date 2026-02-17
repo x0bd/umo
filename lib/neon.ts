@@ -7,8 +7,9 @@
  * We import `expo-standard-web-crypto` once here to polyfill `global.crypto`
  * in React Native so Neon Auth can use Web Crypto APIs safely.
  */
-import { createClient } from '@neondatabase/neon-js'
-import 'expo-standard-web-crypto'
+import { createClient } from '@neondatabase/neon-js';
+import { crypto } from 'expo-standard-web-crypto';
+(globalThis as any).crypto ??= crypto
 
 export const neonClient = createClient({
   auth: {

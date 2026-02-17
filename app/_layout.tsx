@@ -1,3 +1,4 @@
+import '@tamagui/native/setup-zeego'
 import { AuthProvider, useAuth } from '@/providers/auth'
 import { ThemeModeProvider, useThemeMode } from '@/providers/theme-mode'
 import config from '@/tamagui.config'
