@@ -17,7 +17,7 @@ import {
 const neonAuth = pgSchema('neon_auth')
 
 export const neonAuthUsers = neonAuth.table('user', {
-  // Neon Auth user IDs are UUIDs – mirror that here so FKs can attach cleanly
+  // Neon Auth user IDs are UUIDs – mirror that here so FKs align with the actual schema
   id: uuid('id').primaryKey(),
   email: text('email').notNull(),
   name: text('name'),
