@@ -113,9 +113,16 @@ export default function SignInScreen() {
     buttonScale.value = withSequence(withSpring(0.97), withSpring(1))
 
     try {
+      const authUrl = process.env.EXPO_PUBLIC_NEON_AUTH_URL!
+      const origin = new URL(authUrl).origin
+
       const result = await auth.signIn.email({
         email: email.trim(),
         password,
+        callbackURL: `${origin}/`,
+        fetchOptions: {
+          headers: { Origin: origin },
+        },
       })
 
       if (result.error) {

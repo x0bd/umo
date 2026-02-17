@@ -115,10 +115,17 @@ export default function CreateAccountScreen() {
     buttonScale.value = withSequence(withSpring(0.97), withSpring(1))
 
     try {
+      const authUrl = process.env.EXPO_PUBLIC_NEON_AUTH_URL!
+      const origin = new URL(authUrl).origin
+
       const result = await auth.signUp.email({
         email: email.trim(),
         password,
         name: name.trim(),
+        callbackURL: `${origin}/`,
+        fetchOptions: {
+          headers: { Origin: origin },
+        },
       })
 
       if (result.error) {
