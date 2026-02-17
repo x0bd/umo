@@ -17,7 +17,7 @@ import {
 const neonAuth = pgSchema('neon_auth')
 
 export const neonAuthUsers = neonAuth.table('user', {
-  // Neon Auth user IDs are UUIDs – mirror that here so FKs align with the actual schema
+  // Neon Auth user IDs are UUIDs – mirror that so FK types match
   id: uuid('id').primaryKey(),
   email: text('email').notNull(),
   name: text('name'),
@@ -120,7 +120,7 @@ export const itemClaims = pgTable(
     itemId: uuid('item_id')
       .notNull()
       .references(() => items.id, { onDelete: 'cascade' }),
-    userId: text('user_id')
+    userId: uuid('user_id')
       .notNull()
       .references(() => neonAuthUsers.id),
     share: numeric('share', { precision: 5, scale: 2 })
