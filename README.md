@@ -1,65 +1,92 @@
-# Welcome to your Expo app 👋
+# Umo (間)
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+**Split bills. Settle debts. The simple way.**
 
-## Get started
+Umo is a modern bill-splitting application built for Zimbabwe, designed to handle multi-currency complexity (USD ↔ ZiG) with a refined, minimalist aesthetic. It blends Japanese design philosophy (Ma, restraint), Swiss typography, and Apple's premium feel into a "Fluid Fintech" experience.
 
-To start the app, in your terminal run:
+![App Screenshot](https://images.unsplash.com/photo-1616077644586-461538350c55?q=80&w=2070&auto=format&fit=crop) *(Placeholder)*
 
-```bash
-npm run start
-```
+## ✨ Philosophy
 
-In the output, you'll find options to open the app in:
+- **Ma (間)**: The space between. We removed everything until it broke, then added one thing back.
+- **In Praise of Shadows**: Depth is achieved through diffuse shadows, not borders.
+- **Fluid Fintech**: Interfaces that feel alive, responsive, and premium.
 
-- [a development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [an Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [an iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## 🛠 Tech Stack
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+**Client**
+- **Framework**: React Native (Expo SDK 52)
+- **Styling**: Tamagui (Universal styling system)
+- **Animations**: Reanimated 3 (Fluid gestures & transitions)
+- **Auth**: `@neondatabase/neon-js` (Auth + Data API)
 
-## Workflows
+**Backend**
+- **Database**: Neon Postgres (Serverless, branching)
+- **ORM**: Drizzle ORM (Type-safe, SQL-like)
+- **API**: Hono (Edge-ready, lightweight) running on Node.js
+- **Auth Provider**: Neon Auth (Powered by Better Auth)
 
-This project is configured to use [EAS Workflows](https://docs.expo.dev/eas/workflows/get-started/) to automate some development and release processes. These commands are set up in [`package.json`](./package.json) and can be run using NPM scripts in your terminal.
+## 🚀 Key Features
 
-### Previews
+- **Multi-Currency Core**: Seamlessly handle USD and ZiG splits with real-time exchange rates.
+- **Smart Splitting**: Itemized receipt splitting — select who ate what, not just even splits.
+- **Privacy First**: Row Level Security (RLS) ensures data isolation at the database level.
+- **Instant Settlement**: (Coming Soon) Direct integration with EcoCash/OneMoney via **Click & Pay OpenAPI**.
 
-Run `npm run draft` to [publish a preview update](https://docs.expo.dev/eas/workflows/examples/publish-preview-update/) of your project, which can be viewed in Expo Go or in a development build.
+## 🔌 Integration Roadmap
 
-### Development Builds
+We are actively building integrations with the **Click & Pay OpenAPI** to enable:
+- **Direct Mobile Money Triggers**: Push USSD prompts directly to users' phones.
+- **Real-time Settlement**: Instant confirmation of peer-to-peer payments.
+- **Merchant Payments**: Pay the restaurant directly from the app.
 
-Run `npm run development-builds` to [create a development build](https://docs.expo.dev/eas/workflows/examples/create-development-builds/). Note - you'll need to follow the [Prerequisites](https://docs.expo.dev/eas/workflows/examples/create-development-builds/#prerequisites) to ensure you have the correct emulator setup on your machine.
-
-### Production Deployments
-
-Run `npm run deploy` to [deploy to production](https://docs.expo.dev/eas/workflows/examples/deploy-to-production/). Note - you'll need to follow the [Prerequisites](https://docs.expo.dev/eas/workflows/examples/deploy-to-production/#prerequisites) to ensure you're set up to submit to the Apple and Google stores.
-
-## Hosting
-
-Expo offers hosting for websites and API functions via EAS Hosting. See the [Getting Started](https://docs.expo.dev/eas/hosting/get-started/) guide to learn more.
-
-
-## Get a fresh project
-
-When you're ready, run:
+## 📦 Project Structure
 
 ```bash
-npm run reset-project
+umo/
+├── app/                  # Expo Router (Client screens)
+├── components/           # UI primitives (Buttons, Cards, Inputs)
+├── lib/                  # Client-side utilities (Neon client)
+├── providers/            # React Context (Auth, Theme)
+├── server/               # Hono API & Drizzle ORM
+│   ├── src/
+│   │   ├── db/           # Schema & Connection
+│   │   ├── routes/       # API Endpoints
+│   │   └── middleware/   # Auth Validation
+│   └── drizzle/          # SQL Migrations
+└── services/             # Currency conversion logic
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## 🏁 Getting Started
 
-## Learn more
+1. **Clone the repo**
+   ```bash
+   git clone https://github.com/yourusername/umo.git
+   cd umo
+   ```
 
-To learn more about developing your project with Expo, look at the following resources:
+2. **Install dependencies**
+   ```bash
+   npm install
+   cd server && npm install
+   ```
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+3. **Set up environment**
+   Create a `.env` file in the root and `server/.env` based on the examples. You will need a standard **Neon** project with Auth enabled.
 
-## Join the community
+4. **Run the development server**
+   ```bash
+   # Terminal 1: Expo Client
+   npx expo start
 
-Join our community of developers creating universal apps.
+   # Terminal 2: API Server
+   cd server && npm run dev
+   ```
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+## 📄 License
+
+MIT
+
+---
+
+*Crafted with 🖤 by [Your Name]*
