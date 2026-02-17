@@ -1,3 +1,4 @@
+import { serve } from '@hono/node-server'
 import 'dotenv/config'
 import { Hono } from 'hono'
 import { cors } from 'hono/cors'
@@ -33,10 +34,10 @@ app.get('/', (c) => {
   })
 })
 
-// Exchange rates (no auth required)
-app.route('/api/exchange', exchangeRoutes)
+// Public routes (no auth)
+app.route('/exchange', exchangeRoutes)
 
-// Protected routes
+// Protected routes (auth required)
 app.use('/api/*', authMiddleware)
 app.route('/api/sessions', sessionsRoutes)
 app.route('/api/friends', friendsRoutes)
@@ -46,14 +47,11 @@ app.route('/api/friends', friendsRoutes)
 // ============================================
 const port = parseInt(process.env.PORT || '3000', 10)
 
-console.log(`
+serve({ fetch: app.fetch, port }, (info) => {
+  console.log(`
   ┌─────────────────────────────┐
   │     umo api · v1.0.0        │
-  │     http://localhost:${port}     │
+  │     http://localhost:${info.port}     │
   └─────────────────────────────┘
-`)
-
-export default {
-  port,
-  fetch: app.fetch,
-}
+  `)
+})

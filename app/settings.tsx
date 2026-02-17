@@ -1,3 +1,4 @@
+import { useAuth } from '@/providers/auth'
 import { useThemeMode } from '@/providers/theme-mode'
 import {
     ArrowLeft,
@@ -205,6 +206,7 @@ const SectionHeader = ({ title, delay = 0 }: { title: string; delay?: number }) 
 export default function SettingsScreen() {
   const insets = useSafeAreaInsets()
   const { isDark, toggle } = useThemeMode()
+  const { user, signOut } = useAuth()
 
   return (
     <YStack flex={1} backgroundColor="$background">
@@ -288,10 +290,10 @@ export default function SettingsScreen() {
 
                 <YStack flex={1} gap={4}>
                   <Text fontSize={20} fontWeight="600" color="$color" letterSpacing={-0.5}>
-                    Tino Mabika
+                    {user?.name || 'Guest'}
                   </Text>
                   <Text fontSize={14} color="$colorMuted">
-                    tino@umo.app
+                    {user?.email || 'Not signed in'}
                   </Text>
                   <View
                     backgroundColor="$accentGhost"
@@ -448,8 +450,9 @@ export default function SettingsScreen() {
             <SettingsRow
               icon={LogOut}
               label="Log Out"
-              onPress={() => {
+              onPress={async () => {
                 Haptics.notificationAsync(Haptics.NotificationFeedbackType.Warning)
+                await signOut()
                 router.replace('/onboarding')
               }}
               isDestructive

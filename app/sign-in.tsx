@@ -1,15 +1,15 @@
 import { auth } from '@/lib/neon'
-import {
-    Eye,
-    EyeOff,
-    Mail,
-    Phone,
-    User
-} from '@tamagui/lucide-icons'
+import { Eye, EyeOff, Mail } from '@tamagui/lucide-icons'
 import * as Haptics from 'expo-haptics'
 import { router } from 'expo-router'
 import { useState } from 'react'
-import { ActivityIndicator, KeyboardAvoidingView, Platform, Pressable, TextInput } from 'react-native'
+import {
+    ActivityIndicator,
+    KeyboardAvoidingView,
+    Platform,
+    Pressable,
+    TextInput,
+} from 'react-native'
 import Animated, {
     FadeInDown,
     FadeInUp,
@@ -40,7 +40,7 @@ const FormField = ({
   delay = 0,
   rightElement,
 }: {
-  icon: typeof User
+  icon: typeof Mail
   placeholder: string
   value: string
   onChangeText: (text: string) => void
@@ -89,13 +89,11 @@ const FormField = ({
 )
 
 // ============================================
-// 間 — MAIN SCREEN
+// 間 — SIGN IN SCREEN
 // ============================================
-export default function CreateAccountScreen() {
+export default function SignInScreen() {
   const insets = useSafeAreaInsets()
-  const [name, setName] = useState('')
   const [email, setEmail] = useState('')
-  const [phone, setPhone] = useState('')
   const [password, setPassword] = useState('')
   const [showPassword, setShowPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
@@ -106,23 +104,22 @@ export default function CreateAccountScreen() {
     transform: [{ scale: buttonScale.value }],
   }))
 
-  const isValid = name.trim().length > 1 && email.includes('@') && password.length >= 6
+  const isValid = email.includes('@') && password.length >= 6
 
-  const handleCreate = async () => {
+  const handleSignIn = async () => {
     if (!isValid || isLoading) return
     setError(null)
     setIsLoading(true)
     buttonScale.value = withSequence(withSpring(0.97), withSpring(1))
 
     try {
-      const result = await auth.signUp.email({
+      const result = await auth.signIn.email({
         email: email.trim(),
         password,
-        name: name.trim(),
       })
 
       if (result.error) {
-        setError(result.error.message || 'Something went wrong')
+        setError(result.error.message || 'Invalid email or password')
         Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error)
         return
       }
@@ -180,10 +177,10 @@ export default function CreateAccountScreen() {
                   color="$color"
                   lineHeight={36}
                 >
-                  Create your{'\n'}account.
+                  Welcome{'\n'}back.
                 </Text>
                 <Text fontSize={15} color="$colorMuted" lineHeight={22} marginTop={4}>
-                  Join thousands splitting bills across Zimbabwe.
+                  Sign in to continue splitting bills.
                 </Text>
               </YStack>
             </AnimatedYStack>
@@ -191,29 +188,13 @@ export default function CreateAccountScreen() {
             {/* Form Fields */}
             <YStack gap={12}>
               <FormField
-                icon={User}
-                placeholder="Full name"
-                value={name}
-                onChangeText={setName}
-                autoCapitalize="words"
-                delay={150}
-              />
-              <FormField
                 icon={Mail}
                 placeholder="Email address"
                 value={email}
                 onChangeText={setEmail}
                 keyboardType="email-address"
                 autoCapitalize="none"
-                delay={200}
-              />
-              <FormField
-                icon={Phone}
-                placeholder="Phone number"
-                value={phone}
-                onChangeText={setPhone}
-                keyboardType="phone-pad"
-                delay={250}
+                delay={150}
               />
               <FormField
                 icon={showPassword ? EyeOff : Eye}
@@ -221,7 +202,7 @@ export default function CreateAccountScreen() {
                 value={password}
                 onChangeText={setPassword}
                 secureTextEntry={!showPassword}
-                delay={300}
+                delay={200}
                 rightElement={
                   <Pressable
                     onPress={() => {
@@ -243,12 +224,12 @@ export default function CreateAccountScreen() {
 
           {/* Bottom Section */}
           <YStack gap={16}>
-            {/* Create Button */}
+            {/* Sign In Button */}
             <Animated.View
-              entering={FadeInDown.delay(350).springify()}
+              entering={FadeInDown.delay(250).springify()}
               style={buttonAnimatedStyle}
             >
-              <Pressable onPress={handleCreate} disabled={!isValid || isLoading}>
+              <Pressable onPress={handleSignIn} disabled={!isValid || isLoading}>
                 <XStack
                   backgroundColor={isValid ? '$accent' : '$backgroundHover'}
                   borderRadius={9999}
@@ -267,7 +248,7 @@ export default function CreateAccountScreen() {
                       letterSpacing={-0.2}
                       color={isValid ? '$accentText' : '$colorMuted'}
                     >
-                      Create Account
+                      Sign In
                     </Text>
                   )}
                 </XStack>
@@ -283,35 +264,23 @@ export default function CreateAccountScreen() {
               </Animated.View>
             )}
 
-            {/* Sign In Link */}
-            <Animated.View entering={FadeInDown.delay(400).springify()}>
+            {/* Create Account Link */}
+            <Animated.View entering={FadeInDown.delay(300).springify()}>
               <XStack justifyContent="center" gap={4}>
                 <Text fontSize={14} color="$colorMuted">
-                  Already have an account?
+                  Don't have an account?
                 </Text>
-                <Pressable onPress={() => {
-                  Haptics.selectionAsync()
-                  router.push('/sign-in')
-                }}>
+                <Pressable
+                  onPress={() => {
+                    Haptics.selectionAsync()
+                    router.push('/create-account')
+                  }}
+                >
                   <Text fontSize={14} fontWeight="600" color="$accent">
-                    Sign In
+                    Create One
                   </Text>
                 </Pressable>
               </XStack>
-            </Animated.View>
-
-            {/* Terms */}
-            <Animated.View entering={FadeInDown.delay(450).springify()}>
-              <Text textAlign="center" fontSize={11} color="$colorGhost" lineHeight={16}>
-                By creating an account, you agree to our{' '}
-                <Text color="$colorMuted" fontWeight="500">
-                  Terms
-                </Text>{' '}
-                and{' '}
-                <Text color="$colorMuted" fontWeight="500">
-                  Privacy Policy
-                </Text>
-              </Text>
             </Animated.View>
           </YStack>
         </YStack>
