@@ -1,5 +1,4 @@
-import { ArrowLeft, Eye, EyeOff } from 'lucide-react-native';
-import { Rabbit } from 'lucide-react-native';
+import { ArrowLeft, Eye, EyeOff, Rabbit } from 'lucide-react-native';
 import { MotiView } from 'moti';
 import { useState } from 'react';
 import {
@@ -29,6 +28,7 @@ function FormField({
   placeholder,
   secureTextEntry,
   autoCapitalize = 'none',
+  keyboardType,
   onToggleSecure,
 }: {
   label: string;
@@ -37,6 +37,7 @@ function FormField({
   placeholder: string;
   secureTextEntry?: boolean;
   autoCapitalize?: 'none' | 'sentences' | 'words';
+  keyboardType?: 'default' | 'email-address';
   onToggleSecure?: () => void;
 }) {
   const [focused, setFocused] = useState(false);
@@ -71,7 +72,7 @@ function FormField({
           placeholderTextColor="#C8C8C8"
           secureTextEntry={secureTextEntry}
           autoCapitalize={autoCapitalize}
-          keyboardType={label === 'EMAIL' ? 'email-address' : 'default'}
+          keyboardType={keyboardType ?? 'default'}
           autoCorrect={false}
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}
@@ -125,17 +126,22 @@ function SocialBtn({
           gap: 9,
           paddingVertical: 15,
           borderRadius: 16,
-          backgroundColor: dark ? '#080808' : '#fff',
+          backgroundColor: dark ? '#0A0A0A' : '#fff',
           borderWidth: 1.5,
-          borderColor: dark ? '#080808' : '#E8E8E8',
+          borderColor: dark ? '#0A0A0A' : '#E8E8E8',
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: 2 },
+          shadowOpacity: dark ? 0.18 : 0.04,
+          shadowRadius: 6,
+          elevation: dark ? 4 : 1,
         }}>
         {icon}
         <Text
           style={{
-            fontSize: 14,
+            fontSize: 14.5,
             fontWeight: '600',
             color: dark ? '#fff' : '#111',
-            letterSpacing: -0.2,
+            letterSpacing: -0.3,
           }}>
           {label}
         </Text>
@@ -151,6 +157,16 @@ export function SignUpScreen({ onSignedUp, onSignIn, onBack }: Props) {
   const [password, setPassword] = useState('');
   const [showPw, setShowPw] = useState(false);
   const [submitPressed, setSubmitPressed] = useState(false);
+  const canSubmit = name.trim().length > 0 && email.includes('@') && password.length >= 6;
+
+  const pwScore = [
+    password.length >= 6,
+    /[A-Z]/.test(password),
+    /[0-9]/.test(password),
+    /[^A-Za-z0-9]/.test(password),
+  ].filter(Boolean).length;
+  const pwColors = ['#E53935', '#FB8C00', '#43A047', '#00C853'];
+  const pwLabels = ['Weak', 'Fair', 'Good', 'Strong'];
 
   return (
     <KeyboardAvoidingView
@@ -257,11 +273,11 @@ export function SignUpScreen({ onSignedUp, onSignIn, onBack }: Props) {
               {/* HEADLINE */}
               <Text
                 style={{
-                  fontSize: 46,
-                  fontWeight: '700',
+                  fontSize: 44,
+                  fontWeight: '600',
                   color: '#0E0E0E',
-                  letterSpacing: -2.8,
-                  lineHeight: 48,
+                  letterSpacing: -2.6,
+                  lineHeight: 46,
                   marginBottom: 10,
                 }}>
                 {'Create your\naccount.'}
@@ -269,7 +285,7 @@ export function SignUpScreen({ onSignedUp, onSignIn, onBack }: Props) {
               <Text
                 style={{
                   fontSize: 14.5,
-                  color: '#666',
+                  color: '#5A5A5A',
                   lineHeight: 22,
                   letterSpacing: 0.05,
                   marginBottom: 28,
@@ -299,227 +315,89 @@ export function SignUpScreen({ onSignedUp, onSignIn, onBack }: Props) {
                 <View style={{ flex: 1, height: 1, backgroundColor: '#E0E0E0' }} />
               </View>
 
-              {/* GROUPED FORM CARD */}
-              <View
-                style={{
-                  backgroundColor: '#fff',
-                  borderRadius: 20,
-                  borderWidth: 1,
-                  borderColor: '#EBEBEB',
-                  overflow: 'hidden',
-                  marginBottom: 6,
-                  shadowColor: '#000',
-                  shadowOffset: { width: 0, height: 2 },
-                  shadowOpacity: 0.04,
-                  shadowRadius: 8,
-                  elevation: 1,
-                }}>
-                {/* NAME ROW */}
-                <View
-                  style={{
-                    paddingHorizontal: 16,
-                    paddingTop: 14,
-                    paddingBottom: 12,
-                    borderBottomWidth: 1,
-                    borderBottomColor: '#F0F0F0',
-                  }}>
-                  <Text
-                    style={{
-                      fontSize: 9.5,
-                      fontWeight: '700',
-                      letterSpacing: 2.4,
-                      color: '#C0C0C0',
-                      textTransform: 'uppercase',
-                      marginBottom: 5,
-                    }}>
-                    Full Name
-                  </Text>
-                  <TextInput
-                    value={name}
-                    onChangeText={setName}
-                    placeholder="Tendai Moyo"
-                    placeholderTextColor="#D0D0D0"
-                    autoCapitalize="words"
-                    autoCorrect={false}
-                    style={{
-                      fontSize: 16,
-                      color: '#0E0E0E',
-                      letterSpacing: -0.4,
-                      padding: 0,
-                      fontWeight: '500',
-                    }}
-                  />
-                </View>
-                {/* EMAIL ROW */}
-                <View
-                  style={{
-                    paddingHorizontal: 16,
-                    paddingTop: 14,
-                    paddingBottom: 12,
-                    borderBottomWidth: 1,
-                    borderBottomColor: '#F0F0F0',
-                  }}>
-                  <Text
-                    style={{
-                      fontSize: 9.5,
-                      fontWeight: '700',
-                      letterSpacing: 2.4,
-                      color: '#C0C0C0',
-                      textTransform: 'uppercase',
-                      marginBottom: 5,
-                    }}>
-                    Email
-                  </Text>
-                  <TextInput
-                    value={email}
-                    onChangeText={setEmail}
-                    placeholder="tendai@gmail.com"
-                    placeholderTextColor="#D0D0D0"
-                    keyboardType="email-address"
-                    autoCapitalize="none"
-                    autoCorrect={false}
-                    style={{
-                      fontSize: 16,
-                      color: '#0E0E0E',
-                      letterSpacing: -0.4,
-                      padding: 0,
-                      fontWeight: '500',
-                    }}
-                  />
-                </View>
-                {/* PASSWORD ROW */}
-                <View style={{ paddingHorizontal: 16, paddingTop: 14, paddingBottom: 14 }}>
-                  <Text
-                    style={{
-                      fontSize: 9.5,
-                      fontWeight: '700',
-                      letterSpacing: 2.4,
-                      color: '#C0C0C0',
-                      textTransform: 'uppercase',
-                      marginBottom: 5,
-                    }}>
-                    Password
-                  </Text>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-                    <TextInput
-                      value={password}
-                      onChangeText={setPassword}
-                      placeholder="At least 6 characters"
-                      placeholderTextColor="#D0D0D0"
-                      secureTextEntry={!showPw}
-                      autoCapitalize="none"
-                      autoCorrect={false}
-                      style={{
-                        flex: 1,
-                        fontSize: 16,
-                        color: '#0E0E0E',
-                        letterSpacing: -0.4,
-                        padding: 0,
-                        fontWeight: '500',
-                      }}
-                    />
-                    <Pressable onPress={() => setShowPw((v) => !v)} hitSlop={10}>
-                      {showPw ? (
-                        <Eye size={16} color="#C0C0C0" strokeWidth={1.75} />
-                      ) : (
-                        <EyeOff size={16} color="#C0C0C0" strokeWidth={1.75} />
-                      )}
-                    </Pressable>
+              {/* FORM */}
+              <FormField
+                label="Full Name"
+                value={name}
+                onChangeText={setName}
+                placeholder="Tendai Moyo"
+                autoCapitalize="words"
+              />
+              <FormField
+                label="Email"
+                value={email}
+                onChangeText={setEmail}
+                placeholder="tendai@gmail.com"
+                keyboardType="email-address"
+              />
+              <FormField
+                label="Password"
+                value={password}
+                onChangeText={setPassword}
+                placeholder="At least 6 characters"
+                secureTextEntry={!showPw}
+                onToggleSecure={() => setShowPw((v) => !v)}
+              />
+
+              {/* PASSWORD STRENGTH */}
+              {password.length > 0 && (
+                <View style={{ marginTop: -6, marginBottom: 14, paddingHorizontal: 2 }}>
+                  <View style={{ flexDirection: 'row', gap: 4, marginBottom: 5 }}>
+                    {[1, 2, 3, 4].map((i) => (
+                      <MotiView
+                        key={i}
+                        animate={{
+                          backgroundColor: i <= pwScore ? pwColors[pwScore - 1] : '#EEEEEE',
+                        }}
+                        transition={{ type: 'timing', duration: 200 }}
+                        style={{ flex: 1, height: 3, borderRadius: 2 }}
+                      />
+                    ))}
                   </View>
-                  {password.length > 0 && (
-                    <View style={{ marginTop: 10 }}>
-                      <View style={{ flexDirection: 'row', gap: 4, marginBottom: 5 }}>
-                        {[1, 2, 3, 4].map((i) => {
-                          const score = [
-                            password.length >= 6,
-                            /[A-Z]/.test(password),
-                            /[0-9]/.test(password),
-                            /[^A-Za-z0-9]/.test(password),
-                          ].filter(Boolean).length;
-                          const c =
-                            ['#E53935', '#FB8C00', '#43A047', '#00C853'][score - 1] ?? '#E8E8E8';
-                          return (
-                            <MotiView
-                              key={i}
-                              animate={{ backgroundColor: i <= score ? c : '#EEEEEE' }}
-                              transition={{ type: 'timing', duration: 200 }}
-                              style={{ flex: 1, height: 3, borderRadius: 2 }}
-                            />
-                          );
-                        })}
-                      </View>
-                      <Text
-                        style={{
-                          fontSize: 11,
-                          color: (() => {
-                            const s = [
-                              password.length >= 6,
-                              /[A-Z]/.test(password),
-                              /[0-9]/.test(password),
-                              /[^A-Za-z0-9]/.test(password),
-                            ].filter(Boolean).length;
-                            return ['#E53935', '#FB8C00', '#43A047', '#00C853'][s - 1] ?? '#CCC';
-                          })(),
-                          fontWeight: '600',
-                          letterSpacing: 0.2,
-                        }}>
-                        {['Weak', 'Fair', 'Good', 'Strong'][
-                          [
-                            password.length >= 6,
-                            /[A-Z]/.test(password),
-                            /[0-9]/.test(password),
-                            /[^A-Za-z0-9]/.test(password),
-                          ].filter(Boolean).length - 1
-                        ] ?? ''}
-                      </Text>
-                    </View>
-                  )}
+                  <Text
+                    style={{
+                      fontSize: 11,
+                      color: pwColors[pwScore - 1] ?? '#CCC',
+                      fontWeight: '600',
+                      letterSpacing: 0.2,
+                    }}>
+                    {pwLabels[pwScore - 1] ?? ''}
+                  </Text>
                 </View>
-              </View>
-              <Text
-                style={{
-                  fontSize: 11.5,
-                  color: '#C0C0C0',
-                  letterSpacing: 0.1,
-                  lineHeight: 17,
-                  paddingLeft: 4,
-                  marginBottom: 20,
-                }}>
-                By continuing you agree to our Terms of Service.
-              </Text>
+              )}
 
               {/* CTA */}
               <Pressable
                 onPress={() => {
-                  if (name && email && password.length >= 6) onSignedUp();
+                  if (canSubmit) onSignedUp();
                 }}
                 onPressIn={() => setSubmitPressed(true)}
-                onPressOut={() => setSubmitPressed(false)}>
+                onPressOut={() => setSubmitPressed(false)}
+                style={{ marginTop: 6 }}>
                 <MotiView
                   animate={{
                     scale: submitPressed ? 0.97 : 1,
-                    backgroundColor: name && email && password.length >= 6 ? '#FF0048' : '#E0E0E0',
+                    backgroundColor: canSubmit ? '#FF0048' : '#E0E0E0',
                   }}
                   transition={{ type: 'timing', duration: 150 }}
                   style={{
-                    backgroundColor: '#FF0048',
                     borderRadius: 18,
                     paddingHorizontal: 24,
                     paddingVertical: 18,
                     flexDirection: 'row',
                     alignItems: 'center',
                     justifyContent: 'space-between',
-                    shadowColor: '#FF0048',
+                    shadowColor: canSubmit ? '#FF0048' : 'transparent',
                     shadowOffset: { width: 0, height: 10 },
                     shadowOpacity: 0.32,
                     shadowRadius: 18,
-                    elevation: 8,
+                    elevation: canSubmit ? 8 : 0,
                   }}>
                   <Text
                     style={{
                       fontSize: 16,
                       fontWeight: '700',
-                      color: name && email && password.length >= 6 ? '#fff' : '#AAAAAA',
+                      color: canSubmit ? '#fff' : '#AAAAAA',
                       letterSpacing: -0.3,
                     }}>
                     Create account
@@ -529,11 +407,13 @@ export function SignUpScreen({ onSignedUp, onSignIn, onBack }: Props) {
                       width: 32,
                       height: 32,
                       borderRadius: 16,
-                      backgroundColor: 'rgba(255,255,255,0.22)',
+                      backgroundColor: canSubmit ? 'rgba(255,255,255,0.22)' : 'rgba(0,0,0,0.06)',
                       alignItems: 'center',
                       justifyContent: 'center',
                     }}>
-                    <Text style={{ fontSize: 16, color: '#fff' }}>→</Text>
+                    <Text style={{ fontSize: 16, color: canSubmit ? '#fff' : '#CCCCCC' }}>
+                      {String.fromCharCode(8594)}
+                    </Text>
                   </View>
                 </MotiView>
               </Pressable>
@@ -541,7 +421,7 @@ export function SignUpScreen({ onSignedUp, onSignIn, onBack }: Props) {
               {/* SIGN IN LINK */}
               <Pressable onPress={onSignIn} style={{ alignItems: 'center', paddingVertical: 20 }}>
                 <Text style={{ fontSize: 13.5, color: '#888', letterSpacing: 0.1 }}>
-                  Already have an account?{'  '}
+                  {'Already have an account?  '}
                   <Text style={{ color: '#0E0E0E', fontWeight: '700', letterSpacing: -0.1 }}>
                     Sign in
                   </Text>

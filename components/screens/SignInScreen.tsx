@@ -1,4 +1,4 @@
-import { Eye, EyeOff } from 'lucide-react-native';
+import { ArrowLeft, Eye, EyeOff, Rabbit } from 'lucide-react-native';
 import { MotiView } from 'moti';
 import { useState } from 'react';
 import {
@@ -68,7 +68,7 @@ function FormField({
           placeholderTextColor="#C8C8C8"
           secureTextEntry={secureTextEntry}
           autoCapitalize="none"
-          keyboardType={label === 'EMAIL' ? 'email-address' : 'default'}
+          keyboardType={label.toUpperCase() === 'EMAIL' ? 'email-address' : 'default'}
           autoCorrect={false}
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}
@@ -161,24 +161,32 @@ export function SignInScreen({ onSignedIn, onSignUp, onBack }: Props) {
         {/* TOP CHROME */}
         <View
           style={{
-            paddingTop: insets.top + 12,
+            paddingTop: insets.top + 14,
             paddingHorizontal: 20,
-            paddingBottom: 8,
+            paddingBottom: 4,
             flexDirection: 'row',
             alignItems: 'center',
           }}>
-          <Pressable onPress={onBack} hitSlop={12} style={{ marginRight: 'auto' }}>
-            <Text style={{ fontSize: 22, color: '#0E0E0E', lineHeight: 26 }}>←</Text>
+          <Pressable
+            onPress={onBack}
+            hitSlop={12}
+            style={{
+              width: 38,
+              height: 38,
+              borderRadius: 12,
+              backgroundColor: '#EBEBEB',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+            <ArrowLeft size={18} color="#0E0E0E" strokeWidth={2} />
           </Pressable>
           <View
             style={{
+              flex: 1,
               flexDirection: 'row',
               alignItems: 'center',
-              gap: 7,
-              position: 'absolute',
-              left: 0,
-              right: 0,
               justifyContent: 'center',
+              gap: 7,
             }}>
             <View
               style={{
@@ -188,14 +196,20 @@ export function SignInScreen({ onSignedIn, onSignUp, onBack }: Props) {
                 backgroundColor: '#FF0048',
                 alignItems: 'center',
                 justifyContent: 'center',
+                shadowColor: '#FF0048',
+                shadowOffset: { width: 0, height: 3 },
+                shadowOpacity: 0.3,
+                shadowRadius: 6,
+                elevation: 4,
               }}>
-              <Text style={{ fontSize: 13, color: '#fff', fontWeight: '800' }}>u</Text>
+              <Rabbit size={14} color="#fff" strokeWidth={1.75} />
             </View>
             <Text
               style={{ fontSize: 16, fontWeight: '700', color: '#0E0E0E', letterSpacing: -0.8 }}>
               umo
             </Text>
           </View>
+          <View style={{ width: 38 }} />
         </View>
 
         {/* HERO SECTION */}

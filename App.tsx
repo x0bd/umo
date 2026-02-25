@@ -4,6 +4,7 @@ import { StatusBar } from 'expo-status-bar';
 import { SignInScreen } from './components/screens/SignInScreen';
 import { SignUpScreen } from './components/screens/SignUpScreen';
 import { ServicesScreen } from './components/screens/ServicesScreen';
+import { HomeScreen } from './components/screens/HomeScreen';
 import { Rabbit } from 'lucide-react-native';
 import { AnimatePresence, MotiView } from 'moti';
 import { useRef, useState } from 'react';
@@ -373,7 +374,7 @@ function OnboardingScreen({
   );
 }
 
-type Screen = 'onboarding' | 'signup' | 'signin' | 'services';
+type Screen = 'onboarding' | 'signup' | 'signin' | 'services' | 'home';
 
 export default function App() {
   const [screen, setScreen] = useState<Screen>('onboarding');
@@ -400,9 +401,8 @@ export default function App() {
           onBack={() => setScreen('onboarding')}
         />
       )}
-      {screen === 'services' && (
-        <ServicesScreen onDone={(_selected) => console.log('done', _selected)} />
-      )}
+      {screen === 'services' && <ServicesScreen onDone={() => setScreen('home')} />}
+      {screen === 'home' && <HomeScreen onNewSession={() => console.log('new session')} />}
     </SafeAreaProvider>
   );
 }
