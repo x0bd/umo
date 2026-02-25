@@ -1,65 +1,91 @@
-﻿import { ArrowDownLeft, ArrowUpRight, Bell, Clock, Home, QrCode, Plus, Rabbit, RefreshCw, Users, Wallet } from 'lucide-react-native';
+﻿import {
+  ArrowDownLeft,
+  ArrowUpRight,
+  Bell,
+  ChevronRight,
+  Clock,
+  Home,
+  Plus,
+  QrCode,
+  Rabbit,
+  RefreshCw,
+  Users,
+  Wallet,
+} from 'lucide-react-native';
 import { MotiView } from 'moti';
 import { useState } from 'react';
-import { Pressable, ScrollView, Text, View } from 'react-native';
+import { Image, Pressable, ScrollView, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 interface Props {
   onNewSession?: () => void;
 }
 
+// ─── Photo seeds (pravatar gives consistent faces per seed) ───────────────────
+const PHOTOS = {
+  TM: 'https://i.pravatar.cc/120?u=tendai_moyo_zw',
+  SN: 'https://i.pravatar.cc/120?u=sasha_ndlovu_zw',
+  KC: 'https://i.pravatar.cc/120?u=kuda_chidziva_zw',
+  AM: 'https://i.pravatar.cc/120?u=ash_mapurisa_zw',
+  RM: 'https://i.pravatar.cc/120?u=rudo_mutasa_zw',
+  BN: 'https://i.pravatar.cc/120?u=bry_nyamhere_zw',
+  JK: 'https://i.pravatar.cc/120?u=jake_kariuki_zw',
+};
+
 // ─── Mock data ────────────────────────────────────────────────────────────────
 
-const USER = { name: 'Tendai', initials: 'TM' };
-
+const USER = { name: 'Tendai', initials: 'TM', photo: PHOTOS.TM };
 const BALANCE = { youOwe: 12.0, owedToYou: 27.5 };
 
 const FRIENDS = [
-  { initials: 'SN', name: 'Sasha N.', color: '#1A73E8', owes: 8.5, currency: 'USD' },
-  { initials: 'KC', name: 'Kuda C.', color: '#00A550', owes: 14.0, currency: 'USD' },
-  { initials: 'AM', name: 'Ash M.', color: '#8B1CC8', owes: 5.0, currency: 'USD' },
-  { initials: 'RM', name: 'Rudo M.', color: '#F05A28', owes: -12.0, currency: 'USD' },
-  { initials: 'BN', name: 'Bry N.', color: '#9A6F00', owes: 4200, currency: 'ZiG' },
+  { key: 'SN', initials: 'SN', name: 'Sasha N.', color: '#1A73E8', owes: 8.5, currency: 'USD' },
+  { key: 'KC', initials: 'KC', name: 'Kuda C.', color: '#00A550', owes: 14.0, currency: 'USD' },
+  { key: 'AM', initials: 'AM', name: 'Ash M.', color: '#8B1CC8', owes: 5.0, currency: 'USD' },
+  { key: 'RM', initials: 'RM', name: 'Rudo M.', color: '#F05A28', owes: -12.0, currency: 'USD' },
+  { key: 'BN', initials: 'BN', name: 'Bry N.', color: '#9A6F00', owes: 4200, currency: 'ZiG' },
 ];
 
 const SESSIONS = [
   {
     id: '1',
-    venue: 'Grill & Chill Harare',
-    date: 'Today · 4 people',
+    venue: 'Grill & Chill',
+    venuePhoto: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=110&h=110&fit=crop',
+    date: 'Today',
     status: 'pending',
     myShare: 12.0,
     currency: 'USD',
     participants: [
-      { initials: 'TM', color: '#FF0048' },
-      { initials: 'SN', color: '#1A73E8' },
-      { initials: 'KC', color: '#00A550' },
-      { initials: 'AM', color: '#8B1CC8' },
+      { key: 'TM', initials: 'TM', color: '#FF0048' },
+      { key: 'SN', initials: 'SN', color: '#1A73E8' },
+      { key: 'KC', initials: 'KC', color: '#00A550' },
+      { key: 'AM', initials: 'AM', color: '#8B1CC8' },
     ],
   },
   {
     id: '2',
     venue: "Nando's Borrowdale",
-    date: 'Yesterday · 3 people',
+    venuePhoto: 'https://images.unsplash.com/photo-1567521464027-f127ff144326?w=110&h=110&fit=crop',
+    date: 'Yesterday',
     status: 'settled',
     myShare: 8.0,
     currency: 'USD',
     participants: [
-      { initials: 'TM', color: '#FF0048' },
-      { initials: 'RM', color: '#F05A28' },
-      { initials: 'JK', color: '#1B3A6B' },
+      { key: 'TM', initials: 'TM', color: '#FF0048' },
+      { key: 'RM', initials: 'RM', color: '#F05A28' },
+      { key: 'JK', initials: 'JK', color: '#1B3A6B' },
     ],
   },
   {
     id: '3',
     venue: 'Avondale Flea Market',
-    date: 'Mon 24 Feb · 2 people',
+    venuePhoto: 'https://images.unsplash.com/photo-1533900298318-6b8da08a523e?w=110&h=110&fit=crop',
+    date: 'Mon 24 Feb',
     status: 'partial',
     myShare: 4200,
     currency: 'ZiG',
     participants: [
-      { initials: 'TM', color: '#FF0048' },
-      { initials: 'BN', color: '#9A6F00' },
+      { key: 'TM', initials: 'TM', color: '#FF0048' },
+      { key: 'BN', initials: 'BN', color: '#9A6F00' },
     ],
   },
 ];
@@ -76,33 +102,89 @@ const STATUS_BG: Record<string, string> = {
 };
 
 const QUICK_ACTIONS = [
-  { icon: Plus, label: 'New Split', bg: '#FF0048', fg: '#fff' },
-  { icon: QrCode, label: 'Scan QR', bg: '#fff', fg: '#0E0E0E' },
-  { icon: ArrowUpRight, label: 'Request', bg: '#fff', fg: '#0E0E0E' },
-  { icon: RefreshCw, label: 'Settle', bg: '#fff', fg: '#0E0E0E' },
+  { icon: Plus, label: 'New Split', bg: '#FF0048', fg: '#fff', iconBg: 'rgba(255,255,255,0.22)' },
+  { icon: QrCode, label: 'Scan QR', bg: '#fff', fg: '#0E0E0E', iconBg: '#F4F4F4' },
+  { icon: ArrowUpRight, label: 'Request', bg: '#fff', fg: '#0E0E0E', iconBg: '#F4F4F4' },
+  { icon: RefreshCw, label: 'Settle', bg: '#fff', fg: '#0E0E0E', iconBg: '#F4F4F4' },
 ];
 
-// ─── Participant avatar stack ─────────────────────────────────────────────────
-function ParticipantStack({ participants }: { participants: { initials: string; color: string }[] }) {
+// ─── PersonAvatar — photo with initials fallback ──────────────────────────────
+function PersonAvatar({
+  photoKey,
+  initials,
+  color,
+  size,
+  borderColor = '#fff',
+  borderWidth = 2,
+}: {
+  photoKey: string;
+  initials: string;
+  color: string;
+  size: number;
+  borderColor?: string;
+  borderWidth?: number;
+}) {
+  const src = PHOTOS[photoKey as keyof typeof PHOTOS];
+  return (
+    <View
+      style={{
+        width: size,
+        height: size,
+        borderRadius: size / 2,
+        borderWidth,
+        borderColor,
+        overflow: 'hidden',
+        backgroundColor: color + '22',
+      }}>
+      {src ? (
+        <Image source={{ uri: src }} style={{ width: '100%', height: '100%' }} />
+      ) : (
+        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+          <Text style={{ fontSize: size * 0.3, fontWeight: '700', color }}>{initials}</Text>
+        </View>
+      )}
+    </View>
+  );
+}
+
+// ─── Participant stack ────────────────────────────────────────────────────────
+function ParticipantStack({
+  participants,
+  borderColor = '#fff',
+}: {
+  participants: { key: string; initials: string; color: string }[];
+  borderColor?: string;
+}) {
   return (
     <View style={{ flexDirection: 'row' }}>
       {participants.slice(0, 4).map((p, i) => (
+        <View key={i} style={{ marginLeft: i === 0 ? 0 : -8 }}>
+          <PersonAvatar
+            photoKey={p.key}
+            initials={p.initials}
+            color={p.color}
+            size={24}
+            borderColor={borderColor}
+            borderWidth={1.5}
+          />
+        </View>
+      ))}
+      {participants.length > 4 && (
         <View
-          key={i}
           style={{
-            marginLeft: i === 0 ? 0 : -7,
-            width: 22,
-            height: 22,
-            borderRadius: 11,
-            backgroundColor: p.color + '18',
+            marginLeft: -8,
+            width: 24,
+            height: 24,
+            borderRadius: 12,
+            backgroundColor: '#E0E0E0',
             borderWidth: 1.5,
-            borderColor: '#fff',
+            borderColor,
             alignItems: 'center',
             justifyContent: 'center',
           }}>
-          <Text style={{ fontSize: 7, fontWeight: '700', color: p.color }}>{p.initials}</Text>
+          <Text style={{ fontSize: 8, fontWeight: '700', color: '#555' }}>+{participants.length - 4}</Text>
         </View>
-      ))}
+      )}
     </View>
   );
 }
@@ -110,12 +192,10 @@ function ParticipantStack({ participants }: { participants: { initials: string; 
 // ─── Nav Dock ─────────────────────────────────────────────────────────────────
 function DockTab({
   icon: Icon,
-  label,
   active,
   onPress,
 }: {
   icon: typeof Home;
-  label: string;
   active: boolean;
   onPress: () => void;
 }) {
@@ -126,18 +206,18 @@ function DockTab({
       onPressIn={() => setPressed(true)}
       onPressOut={() => setPressed(false)}>
       <MotiView
-        animate={{ scale: pressed ? 0.84 : 1 }}
+        animate={{ scale: pressed ? 0.82 : 1 }}
         transition={{ type: 'spring', stiffness: 500, damping: 25 }}
         style={{
-          paddingHorizontal: 20,
-          paddingVertical: 13,
+          paddingHorizontal: 22,
+          paddingVertical: 14,
           borderRadius: 100,
-          backgroundColor: active ? '#2A2A2A' : 'transparent',
+          backgroundColor: active ? '#2C2C2C' : 'transparent',
           alignItems: 'center',
           justifyContent: 'center',
           gap: 4,
         }}>
-        <Icon size={22} color={active ? '#fff' : '#666'} strokeWidth={active ? 2 : 1.75} />
+        <Icon size={23} color={active ? '#fff' : '#5A5A5A'} strokeWidth={active ? 2 : 1.75} />
         {active && (
           <MotiView
             from={{ opacity: 0, scaleX: 0 }}
@@ -170,13 +250,13 @@ function NavDock({
         bottom: 0,
         left: 0,
         right: 0,
-        paddingBottom: insets.bottom + 14,
+        paddingBottom: insets.bottom + 16,
         alignItems: 'center',
       }}>
       <MotiView
-        from={{ opacity: 0, translateY: 32 }}
+        from={{ opacity: 0, translateY: 40 }}
         animate={{ opacity: 1, translateY: 0 }}
-        transition={{ type: 'spring', stiffness: 200, damping: 22, delay: 200 }}
+        transition={{ type: 'spring', stiffness: 190, damping: 22, delay: 220 }}
         style={{
           flexDirection: 'row',
           alignItems: 'center',
@@ -185,13 +265,13 @@ function NavDock({
           paddingHorizontal: 8,
           paddingVertical: 8,
           shadowColor: '#000',
-          shadowOffset: { width: 0, height: 12 },
-          shadowOpacity: 0.35,
-          shadowRadius: 28,
-          elevation: 18,
+          shadowOffset: { width: 0, height: 14 },
+          shadowOpacity: 0.4,
+          shadowRadius: 32,
+          elevation: 20,
         }}>
-        <DockTab icon={Home} label="Home" active={activeTab === 'home'} onPress={() => onTabChange('home')} />
-        <DockTab icon={Clock} label="Activity" active={activeTab === 'activity'} onPress={() => onTabChange('activity')} />
+        <DockTab icon={Home} active={activeTab === 'home'} onPress={() => onTabChange('home')} />
+        <DockTab icon={Clock} active={activeTab === 'activity'} onPress={() => onTabChange('activity')} />
 
         {/* Centre FAB */}
         <Pressable
@@ -200,27 +280,27 @@ function NavDock({
           onPressOut={() => setFabPressed(false)}
           style={{ marginHorizontal: 6 }}>
           <MotiView
-            animate={{ scale: fabPressed ? 0.86 : 1 }}
+            animate={{ scale: fabPressed ? 0.85 : 1 }}
             transition={{ type: 'spring', stiffness: 400, damping: 18 }}
             style={{
-              width: 58,
-              height: 58,
-              borderRadius: 29,
+              width: 60,
+              height: 60,
+              borderRadius: 30,
               backgroundColor: '#FF0048',
               alignItems: 'center',
               justifyContent: 'center',
               shadowColor: '#FF0048',
-              shadowOffset: { width: 0, height: 6 },
-              shadowOpacity: 0.55,
-              shadowRadius: 16,
-              elevation: 10,
+              shadowOffset: { width: 0, height: 8 },
+              shadowOpacity: 0.6,
+              shadowRadius: 18,
+              elevation: 12,
             }}>
-            <Plus size={26} color="#fff" strokeWidth={2.5} />
+            <Plus size={27} color="#fff" strokeWidth={2.5} />
           </MotiView>
         </Pressable>
 
-        <DockTab icon={Users} label="People" active={activeTab === 'people'} onPress={() => onTabChange('people')} />
-        <DockTab icon={Wallet} label="Wallet" active={activeTab === 'wallet'} onPress={() => onTabChange('wallet')} />
+        <DockTab icon={Users} active={activeTab === 'people'} onPress={() => onTabChange('people')} />
+        <DockTab icon={Wallet} active={activeTab === 'wallet'} onPress={() => onTabChange('wallet')} />
       </MotiView>
     </View>
   );
@@ -237,8 +317,8 @@ export function HomeScreen({ onNewSession }: Props) {
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{
-          paddingTop: insets.top + 20,
-          paddingBottom: insets.bottom + 120,
+          paddingTop: insets.top + 18,
+          paddingBottom: insets.bottom + 128,
         }}>
 
         {/* ── HEADER ───────────────────────────────────────────────── */}
@@ -248,7 +328,7 @@ export function HomeScreen({ onNewSession }: Props) {
           transition={{ type: 'timing', duration: 260 }}
           style={{
             paddingHorizontal: 20,
-            marginBottom: 24,
+            marginBottom: 22,
             flexDirection: 'row',
             alignItems: 'center',
             justifyContent: 'space-between',
@@ -258,133 +338,137 @@ export function HomeScreen({ onNewSession }: Props) {
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 11 }}>
             <View
               style={{
-                width: 36,
-                height: 36,
-                borderRadius: 11,
+                width: 38,
+                height: 38,
+                borderRadius: 12,
                 backgroundColor: '#FF0048',
                 alignItems: 'center',
                 justifyContent: 'center',
                 shadowColor: '#FF0048',
-                shadowOffset: { width: 0, height: 4 },
-                shadowOpacity: 0.38,
-                shadowRadius: 8,
-                elevation: 5,
+                shadowOffset: { width: 0, height: 5 },
+                shadowOpacity: 0.4,
+                shadowRadius: 10,
+                elevation: 6,
               }}>
-              <Rabbit size={16} color="#fff" strokeWidth={1.75} />
+              <Rabbit size={17} color="#fff" strokeWidth={1.75} />
             </View>
             <View>
-              <Text style={{ fontSize: 10, fontWeight: '600', color: '#AAAAAA', letterSpacing: 2, textTransform: 'uppercase' }}>
+              <Text style={{ fontSize: 10, fontWeight: '600', color: '#BBBBBB', letterSpacing: 2.2, textTransform: 'uppercase' }}>
                 Good morning
               </Text>
-              <Text style={{ fontSize: 20, fontWeight: '700', color: '#0E0E0E', letterSpacing: -0.8, lineHeight: 22 }}>
+              <Text style={{ fontSize: 21, fontWeight: '700', color: '#0E0E0E', letterSpacing: -0.9, lineHeight: 23 }}>
                 {USER.name} 👋
               </Text>
             </View>
           </View>
 
-          {/* RIGHT ACTIONS */}
-          <View style={{ flexDirection: 'row', gap: 8 }}>
+          {/* RIGHT — NOTIF + AVATAR */}
+          <View style={{ flexDirection: 'row', gap: 8, alignItems: 'center' }}>
+            {/* Bell with badge */}
             <Pressable
               style={{
-                width: 40,
-                height: 40,
-                borderRadius: 12,
+                width: 42,
+                height: 42,
+                borderRadius: 13,
                 backgroundColor: '#fff',
                 borderWidth: 1,
                 borderColor: '#EBEBEB',
                 alignItems: 'center',
                 justifyContent: 'center',
                 shadowColor: '#000',
-                shadowOffset: { width: 0, height: 1 },
+                shadowOffset: { width: 0, height: 2 },
                 shadowOpacity: 0.05,
-                shadowRadius: 4,
+                shadowRadius: 5,
                 elevation: 1,
               }}>
-              <Bell size={17} color="#555" strokeWidth={1.5} />
+              <Bell size={17} color="#444" strokeWidth={1.5} />
+              {/* Badge */}
+              <View style={{ position: 'absolute', top: 8, right: 9, width: 7, height: 7, borderRadius: 4, backgroundColor: '#FF0048', borderWidth: 1.5, borderColor: '#fff' }} />
             </Pressable>
-            <View
-              style={{
-                width: 40,
-                height: 40,
-                borderRadius: 12,
-                backgroundColor: '#FF0048',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}>
-              <Text style={{ fontSize: 13, fontWeight: '800', color: '#fff' }}>{USER.initials}</Text>
+
+            {/* User photo avatar */}
+            <View style={{ borderRadius: 13, overflow: 'hidden', width: 42, height: 42, borderWidth: 2, borderColor: '#FF0048' }}>
+              <Image source={{ uri: USER.photo }} style={{ width: '100%', height: '100%' }} />
             </View>
           </View>
         </MotiView>
 
         {/* ── PINK CARD — Balance ───────────────────────────────────── */}
         <MotiView
-          from={{ opacity: 0, translateY: 20 }}
+          from={{ opacity: 0, translateY: 22 }}
           animate={{ opacity: 1, translateY: 0 }}
           transition={{ type: 'timing', duration: 300, delay: 60 }}
           style={{ marginHorizontal: 20, marginBottom: 14 }}>
-          <View style={{ backgroundColor: '#FF0048', borderRadius: 28, padding: 26 }}>
+          <View style={{ backgroundColor: '#FF0048', borderRadius: 28, padding: 26, overflow: 'hidden' }}>
+
+            {/* DECORATIVE CIRCLE (depth texture) */}
+            <View style={{ position: 'absolute', right: -48, top: -48, width: 180, height: 180, borderRadius: 90, backgroundColor: 'rgba(255,255,255,0.06)' }} />
+            <View style={{ position: 'absolute', right: -10, bottom: 40, width: 100, height: 100, borderRadius: 50, backgroundColor: 'rgba(255,255,255,0.04)' }} />
 
             {/* TITLE ROW */}
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 22 }}>
-              <Text style={{ fontSize: 30, fontWeight: '500', letterSpacing: -1.5, color: '#450010', lineHeight: 32 }}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 20 }}>
+              <Text style={{ fontSize: 31, fontWeight: '500', letterSpacing: -1.5, color: '#450010', lineHeight: 33 }}>
                 Your{'\n'}Balance
               </Text>
-              <View
-                style={{
-                  backgroundColor: 'rgba(69,0,16,0.12)',
-                  borderRadius: 100,
-                  paddingHorizontal: 12,
-                  paddingVertical: 5,
-                }}>
+              <View style={{ backgroundColor: 'rgba(69,0,16,0.13)', borderRadius: 100, paddingHorizontal: 13, paddingVertical: 6 }}>
                 <Text style={{ fontSize: 10, fontWeight: '700', color: '#450010', letterSpacing: 1.2, textTransform: 'uppercase' }}>
                   Feb 2026
                 </Text>
               </View>
             </View>
 
-            {/* FLOW — NET */}
-            <View
-              style={{
-                paddingLeft: 20,
-                borderLeftWidth: 1,
-                borderLeftColor: 'rgba(69,0,16,0.2)',
-                marginLeft: 4,
-                gap: 18,
-                marginBottom: 26,
-              }}>
+            {/* FLOW */}
+            <View style={{ paddingLeft: 20, borderLeftWidth: 1, borderLeftColor: 'rgba(69,0,16,0.22)', marginLeft: 4, gap: 18, marginBottom: 24 }}>
+
+              {/* NET */}
               <View style={{ position: 'relative' }}>
                 <View style={{ position: 'absolute', left: -25, top: 9, width: 8, height: 8, borderBottomWidth: 1, borderRightWidth: 1, borderColor: '#450010', transform: [{ rotate: '45deg' }], opacity: 0.5 }} />
-                <Text style={{ fontSize: 10, fontWeight: '700', color: '#450010', textTransform: 'uppercase', letterSpacing: 1.2, opacity: 0.6, marginBottom: 3 }}>
+                <Text style={{ fontSize: 10, fontWeight: '700', color: '#450010', textTransform: 'uppercase', letterSpacing: 1.2, opacity: 0.55, marginBottom: 3 }}>
                   Net owed to you
                 </Text>
-                <Text style={{ fontSize: 54, fontWeight: '500', color: '#450010', letterSpacing: -3, lineHeight: 56 }}>
+                <Text style={{ fontSize: 56, fontWeight: '500', color: '#450010', letterSpacing: -3.2, lineHeight: 58 }}>
                   ${net.toFixed(2)}
                 </Text>
               </View>
 
-              {/* TWO ROW STATS */}
+              {/* STATS ROW */}
               <View style={{ flexDirection: 'row', gap: 16 }}>
                 <View style={{ flex: 1, position: 'relative' }}>
                   <View style={{ position: 'absolute', left: -25, top: 7, width: 8, height: 8, borderBottomWidth: 1, borderRightWidth: 1, borderColor: '#450010', transform: [{ rotate: '45deg' }], opacity: 0.35 }} />
-                  <Text style={{ fontSize: 9.5, fontWeight: '700', color: '#450010', textTransform: 'uppercase', letterSpacing: 1, opacity: 0.55, marginBottom: 2 }}>
+                  <Text style={{ fontSize: 9.5, fontWeight: '700', color: '#450010', textTransform: 'uppercase', letterSpacing: 1, opacity: 0.55, marginBottom: 3 }}>
                     Owed to you
                   </Text>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
                     <ArrowDownLeft size={13} color="#450010" strokeWidth={2.5} />
-                    <Text style={{ fontSize: 19, fontWeight: '600', color: '#450010', letterSpacing: -0.8 }}>
+                    <Text style={{ fontSize: 20, fontWeight: '600', color: '#450010', letterSpacing: -0.8 }}>
                       ${BALANCE.owedToYou.toFixed(2)}
                     </Text>
                   </View>
+                  {/* Mini face row of who owes */}
+                  <View style={{ flexDirection: 'row', marginTop: 7 }}>
+                    {FRIENDS.filter(f => f.owes > 0).slice(0, 3).map((f, i) => (
+                      <View key={i} style={{ marginLeft: i === 0 ? 0 : -6 }}>
+                        <PersonAvatar photoKey={f.key} initials={f.initials} color={f.color} size={20} borderColor="rgba(255,0,72,0.4)" borderWidth={1.5} />
+                      </View>
+                    ))}
+                  </View>
                 </View>
                 <View style={{ flex: 1 }}>
-                  <Text style={{ fontSize: 9.5, fontWeight: '700', color: '#450010', textTransform: 'uppercase', letterSpacing: 1, opacity: 0.55, marginBottom: 2 }}>
+                  <Text style={{ fontSize: 9.5, fontWeight: '700', color: '#450010', textTransform: 'uppercase', letterSpacing: 1, opacity: 0.55, marginBottom: 3 }}>
                     You owe
                   </Text>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
+                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
                     <ArrowUpRight size={13} color="#450010" strokeWidth={2.5} />
-                    <Text style={{ fontSize: 19, fontWeight: '600', color: '#450010', letterSpacing: -0.8 }}>
+                    <Text style={{ fontSize: 20, fontWeight: '600', color: '#450010', letterSpacing: -0.8 }}>
                       ${BALANCE.youOwe.toFixed(2)}
                     </Text>
+                  </View>
+                  <View style={{ flexDirection: 'row', marginTop: 7 }}>
+                    {FRIENDS.filter(f => f.owes < 0).slice(0, 2).map((f, i) => (
+                      <View key={i} style={{ marginLeft: i === 0 ? 0 : -6 }}>
+                        <PersonAvatar photoKey={f.key} initials={f.initials} color={f.color} size={20} borderColor="rgba(255,0,72,0.4)" borderWidth={1.5} />
+                      </View>
+                    ))}
                   </View>
                 </View>
               </View>
@@ -400,20 +484,30 @@ export function HomeScreen({ onNewSession }: Props) {
                 justifyContent: 'space-between',
                 alignItems: 'center',
               }}>
-              <Text style={{ fontSize: 15, fontWeight: '600', color: '#fff', letterSpacing: -0.1 }}>
+              <Text style={{ fontSize: 15.5, fontWeight: '600', color: '#fff', letterSpacing: -0.2 }}>
                 Settle Up
               </Text>
-              <Text style={{ fontSize: 16, color: 'rgba(255,255,255,0.55)' }}>→</Text>
+              <View
+                style={{
+                  width: 28,
+                  height: 28,
+                  borderRadius: 8,
+                  backgroundColor: 'rgba(255,255,255,0.12)',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <ChevronRight size={16} color="rgba(255,255,255,0.7)" strokeWidth={2} />
+              </View>
             </Pressable>
           </View>
         </MotiView>
 
         {/* ── QUICK ACTIONS ─────────────────────────────────────────── */}
         <MotiView
-          from={{ opacity: 0, translateY: 16 }}
+          from={{ opacity: 0, translateY: 14 }}
           animate={{ opacity: 1, translateY: 0 }}
-          transition={{ type: 'timing', duration: 280, delay: 120 }}
-          style={{ marginBottom: 14 }}>
+          transition={{ type: 'timing', duration: 260, delay: 120 }}
+          style={{ marginBottom: 22 }}>
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
@@ -426,20 +520,31 @@ export function HomeScreen({ onNewSession }: Props) {
                     style={{
                       backgroundColor: action.bg,
                       borderRadius: 18,
-                      paddingHorizontal: 18,
-                      paddingVertical: 14,
+                      paddingRight: 18,
+                      paddingLeft: 6,
+                      paddingVertical: 6,
                       flexDirection: 'row',
                       alignItems: 'center',
-                      gap: 8,
+                      gap: 9,
                       borderWidth: action.bg === '#fff' ? 1 : 0,
-                      borderColor: '#EBEBEB',
+                      borderColor: '#E8E8E8',
                       shadowColor: action.bg === '#FF0048' ? '#FF0048' : '#000',
-                      shadowOffset: { width: 0, height: action.bg === '#FF0048' ? 6 : 2 },
-                      shadowOpacity: action.bg === '#FF0048' ? 0.35 : 0.05,
-                      shadowRadius: action.bg === '#FF0048' ? 12 : 6,
-                      elevation: action.bg === '#FF0048' ? 6 : 1,
+                      shadowOffset: { width: 0, height: action.bg === '#FF0048' ? 8 : 2 },
+                      shadowOpacity: action.bg === '#FF0048' ? 0.38 : 0.05,
+                      shadowRadius: action.bg === '#FF0048' ? 14 : 6,
+                      elevation: action.bg === '#FF0048' ? 7 : 1,
                     }}>
-                    <Icon size={17} color={action.fg} strokeWidth={2} />
+                    <View
+                      style={{
+                        width: 36,
+                        height: 36,
+                        borderRadius: 12,
+                        backgroundColor: action.iconBg,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}>
+                      <Icon size={17} color={action.fg} strokeWidth={2} />
+                    </View>
                     <Text style={{ fontSize: 13.5, fontWeight: '600', color: action.fg, letterSpacing: -0.2 }}>
                       {action.label}
                     </Text>
@@ -450,87 +555,80 @@ export function HomeScreen({ onNewSession }: Props) {
           </ScrollView>
         </MotiView>
 
-        {/* ── FRIENDS — Who owes who ─────────────────────────────────── */}
+        {/* ── PEOPLE — Who owes who ──────────────────────────────────── */}
         <MotiView
-          from={{ opacity: 0, translateY: 16 }}
+          from={{ opacity: 0, translateY: 14 }}
           animate={{ opacity: 1, translateY: 0 }}
-          transition={{ type: 'timing', duration: 280, delay: 150 }}
-          style={{ marginBottom: 14 }}>
-          {/* SECTION LABEL */}
-          <View style={{ paddingHorizontal: 20, marginBottom: 12, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
-              <View style={{ width: 3, height: 14, borderRadius: 2, backgroundColor: '#FF0048' }} />
-              <Text style={{ fontSize: 12, fontWeight: '700', color: '#0E0E0E', letterSpacing: -0.2 }}>
-                People
-              </Text>
+          transition={{ type: 'timing', duration: 260, delay: 150 }}
+          style={{ marginBottom: 22 }}>
+
+          <View style={{ paddingHorizontal: 20, marginBottom: 13, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 7 }}>
+              <View style={{ width: 3, height: 16, borderRadius: 2, backgroundColor: '#FF0048' }} />
+              <Text style={{ fontSize: 13, fontWeight: '700', color: '#0E0E0E', letterSpacing: -0.3 }}>People</Text>
             </View>
-            <Pressable>
-              <Text style={{ fontSize: 12, fontWeight: '600', color: '#AAAAAA' }}>Manage →</Text>
+            <Pressable style={{ flexDirection: 'row', alignItems: 'center', gap: 2 }}>
+              <Text style={{ fontSize: 12, fontWeight: '600', color: '#BBBBBB' }}>Manage</Text>
+              <ChevronRight size={13} color="#BBBBBB" strokeWidth={2.5} />
             </Pressable>
           </View>
 
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{ paddingHorizontal: 20, gap: 10 }}>
+            contentContainerStyle={{ paddingHorizontal: 20, gap: 11 }}>
             {FRIENDS.map((f, i) => {
               const isPositive = f.owes > 0;
               return (
                 <Pressable key={i}>
-                  <View
+                  <MotiView
                     style={{
                       backgroundColor: '#fff',
-                      borderRadius: 20,
-                      padding: 16,
-                      width: 110,
+                      borderRadius: 22,
+                      width: 112,
                       borderWidth: 1,
                       borderColor: '#EBEBEB',
+                      overflow: 'hidden',
                       shadowColor: '#000',
-                      shadowOffset: { width: 0, height: 2 },
-                      shadowOpacity: 0.04,
-                      shadowRadius: 6,
-                      elevation: 1,
+                      shadowOffset: { width: 0, height: 3 },
+                      shadowOpacity: 0.06,
+                      shadowRadius: 8,
+                      elevation: 2,
                     }}>
-                    {/* AVATAR */}
-                    <View
-                      style={{
-                        width: 38,
-                        height: 38,
-                        borderRadius: 19,
-                        backgroundColor: f.color + '18',
-                        borderWidth: 1.5,
-                        borderColor: f.color + '44',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        marginBottom: 10,
-                      }}>
-                      <Text style={{ fontSize: 12, fontWeight: '700', color: f.color }}>{f.initials}</Text>
+                    {/* PHOTO HEADER */}
+                    <View style={{ height: 70, overflow: 'hidden', backgroundColor: f.color + '15' }}>
+                      <Image
+                        source={{ uri: PHOTOS[f.key as keyof typeof PHOTOS] }}
+                        style={{ width: '100%', height: '100%' }}
+                        resizeMode="cover"
+                      />
+                      {/* STATUS TINT overlay at bottom */}
+                      <View
+                        style={{
+                          position: 'absolute',
+                          bottom: 0,
+                          left: 0,
+                          right: 0,
+                          height: 28,
+                          backgroundColor: isPositive ? 'rgba(0,165,80,0.18)' : 'rgba(255,0,72,0.18)',
+                        }}
+                      />
                     </View>
-                    <Text style={{ fontSize: 12, fontWeight: '600', color: '#0E0E0E', letterSpacing: -0.2, marginBottom: 2 }} numberOfLines={1}>
-                      {f.name.split(' ')[0]}
-                    </Text>
-                    <Text
-                      style={{
-                        fontSize: 10,
-                        fontWeight: '700',
-                        color: isPositive ? '#00A550' : '#FF0048',
-                        letterSpacing: 0.1,
-                      }}>
-                      {isPositive ? 'owes you' : 'you owe'}
-                    </Text>
-                    <Text
-                      style={{
-                        fontSize: 14,
-                        fontWeight: '700',
-                        color: isPositive ? '#00A550' : '#FF0048',
-                        letterSpacing: -0.5,
-                        marginTop: 2,
-                      }}>
-                      {f.currency === 'ZiG'
-                        ? `Z${Math.abs(f.owes).toLocaleString()}`
-                        : `$${Math.abs(f.owes).toFixed(2)}`}
-                    </Text>
-                  </View>
+                    {/* CARD BODY */}
+                    <View style={{ padding: 11 }}>
+                      <Text style={{ fontSize: 12.5, fontWeight: '700', color: '#0E0E0E', letterSpacing: -0.2, marginBottom: 1 }} numberOfLines={1}>
+                        {f.name.split(' ')[0]}
+                      </Text>
+                      <Text style={{ fontSize: 9.5, fontWeight: '700', color: isPositive ? '#00A550' : '#FF0048', letterSpacing: 0.2, marginBottom: 3, textTransform: 'uppercase' }}>
+                        {isPositive ? 'owes you' : 'you owe'}
+                      </Text>
+                      <Text style={{ fontSize: 15, fontWeight: '700', color: isPositive ? '#00A550' : '#FF0048', letterSpacing: -0.6 }}>
+                        {f.currency === 'ZiG'
+                          ? `Z${Math.abs(f.owes).toLocaleString()}`
+                          : `$${Math.abs(f.owes).toFixed(2)}`}
+                      </Text>
+                    </View>
+                  </MotiView>
                 </Pressable>
               );
             })}
@@ -545,72 +643,69 @@ export function HomeScreen({ onNewSession }: Props) {
           style={{ marginHorizontal: 20, marginBottom: 14 }}>
           <View style={{ backgroundColor: '#E6E6E6', borderRadius: 28, padding: 24 }}>
 
-            {/* CARD TITLE */}
+            {/* TITLE ROW */}
             <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 22 }}>
               <Text style={{ fontSize: 30, fontWeight: '500', letterSpacing: -1.5, color: '#000', lineHeight: 32 }}>
                 Recent{'\n'}Bills
               </Text>
-              <Pressable
-                style={{
-                  paddingHorizontal: 12,
-                  paddingVertical: 5,
-                  borderRadius: 100,
-                  backgroundColor: 'rgba(0,0,0,0.07)',
-                  alignSelf: 'flex-start',
-                  marginTop: 4,
-                }}>
-                <Text style={{ fontSize: 10, fontWeight: '700', color: '#000', letterSpacing: 0.8, textTransform: 'uppercase', opacity: 0.5 }}>
+              <Pressable style={{ paddingHorizontal: 12, paddingVertical: 5, borderRadius: 100, backgroundColor: 'rgba(0,0,0,0.08)', alignSelf: 'flex-start', marginTop: 4, flexDirection: 'row', alignItems: 'center', gap: 2 }}>
+                <Text style={{ fontSize: 10, fontWeight: '700', color: 'rgba(0,0,0,0.45)', letterSpacing: 0.8, textTransform: 'uppercase' }}>
                   See all
                 </Text>
               </Pressable>
             </View>
 
             {/* FLOW CONTAINER */}
-            <View
-              style={{
-                paddingLeft: 20,
-                borderLeftWidth: 1,
-                borderLeftColor: 'rgba(0,0,0,0.15)',
-                marginLeft: 4,
-              }}>
+            <View style={{ paddingLeft: 20, borderLeftWidth: 1, borderLeftColor: 'rgba(0,0,0,0.14)', marginLeft: 4 }}>
               {SESSIONS.map((session, i) => (
                 <View key={session.id} style={{ position: 'relative' }}>
-                  {/* STEP MARKER */}
-                  <View style={{ position: 'absolute', left: -25, top: 20, width: 8, height: 8, borderBottomWidth: 1, borderRightWidth: 1, borderColor: 'rgba(0,0,0,0.5)', transform: [{ rotate: '45deg' }] }} />
+                  <View style={{ position: 'absolute', left: -25, top: 22, width: 8, height: 8, borderBottomWidth: 1, borderRightWidth: 1, borderColor: 'rgba(0,0,0,0.45)', transform: [{ rotate: '45deg' }] }} />
 
                   <Pressable>
                     <View
                       style={{
-                        paddingVertical: 15,
+                        paddingVertical: 14,
                         borderBottomWidth: i < SESSIONS.length - 1 ? 1 : 0,
                         borderBottomColor: 'rgba(0,0,0,0.07)',
                         flexDirection: 'row',
                         alignItems: 'center',
-                        justifyContent: 'space-between',
+                        gap: 13,
                       }}>
-                      <View style={{ flex: 1, marginRight: 12 }}>
-                        <Text style={{ fontSize: 14.5, fontWeight: '600', color: '#000', letterSpacing: -0.3, marginBottom: 4 }} numberOfLines={1}>
-                          {session.venue}
-                        </Text>
-                        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-                          <ParticipantStack participants={session.participants} />
-                          <Text style={{ fontSize: 11, color: '#666', letterSpacing: 0.05 }}>
-                            {session.date}
-                          </Text>
-                        </View>
+                      {/* VENUE PHOTO */}
+                      <View style={{ width: 50, height: 50, borderRadius: 14, overflow: 'hidden', backgroundColor: '#ccc', flexShrink: 0 }}>
+                        <Image
+                          source={{ uri: session.venuePhoto }}
+                          style={{ width: '100%', height: '100%' }}
+                          resizeMode="cover"
+                        />
                       </View>
 
-                      <View style={{ alignItems: 'flex-end', gap: 5 }}>
-                        <View style={{ backgroundColor: STATUS_BG[session.status], borderRadius: 100, paddingHorizontal: 8, paddingVertical: 3 }}>
-                          <Text style={{ fontSize: 9, fontWeight: '700', color: STATUS_COLORS[session.status], letterSpacing: 0.6, textTransform: 'uppercase' }}>
-                            {session.status}
+                      {/* CONTENT */}
+                      <View style={{ flex: 1 }}>
+                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 5 }}>
+                          <Text style={{ fontSize: 14.5, fontWeight: '700', color: '#000', letterSpacing: -0.3, flex: 1, marginRight: 8 }} numberOfLines={1}>
+                            {session.venue}
+                          </Text>
+                          <View style={{ backgroundColor: STATUS_BG[session.status], borderRadius: 100, paddingHorizontal: 8, paddingVertical: 3 }}>
+                            <Text style={{ fontSize: 9, fontWeight: '700', color: STATUS_COLORS[session.status], letterSpacing: 0.5, textTransform: 'uppercase' }}>
+                              {session.status}
+                            </Text>
+                          </View>
+                        </View>
+
+                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 7 }}>
+                            <ParticipantStack participants={session.participants} borderColor="#E6E6E6" />
+                            <Text style={{ fontSize: 11, color: '#777', letterSpacing: 0.05 }}>
+                              {session.date}
+                            </Text>
+                          </View>
+                          <Text style={{ fontSize: 15, fontWeight: '700', color: session.status === 'settled' ? '#00A550' : '#000', letterSpacing: -0.5 }}>
+                            {session.currency === 'ZiG'
+                              ? `ZiG ${(session.myShare as number).toLocaleString()}`
+                              : `$${(session.myShare as number).toFixed(2)}`}
                           </Text>
                         </View>
-                        <Text style={{ fontSize: 15, fontWeight: '700', color: session.status === 'settled' ? '#00A550' : '#000', letterSpacing: -0.5 }}>
-                          {session.currency === 'ZiG'
-                            ? `ZiG ${(session.myShare as number).toLocaleString()}`
-                            : `$${(session.myShare as number).toFixed(2)}`}
-                        </Text>
                       </View>
                     </View>
                   </Pressable>
