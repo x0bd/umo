@@ -277,12 +277,12 @@
         flex-shrink: 0;
       }
       .toc a:hover {
-        color: #ff0048;
+        color: rgba(255, 255, 255, 0.7);
         letter-spacing: 2px;
       }
       .toc a:hover::before {
         width: 24px;
-        background: #ff0048;
+        background: rgba(255, 255, 255, 0.4);
       }
       .toc a.active {
         color: rgba(255, 255, 255, 0.7);
@@ -2780,7 +2780,6 @@ Component files:
           const isActive = a.getAttribute('href') === '#' + active.id;
           a.style.color = isActive ? '#ffffff' : '';
           const line = a.previousElementSibling;
-          if (line) line.style.background = isActive ? '#FF0048' : '';
         });
       };
       window.addEventListener('scroll', onScroll, { passive: true });
