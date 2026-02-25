@@ -8,7 +8,7 @@
 
 ## Design System (Build First)
 
-- [ ] **Tokens** — define in `tailwind.config.js`:
+- [x] **Tokens** — define in `tailwind.config.js`:
   - Background: `#F4F4F4` (light app bg)
   - Card Pink: `#FF0048` · Pink Text: `#450010`
   - Card Platinum: `#E6E6E6` · Platinum Text: `#111111`
@@ -17,15 +17,15 @@
   - Success: `#00C853`
   - Font mono: `JetBrains Mono` (financial figures)
 
-- [ ] **Shared components** (`components/ui/`):
-  - [ ] `Card.tsx` — rounded-[28px] base card, accepts `variant="pink" | "platinum" | "white"`
-  - [ ] `VerticalPill.tsx` — rotated uppercase label pill (see inspo); variant pink/gray
-  - [ ] `FlowLine.tsx` — vertical dashed/solid connector line between flow steps
-  - [ ] `FlowStep.tsx` — step row: marker dot + label + value (from inspo flow pattern)
-  - [ ] `Avatar.tsx` — circle avatar with initials, ring color for paid/pending status
-  - [ ] `PillBadge.tsx` — small horizontal pill (e.g. "USD", "ZiG", "PENDING")
-  - [ ] `ActionButton.tsx` — full-width pink CTA with right-arrow icon, spring press scale
-  - [ ] `Dock.tsx` — floating bottom tab bar (pill shape, `#111` bg, 4 icons + center FAB)
+- [x] **Shared components** (`components/ui/`):
+  - [x] `Card.tsx` — rounded-[28px] base card, accepts `variant="pink" | "platinum" | "white"`
+  - [x] `VerticalPill.tsx` — rotated uppercase label pill (see inspo); variant pink/gray
+  - [x] `FlowLine.tsx` — vertical dashed/solid connector line between flow steps
+  - [x] `FlowStep.tsx` — step row: marker dot + label + value (from inspo flow pattern)
+  - [x] `Avatar.tsx` — circle avatar with initials, ring color for paid/pending status
+  - [x] `PillBadge.tsx` — small horizontal pill (e.g. "USD", "ZiG", "PENDING")
+  - [x] `ActionButton.tsx` — full-width pink CTA with right-arrow icon, spring press scale
+  - [x] `Dock.tsx` — floating bottom tab bar (pill shape, `#111` bg, 4 icons + center FAB)
 
 ---
 

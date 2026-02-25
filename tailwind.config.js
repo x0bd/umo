@@ -12,19 +12,30 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // Umo brand palette
+        // Umo brand palette — light mode
         brand: {
-          bg: '#050505',
-          pink: '#FF1A55',
-          'pink-vivid': '#FF0055',
+          bg: '#F4F4F4',
+          pink: '#FF0048',
+          'pink-text': '#450010',
+          'pink-tint': '#FFF0F3',
           platinum: '#E6E6E6',
-          maroon: '#450010',
-          border: '#333333',
-          muted: '#888888',
+          'platinum-text': '#111111',
+          white: '#FFFFFF',
+          border: '#CCCCCC',
+          muted: '#555555',
+          dock: '#111111',
+          success: '#00C853',
+          // dark accent (dark cards / dark bg elements)
+          dark: '#050505',
+          'dark-border': '#333333',
         },
       },
       fontFamily: {
         mono: ['JetBrains Mono', 'monospace'],
+      },
+      borderRadius: {
+        card: '28px',
+        pill: '100px',
       },
     },
   },
