@@ -224,10 +224,6 @@ export function SignUpScreen({ onSignedUp, onSignIn, onBack }: Props) {
               }}>
               <Rabbit size={14} color="#fff" strokeWidth={1.75} />
             </View>
-            <Text
-              style={{ fontSize: 16, fontWeight: '700', color: '#0E0E0E', letterSpacing: -0.8 }}>
-              umo
-            </Text>
           </View>
           <View style={{ width: 38 }} />
         </View>

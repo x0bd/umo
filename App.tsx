@@ -325,9 +325,6 @@ function OnboardingScreen({
             }}>
             <Rabbit size={15} color="#fff" strokeWidth={1.75} />
           </View>
-          <Text style={{ fontSize: 17, fontWeight: '700', color: '#fff', letterSpacing: -0.9 }}>
-            umo
-          </Text>
         </MotiView>
         <MotiView
           animate={{ opacity: isLast ? 0 : 1 }}
