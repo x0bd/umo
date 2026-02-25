@@ -1,0 +1,2608 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Umo — Design System</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono:wght@400;700&family=Geist:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet" />
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      :root {
+        --pink: #ff0048;
+        --pink-text: #450010;
+        --bg: #f4f4f4;
+        --platinum: #e6e6e6;
+        --dark: #050505;
+        --dark-mid: #111111;
+        --muted: #888;
+        --border: rgba(255, 255, 255, 0.08);
+        --success: #00c853;
+      }
+
+      body {
+        background: var(--dark);
+        color: #fff;
+        font-family: 'Geist', system-ui, sans-serif;
+        -webkit-font-smoothing: antialiased;
+        overflow-x: hidden;
+      }
+
+      body::before {
+        content: '';
+        position: fixed;
+        inset: 0;
+        background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+        pointer-events: none;
+        z-index: 999;
+        opacity: 0.4;
+      }
+
+      ::-webkit-scrollbar {
+        width: 4px;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #333;
+        border-radius: 4px;
+      }
+
+      .mono {
+        font-family: 'JetBrains Mono', monospace;
+      }
+      .serif {
+        font-family: 'DM Serif Display', Georgia, serif;
+      }
+
+      main {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 80px 40px 120px;
+      }
+
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(24px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .section {
+        animation: fadeUp 0.55s ease both;
+      }
+      .section:nth-child(1) {
+        animation-delay: 0.04s;
+      }
+      .section:nth-child(2) {
+        animation-delay: 0.1s;
+      }
+      .section:nth-child(3) {
+        animation-delay: 0.16s;
+      }
+      .section:nth-child(4) {
+        animation-delay: 0.22s;
+      }
+      .section:nth-child(5) {
+        animation-delay: 0.28s;
+      }
+      .section:nth-child(6) {
+        animation-delay: 0.34s;
+      }
+      .section:nth-child(7) {
+        animation-delay: 0.4s;
+      }
+      .section:nth-child(8) {
+        animation-delay: 0.46s;
+      }
+      .section:nth-child(9) {
+        animation-delay: 0.52s;
+      }
+      .section:nth-child(10) {
+        animation-delay: 0.58s;
+      }
+      .section:nth-child(11) {
+        animation-delay: 0.64s;
+      }
+      .section:nth-child(12) {
+        animation-delay: 0.7s;
+      }
+
+      .swatch {
+        transition:
+          transform 0.18s ease,
+          box-shadow 0.18s ease;
+        cursor: default;
+      }
+      .swatch:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+      }
+
+      .section-title {
+        display: flex;
+        align-items: baseline;
+        gap: 18px;
+        margin-bottom: 36px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      }
+
+      .grid-6 {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 12px;
+      }
+      .grid-4 {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 16px;
+      }
+      .grid-3 {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+      }
+      .grid-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 32px;
+      }
+      .grid-5 {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 16px;
+      }
+      .grid-8 {
+        display: grid;
+        grid-template-columns: repeat(8, 1fr);
+        gap: 12px;
+      }
+
+      @media (max-width: 900px) {
+        .grid-6 {
+          grid-template-columns: repeat(3, 1fr);
+        }
+        .grid-8 {
+          grid-template-columns: repeat(4, 1fr);
+        }
+        .grid-4 {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .grid-3 {
+          grid-template-columns: repeat(1, 1fr);
+        }
+        .grid-5 {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        main {
+          padding: 48px 20px 80px;
+        }
+      }
+
+      .card-ghost {
+        padding: 28px 24px;
+        border-radius: 20px;
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.07);
+      }
+
+      .overline {
+        font-size: 10px;
+        font-family: 'JetBrains Mono', monospace;
+        color: var(--muted);
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        margin-bottom: 20px;
+        display: block;
+      }
+
+      .table-grid {
+        border-radius: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        overflow: hidden;
+      }
+      .table-head {
+        background: rgba(255, 255, 255, 0.03);
+      }
+      .table-row {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      }
+      .table-row:last-child {
+        border-bottom: none;
+      }
+      .table-row:nth-child(even) {
+        background: rgba(255, 255, 255, 0.02);
+      }
+
+      pre {
+        white-space: pre-wrap;
+        word-break: break-word;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <!-- ═══════════════════════════════════════════════════════ HERO -->
+      <header class="section" style="margin-bottom: 112px">
+        <div
+          style="
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 48px;
+          ">
+          <div
+            style="
+              width: 52px;
+              height: 52px;
+              border-radius: 16px;
+              background: #ff0048;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              box-shadow: 0 8px 24px rgba(255, 0, 72, 0.5);
+            ">
+            <svg
+              width="26"
+              height="26"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="#fff"
+              stroke-width="1.75"
+              stroke-linecap="round"
+              stroke-linejoin="round">
+              <path d="M13 2c0 0-2 1-2 4s2 4 2 4" />
+              <path d="M11 2c0 0 2 1 2 4s-2 4-2 4" />
+              <ellipse cx="12" cy="13" rx="5" ry="6" />
+              <path d="M9 19c-1.5 1-3 1.5-3 3h12c0-1.5-1.5-2-3-3" />
+              <circle cx="10" cy="12" r="0.6" fill="#fff" stroke="none" />
+              <circle cx="14" cy="12" r="0.6" fill="#fff" stroke="none" />
+            </svg>
+          </div>
+          <div style="text-align: right">
+            <div
+              class="mono"
+              style="
+                font-size: 10px;
+                color: var(--muted);
+                letter-spacing: 2px;
+                text-transform: uppercase;
+                margin-bottom: 4px;
+              ">
+              Version 1.0
+            </div>
+            <div
+              class="mono"
+              style="
+                font-size: 10px;
+                color: var(--muted);
+                letter-spacing: 2px;
+                text-transform: uppercase;
+              ">
+              Feb 2026
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-bottom: 32px">
+          <div
+            class="mono"
+            style="
+              font-size: 11px;
+              color: #ff0048;
+              letter-spacing: 3px;
+              text-transform: uppercase;
+              margin-bottom: 18px;
+            ">
+            Design System · Brand Reference
+          </div>
+          <h1
+            class="serif"
+            style="
+              font-size: clamp(72px, 12vw, 128px);
+              font-weight: 400;
+              line-height: 0.92;
+              letter-spacing: -3px;
+              color: #fff;
+              margin-bottom: 8px;
+            ">
+            Umo<span style="color: #ff0048">.</span>
+          </h1>
+          <div
+            class="serif"
+            style="
+              font-size: clamp(72px, 12vw, 128px);
+              font-weight: 400;
+              font-style: italic;
+              line-height: 0.92;
+              letter-spacing: -3px;
+              color: rgba(255, 255, 255, 0.15);
+            ">
+            間
+          </div>
+        </div>
+
+        <div
+          style="
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 32px;
+            padding-top: 48px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+          ">
+          <div>
+            <div
+              class="mono"
+              style="
+                font-size: 10px;
+                color: #ff0048;
+                letter-spacing: 2px;
+                text-transform: uppercase;
+                margin-bottom: 8px;
+              ">
+              Platform
+            </div>
+            <p style="font-size: 14px; color: rgba(255, 255, 255, 0.45); line-height: 1.6">
+              React Native · Expo SDK 54 · NativeWind · Tailwind 3.4
+            </p>
+          </div>
+          <div>
+            <div
+              class="mono"
+              style="
+                font-size: 10px;
+                color: #ff0048;
+                letter-spacing: 2px;
+                text-transform: uppercase;
+                margin-bottom: 8px;
+              ">
+              Market
+            </div>
+            <p style="font-size: 14px; color: rgba(255, 255, 255, 0.45); line-height: 1.6">
+              Zimbabwe · Multi-currency USD / ZiG · Mobile money settlements
+            </p>
+          </div>
+          <div>
+            <div
+              class="mono"
+              style="
+                font-size: 10px;
+                color: #ff0048;
+                letter-spacing: 2px;
+                text-transform: uppercase;
+                margin-bottom: 8px;
+              ">
+              Aesthetic
+            </div>
+            <p style="font-size: 14px; color: rgba(255, 255, 255, 0.45); line-height: 1.6">
+              Fluid Fintech · Swiss typography · Ma (negative space) · Apple-esque refinement
+            </p>
+          </div>
+        </div>
+      </header>
+
+      <!-- ═══════════════════════════════════════════════════════ PRINCIPLES -->
+      <section class="section" style="margin-bottom: 100px">
+        <div class="section-title">
+          <span
+            class="mono"
+            style="font-size: 11px; color: rgba(255, 255, 255, 0.2); letter-spacing: 2px"
+            >01</span
+          >
+          <h2 style="font-size: 28px; font-weight: 600; letter-spacing: -0.8px">
+            Design Principles
+          </h2>
+          <div style="flex: 1; height: 1px; background: rgba(255, 255, 255, 0.06)"></div>
+        </div>
+        <div class="grid-4">
+          <div class="card-ghost">
+            <div
+              class="serif"
+              style="
+                font-size: 48px;
+                color: #ff0048;
+                opacity: 0.7;
+                line-height: 1;
+                margin-bottom: 10px;
+              ">
+              間
+            </div>
+            <div style="font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 8px">
+              Ma · Space
+            </div>
+            <p style="font-size: 12.5px; color: rgba(255, 255, 255, 0.4); line-height: 1.6">
+              Negative space as intentional design. The interface breathes. Never overcrowd a
+              surface.
+            </p>
+          </div>
+          <div class="card-ghost">
+            <div
+              class="serif"
+              style="
+                font-size: 48px;
+                color: #ff0048;
+                opacity: 0.7;
+                line-height: 1;
+                margin-bottom: 10px;
+              ">
+              清
+            </div>
+            <div style="font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 8px">
+              Clarity
+            </div>
+            <p style="font-size: 12.5px; color: rgba(255, 255, 255, 0.4); line-height: 1.6">
+              Swiss typographic hierarchy. Information density is controlled, not avoided.
+            </p>
+          </div>
+          <div class="card-ghost">
+            <div
+              class="serif"
+              style="
+                font-size: 48px;
+                color: #ff0048;
+                opacity: 0.7;
+                line-height: 1;
+                margin-bottom: 10px;
+              ">
+              流
+            </div>
+            <div style="font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 8px">
+              Flow
+            </div>
+            <p style="font-size: 12.5px; color: rgba(255, 255, 255, 0.4); line-height: 1.6">
+              Every interaction is animated. Entry, exit, press — all have organic motion and haptic
+              feedback.
+            </p>
+          </div>
+          <div class="card-ghost">
+            <div
+              class="serif"
+              style="
+                font-size: 48px;
+                color: #ff0048;
+                opacity: 0.7;
+                line-height: 1;
+                margin-bottom: 10px;
+              ">
+              真
+            </div>
+            <div style="font-size: 14px; font-weight: 700; color: #fff; margin-bottom: 8px">
+              Truth
+            </div>
+            <p style="font-size: 12.5px; color: rgba(255, 255, 255, 0.4); line-height: 1.6">
+              Real data. No blurred amounts, no ellipsis on numbers. Financial clarity is
+              non-negotiable.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══════════════════════════════════════════════════════ COLORS -->
+      <section class="section" style="margin-bottom: 100px">
+        <div class="section-title">
+          <span
+            class="mono"
+            style="font-size: 11px; color: rgba(255, 255, 255, 0.2); letter-spacing: 2px"
+            >02</span
+          >
+          <h2 style="font-size: 28px; font-weight: 600; letter-spacing: -0.8px">Color System</h2>
+          <div style="flex: 1; height: 1px; background: rgba(255, 255, 255, 0.06)"></div>
+        </div>
+
+        <!-- CORE BRAND -->
+        <span class="overline">Core Brand</span>
+        <div class="grid-6" style="margin-bottom: 36px">
+          <div class="swatch" style="border-radius: 16px; overflow: hidden">
+            <div style="background: #ff0048; height: 72px"></div>
+            <div style="background: #ff0048; padding: 10px 12px 14px">
+              <div style="font-size: 12px; font-weight: 700; color: #fff; margin-bottom: 2px">
+                Pink
+              </div>
+              <div class="mono" style="font-size: 10px; color: rgba(255, 255, 255, 0.55)">
+                #FF0048
+              </div>
+              <div class="mono" style="font-size: 9px; color: rgba(255, 255, 255, 0.4)">
+                brand.pink
+              </div>
+            </div>
+          </div>
+          <div class="swatch" style="border-radius: 16px; overflow: hidden">
+            <div style="background: #450010; height: 72px"></div>
+            <div style="background: #450010; padding: 10px 12px 14px">
+              <div style="font-size: 12px; font-weight: 700; color: #fff; margin-bottom: 2px">
+                Pink Text
+              </div>
+              <div class="mono" style="font-size: 10px; color: rgba(255, 255, 255, 0.55)">
+                #450010
+              </div>
+              <div class="mono" style="font-size: 9px; color: rgba(255, 255, 255, 0.4)">
+                brand.pink-text
+              </div>
+            </div>
+          </div>
+          <div class="swatch" style="border-radius: 16px; overflow: hidden; border: 1px solid #ddd">
+            <div style="background: #fff0f3; height: 72px"></div>
+            <div style="background: #fff0f3; padding: 10px 12px 14px">
+              <div style="font-size: 12px; font-weight: 700; color: #111; margin-bottom: 2px">
+                Pink Tint
+              </div>
+              <div class="mono" style="font-size: 10px; color: rgba(0, 0, 0, 0.45)">#FFF0F3</div>
+              <div class="mono" style="font-size: 9px; color: rgba(0, 0, 0, 0.35)">
+                brand.pink-tint
+              </div>
+            </div>
+          </div>
+          <div class="swatch" style="border-radius: 16px; overflow: hidden; border: 1px solid #ddd">
+            <div style="background: #f4f4f4; height: 72px"></div>
+            <div style="background: #f4f4f4; padding: 10px 12px 14px">
+              <div style="font-size: 12px; font-weight: 700; color: #111; margin-bottom: 2px">
+                Background
+              </div>
+              <div class="mono" style="font-size: 10px; color: rgba(0, 0, 0, 0.45)">#F4F4F4</div>
+              <div class="mono" style="font-size: 9px; color: rgba(0, 0, 0, 0.35)">brand.bg</div>
+            </div>
+          </div>
+          <div class="swatch" style="border-radius: 16px; overflow: hidden; border: 1px solid #ddd">
+            <div style="background: #e6e6e6; height: 72px"></div>
+            <div style="background: #e6e6e6; padding: 10px 12px 14px">
+              <div style="font-size: 12px; font-weight: 700; color: #111; margin-bottom: 2px">
+                Platinum
+              </div>
+              <div class="mono" style="font-size: 10px; color: rgba(0, 0, 0, 0.45)">#E6E6E6</div>
+              <div class="mono" style="font-size: 9px; color: rgba(0, 0, 0, 0.35)">
+                brand.platinum
+              </div>
+            </div>
+          </div>
+          <div class="swatch" style="border-radius: 16px; overflow: hidden; border: 1px solid #ccc">
+            <div style="background: #ffffff; height: 72px"></div>
+            <div style="background: #ffffff; padding: 10px 12px 14px">
+              <div style="font-size: 12px; font-weight: 700; color: #111; margin-bottom: 2px">
+                White
+              </div>
+              <div class="mono" style="font-size: 10px; color: rgba(0, 0, 0, 0.45)">#FFFFFF</div>
+              <div class="mono" style="font-size: 9px; color: rgba(0, 0, 0, 0.35)">brand.white</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TYPE & SURFACE -->
+        <span class="overline">Type &amp; Surface</span>
+        <div class="grid-6" style="margin-bottom: 36px">
+          <div class="swatch" style="border-radius: 16px; overflow: hidden">
+            <div style="background: #050505; height: 72px; border: 1px solid #222"></div>
+            <div style="background: #050505; padding: 10px 12px 14px; border: 1px solid #222">
+              <div style="font-size: 12px; font-weight: 700; color: #fff; margin-bottom: 2px">
+                Dark
+              </div>
+              <div class="mono" style="font-size: 10px; color: rgba(255, 255, 255, 0.5)">
+                #050505
+              </div>
+              <div class="mono" style="font-size: 9px; color: rgba(255, 255, 255, 0.3)">
+                brand.dark
+              </div>
+            </div>
+          </div>
+          <div class="swatch" style="border-radius: 16px; overflow: hidden">
+            <div style="background: #111111; height: 72px"></div>
+            <div style="background: #111111; padding: 10px 12px 14px">
+              <div style="font-size: 12px; font-weight: 700; color: #fff; margin-bottom: 2px">
+                Dock
+              </div>
+              <div class="mono" style="font-size: 10px; color: rgba(255, 255, 255, 0.5)">
+                #111111
+              </div>
+              <div class="mono" style="font-size: 9px; color: rgba(255, 255, 255, 0.3)">
+                brand.dock
+              </div>
+            </div>
+          </div>
+          <div class="swatch" style="border-radius: 16px; overflow: hidden">
+            <div style="background: #555555; height: 72px"></div>
+            <div style="background: #555555; padding: 10px 12px 14px">
+              <div style="font-size: 12px; font-weight: 700; color: #fff; margin-bottom: 2px">
+                Muted
+              </div>
+              <div class="mono" style="font-size: 10px; color: rgba(255, 255, 255, 0.55)">
+                #555555
+              </div>
+              <div class="mono" style="font-size: 9px; color: rgba(255, 255, 255, 0.35)">
+                brand.muted
+              </div>
+            </div>
+          </div>
+          <div class="swatch" style="border-radius: 16px; overflow: hidden; border: 1px solid #ddd">
+            <div style="background: #cccccc; height: 72px"></div>
+            <div style="background: #cccccc; padding: 10px 12px 14px">
+              <div style="font-size: 12px; font-weight: 700; color: #111; margin-bottom: 2px">
+                Border
+              </div>
+              <div class="mono" style="font-size: 10px; color: rgba(0, 0, 0, 0.45)">#CCCCCC</div>
+              <div class="mono" style="font-size: 9px; color: rgba(0, 0, 0, 0.35)">
+                brand.border
+              </div>
+            </div>
+          </div>
+          <div class="swatch" style="border-radius: 16px; overflow: hidden; border: 1px solid #ddd">
+            <div style="background: #ebebeb; height: 72px"></div>
+            <div style="background: #ebebeb; padding: 10px 12px 14px">
+              <div style="font-size: 12px; font-weight: 700; color: #111; margin-bottom: 2px">
+                Alt Border
+              </div>
+              <div class="mono" style="font-size: 10px; color: rgba(0, 0, 0, 0.45)">#EBEBEB</div>
+              <div class="mono" style="font-size: 9px; color: rgba(0, 0, 0, 0.35)">—</div>
+            </div>
+          </div>
+          <div class="swatch" style="border-radius: 16px; overflow: hidden">
+            <div style="background: #00c853; height: 72px"></div>
+            <div style="background: #00c853; padding: 10px 12px 14px">
+              <div style="font-size: 12px; font-weight: 700; color: #fff; margin-bottom: 2px">
+                Success
+              </div>
+              <div class="mono" style="font-size: 10px; color: rgba(255, 255, 255, 0.75)">
+                #00C853
+              </div>
+              <div class="mono" style="font-size: 9px; color: rgba(255, 255, 255, 0.5)">
+                brand.success
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SEMANTIC -->
+        <span class="overline">Semantic Status</span>
+        <div class="grid-6" style="margin-bottom: 36px">
+          <div class="swatch" style="border-radius: 16px; overflow: hidden">
+            <div style="background: #fb8c00; height: 72px"></div>
+            <div style="background: #fb8c00; padding: 10px 12px 14px">
+              <div style="font-size: 12px; font-weight: 700; color: #fff; margin-bottom: 2px">
+                Pending
+              </div>
+              <div class="mono" style="font-size: 10px; color: rgba(255, 255, 255, 0.7)">
+                #FB8C00
+              </div>
+              <div class="mono" style="font-size: 9px; color: rgba(255, 255, 255, 0.45)">
+                status:pending
+              </div>
+            </div>
+          </div>
+          <div class="swatch" style="border-radius: 16px; overflow: hidden">
+            <div style="background: #00a550; height: 72px"></div>
+            <div style="background: #00a550; padding: 10px 12px 14px">
+              <div style="font-size: 12px; font-weight: 700; color: #fff; margin-bottom: 2px">
+                Settled
+              </div>
+              <div class="mono" style="font-size: 10px; color: rgba(255, 255, 255, 0.7)">
+                #00A550
+              </div>
+              <div class="mono" style="font-size: 9px; color: rgba(255, 255, 255, 0.45)">
+                status:settled
+              </div>
+            </div>
+          </div>
+          <div class="swatch" style="border-radius: 16px; overflow: hidden">
+            <div style="background: #1a73e8; height: 72px"></div>
+            <div style="background: #1a73e8; padding: 10px 12px 14px">
+              <div style="font-size: 12px; font-weight: 700; color: #fff; margin-bottom: 2px">
+                Partial
+              </div>
+              <div class="mono" style="font-size: 10px; color: rgba(255, 255, 255, 0.7)">
+                #1A73E8
+              </div>
+              <div class="mono" style="font-size: 9px; color: rgba(255, 255, 255, 0.45)">
+                status:partial
+              </div>
+            </div>
+          </div>
+          <div class="swatch" style="border-radius: 16px; overflow: hidden; border: 1px solid #ddd">
+            <div style="background: #fff3e0; height: 72px"></div>
+            <div style="background: #fff3e0; padding: 10px 12px 14px">
+              <div style="font-size: 12px; font-weight: 700; color: #111; margin-bottom: 2px">
+                Pending Bg
+              </div>
+              <div class="mono" style="font-size: 10px; color: rgba(0, 0, 0, 0.45)">#FFF3E0</div>
+              <div class="mono" style="font-size: 9px; color: rgba(0, 0, 0, 0.35)">
+                pill background
+              </div>
+            </div>
+          </div>
+          <div class="swatch" style="border-radius: 16px; overflow: hidden; border: 1px solid #ddd">
+            <div style="background: #e8f5ee; height: 72px"></div>
+            <div style="background: #e8f5ee; padding: 10px 12px 14px">
+              <div style="font-size: 12px; font-weight: 700; color: #111; margin-bottom: 2px">
+                Settled Bg
+              </div>
+              <div class="mono" style="font-size: 10px; color: rgba(0, 0, 0, 0.45)">#E8F5EE</div>
+              <div class="mono" style="font-size: 9px; color: rgba(0, 0, 0, 0.35)">
+                pill background
+              </div>
+            </div>
+          </div>
+          <div class="swatch" style="border-radius: 16px; overflow: hidden; border: 1px solid #ddd">
+            <div style="background: #eef3fd; height: 72px"></div>
+            <div style="background: #eef3fd; padding: 10px 12px 14px">
+              <div style="font-size: 12px; font-weight: 700; color: #111; margin-bottom: 2px">
+                Partial Bg
+              </div>
+              <div class="mono" style="font-size: 10px; color: rgba(0, 0, 0, 0.45)">#EEF3FD</div>
+              <div class="mono" style="font-size: 9px; color: rgba(0, 0, 0, 0.35)">
+                pill background
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PEOPLE PALETTE -->
+        <span class="overline">People Palette</span>
+        <div class="grid-6" style="margin-bottom: 32px">
+          <div class="swatch" style="border-radius: 16px; overflow: hidden">
+            <div style="background: #1a73e8; height: 56px"></div>
+            <div style="background: #1a73e8; padding: 8px 12px 12px">
+              <div class="mono" style="font-size: 11px; font-weight: 700; color: #fff">#1A73E8</div>
+              <div class="mono" style="font-size: 9px; color: rgba(255, 255, 255, 0.5)">Blue</div>
+            </div>
+          </div>
+          <div class="swatch" style="border-radius: 16px; overflow: hidden">
+            <div style="background: #00a550; height: 56px"></div>
+            <div style="background: #00a550; padding: 8px 12px 12px">
+              <div class="mono" style="font-size: 11px; font-weight: 700; color: #fff">#00A550</div>
+              <div class="mono" style="font-size: 9px; color: rgba(255, 255, 255, 0.5)">Green</div>
+            </div>
+          </div>
+          <div class="swatch" style="border-radius: 16px; overflow: hidden">
+            <div style="background: #8b1cc8; height: 56px"></div>
+            <div style="background: #8b1cc8; padding: 8px 12px 12px">
+              <div class="mono" style="font-size: 11px; font-weight: 700; color: #fff">#8B1CC8</div>
+              <div class="mono" style="font-size: 9px; color: rgba(255, 255, 255, 0.5)">Purple</div>
+            </div>
+          </div>
+          <div class="swatch" style="border-radius: 16px; overflow: hidden">
+            <div style="background: #f05a28; height: 56px"></div>
+            <div style="background: #f05a28; padding: 8px 12px 12px">
+              <div class="mono" style="font-size: 11px; font-weight: 700; color: #fff">#F05A28</div>
+              <div class="mono" style="font-size: 9px; color: rgba(255, 255, 255, 0.5)">Orange</div>
+            </div>
+          </div>
+          <div class="swatch" style="border-radius: 16px; overflow: hidden">
+            <div style="background: #9a6f00; height: 56px"></div>
+            <div style="background: #9a6f00; padding: 8px 12px 12px">
+              <div class="mono" style="font-size: 11px; font-weight: 700; color: #fff">#9A6F00</div>
+              <div class="mono" style="font-size: 9px; color: rgba(255, 255, 255, 0.5)">Gold</div>
+            </div>
+          </div>
+          <div class="swatch" style="border-radius: 16px; overflow: hidden">
+            <div style="background: #ff6b35; height: 56px"></div>
+            <div style="background: #ff6b35; padding: 8px 12px 12px">
+              <div class="mono" style="font-size: 11px; font-weight: 700; color: #fff">#FF6B35</div>
+              <div class="mono" style="font-size: 9px; color: rgba(255, 255, 255, 0.5)">Amber</div>
+            </div>
+          </div>
+        </div>
+
+        <div
+          style="
+            padding: 20px 28px;
+            border-radius: 18px;
+            background: rgba(255, 0, 72, 0.07);
+            border: 1px solid rgba(255, 0, 72, 0.18);
+          ">
+          <div style="font-size: 13px; font-weight: 700; color: #ff0048; margin-bottom: 6px">
+            Pink (#FF0048) Usage Rule
+          </div>
+          <p style="font-size: 13px; color: rgba(255, 255, 255, 0.5); line-height: 1.7">
+            Pink is reserved for: logo, FAB, balance card bg, form focus rings, active dock
+            indicators, and action CTAs.
+            <strong style="color: rgba(255, 255, 255, 0.7)">
+              Text on pink surfaces always uses #450010 — never pure black or white.</strong
+            >
+            Never use pink for errors or destructive states — use amber (#FB8C00) for warnings.
+          </p>
+        </div>
+      </section>
+
+      <!-- ═══════════════════════════════════════════════════════ TYPOGRAPHY -->
+      <section class="section" style="margin-bottom: 100px">
+        <div class="section-title">
+          <span
+            class="mono"
+            style="font-size: 11px; color: rgba(255, 255, 255, 0.2); letter-spacing: 2px"
+            >03</span
+          >
+          <h2 style="font-size: 28px; font-weight: 600; letter-spacing: -0.8px">Typography</h2>
+          <div style="flex: 1; height: 1px; background: rgba(255, 255, 255, 0.06)"></div>
+        </div>
+
+        <div class="grid-3" style="margin-bottom: 48px">
+          <div class="card-ghost">
+            <div
+              style="
+                font-size: 64px;
+                line-height: 1;
+                color: #fff;
+                margin-bottom: 20px;
+                font-family: Geist, system-ui, sans-serif;
+                font-weight: 400;
+              ">
+              Aa
+            </div>
+            <div
+              class="mono"
+              style="
+                font-size: 9px;
+                color: #ff0048;
+                letter-spacing: 2px;
+                text-transform: uppercase;
+                margin-bottom: 6px;
+              ">
+              Primary UI
+            </div>
+            <div style="font-size: 13px; font-weight: 700; color: #fff; margin-bottom: 8px">
+              Geist
+            </div>
+            <p style="font-size: 12px; color: rgba(255, 255, 255, 0.4); line-height: 1.6">
+              All body text, labels, numbers, UI copy. Clean, contemporary, excellent at small sizes
+              and high contrast.
+            </p>
+          </div>
+          <div class="card-ghost">
+            <div
+              style="
+                font-size: 64px;
+                line-height: 1;
+                color: #fff;
+                margin-bottom: 20px;
+                font-family: 'DM Serif Display', Georgia, serif;
+                font-style: italic;
+              ">
+              Aa
+            </div>
+            <div
+              class="mono"
+              style="
+                font-size: 9px;
+                color: #ff0048;
+                letter-spacing: 2px;
+                text-transform: uppercase;
+                margin-bottom: 6px;
+              ">
+              Display
+            </div>
+            <div style="font-size: 13px; font-weight: 700; color: #fff; margin-bottom: 8px">
+              DM Serif Display
+            </div>
+            <p style="font-size: 12px; color: rgba(255, 255, 255, 0.4); line-height: 1.6">
+              Large display headings for editorial moments. Italic variant for brand identity. Rare
+              usage — high impact.
+            </p>
+          </div>
+          <div class="card-ghost">
+            <div
+              style="
+                font-size: 64px;
+                line-height: 1;
+                color: #fff;
+                margin-bottom: 20px;
+                font-family: 'JetBrains Mono', monospace;
+                font-weight: 400;
+              ">
+              0123
+            </div>
+            <div
+              class="mono"
+              style="
+                font-size: 9px;
+                color: #ff0048;
+                letter-spacing: 2px;
+                text-transform: uppercase;
+                margin-bottom: 6px;
+              ">
+              Monospace
+            </div>
+            <div style="font-size: 13px; font-weight: 700; color: #fff; margin-bottom: 8px">
+              JetBrains Mono
+            </div>
+            <p style="font-size: 12px; color: rgba(255, 255, 255, 0.4); line-height: 1.6">
+              Token values, hex codes, technical amounts, currency formatting. Tabular numbers for
+              alignment.
+            </p>
+          </div>
+        </div>
+
+        <!-- TYPE SCALE TABLE -->
+        <div class="table-grid">
+          <div
+            class="table-head"
+            style="
+              display: grid;
+              grid-template-columns: 180px 64px 70px 80px 1fr;
+              padding: 12px 24px;
+            ">
+            <span
+              class="mono"
+              style="
+                font-size: 9px;
+                color: var(--muted);
+                letter-spacing: 2px;
+                text-transform: uppercase;
+              "
+              >Role</span
+            >
+            <span
+              class="mono"
+              style="
+                font-size: 9px;
+                color: var(--muted);
+                letter-spacing: 2px;
+                text-transform: uppercase;
+              "
+              >Size</span
+            >
+            <span
+              class="mono"
+              style="
+                font-size: 9px;
+                color: var(--muted);
+                letter-spacing: 2px;
+                text-transform: uppercase;
+              "
+              >Weight</span
+            >
+            <span
+              class="mono"
+              style="
+                font-size: 9px;
+                color: var(--muted);
+                letter-spacing: 2px;
+                text-transform: uppercase;
+              "
+              >Track</span
+            >
+            <span
+              class="mono"
+              style="
+                font-size: 9px;
+                color: var(--muted);
+                letter-spacing: 2px;
+                text-transform: uppercase;
+              "
+              >Usage</span
+            >
+          </div>
+          <div
+            class="table-row"
+            style="
+              display: grid;
+              grid-template-columns: 180px 64px 70px 80px 1fr;
+              padding: 14px 24px;
+              align-items: center;
+            ">
+            <span style="font-size: 13px; font-weight: 600; color: #fff">Display Hero</span
+            ><span class="mono" style="font-size: 12px; color: #ff0048">62px</span
+            ><span class="mono" style="font-size: 12px; color: rgba(255, 255, 255, 0.45)">300</span
+            ><span class="mono" style="font-size: 12px; color: rgba(255, 255, 255, 0.45)">-4px</span
+            ><span style="font-size: 12px; color: rgba(255, 255, 255, 0.35)"
+              >Balance hero figure</span
+            >
+          </div>
+          <div
+            class="table-row"
+            style="
+              display: grid;
+              grid-template-columns: 180px 64px 70px 80px 1fr;
+              padding: 14px 24px;
+              align-items: center;
+            ">
+            <span style="font-size: 13px; font-weight: 600; color: #fff">Card Title</span
+            ><span class="mono" style="font-size: 12px; color: #ff0048">31px</span
+            ><span class="mono" style="font-size: 12px; color: rgba(255, 255, 255, 0.45)">500</span
+            ><span class="mono" style="font-size: 12px; color: rgba(255, 255, 255, 0.45)"
+              >-1.5px</span
+            ><span style="font-size: 12px; color: rgba(255, 255, 255, 0.35)"
+              >Card section headers (Your Balance, Recent Bills)</span
+            >
+          </div>
+          <div
+            class="table-row"
+            style="
+              display: grid;
+              grid-template-columns: 180px 64px 70px 80px 1fr;
+              padding: 14px 24px;
+              align-items: center;
+            ">
+            <span style="font-size: 13px; font-weight: 600; color: #fff">Section Header</span
+            ><span class="mono" style="font-size: 12px; color: #ff0048">22px</span
+            ><span class="mono" style="font-size: 12px; color: rgba(255, 255, 255, 0.45)">600</span
+            ><span class="mono" style="font-size: 12px; color: rgba(255, 255, 255, 0.45)">-1px</span
+            ><span style="font-size: 12px; color: rgba(255, 255, 255, 0.35)"
+              >Stat values on cards</span
+            >
+          </div>
+          <div
+            class="table-row"
+            style="
+              display: grid;
+              grid-template-columns: 180px 64px 70px 80px 1fr;
+              padding: 14px 24px;
+              align-items: center;
+            ">
+            <span style="font-size: 13px; font-weight: 600; color: #fff">Greeting</span
+            ><span class="mono" style="font-size: 12px; color: #ff0048">21px</span
+            ><span class="mono" style="font-size: 12px; color: rgba(255, 255, 255, 0.45)">700</span
+            ><span class="mono" style="font-size: 12px; color: rgba(255, 255, 255, 0.45)"
+              >-0.9px</span
+            ><span style="font-size: 12px; color: rgba(255, 255, 255, 0.35)"
+              >User greeting on home header</span
+            >
+          </div>
+          <div
+            class="table-row"
+            style="
+              display: grid;
+              grid-template-columns: 180px 64px 70px 80px 1fr;
+              padding: 14px 24px;
+              align-items: center;
+            ">
+            <span style="font-size: 13px; font-weight: 600; color: #fff">List Item</span
+            ><span class="mono" style="font-size: 12px; color: #ff0048">14.5px</span
+            ><span class="mono" style="font-size: 12px; color: rgba(255, 255, 255, 0.45)">700</span
+            ><span class="mono" style="font-size: 12px; color: rgba(255, 255, 255, 0.45)"
+              >-0.3px</span
+            ><span style="font-size: 12px; color: rgba(255, 255, 255, 0.35)"
+              >Venue / friend name rows</span
+            >
+          </div>
+          <div
+            class="table-row"
+            style="
+              display: grid;
+              grid-template-columns: 180px 64px 70px 80px 1fr;
+              padding: 14px 24px;
+              align-items: center;
+            ">
+            <span style="font-size: 13px; font-weight: 600; color: #fff">Body</span
+            ><span class="mono" style="font-size: 12px; color: #ff0048">13.5px</span
+            ><span class="mono" style="font-size: 12px; color: rgba(255, 255, 255, 0.45)">600</span
+            ><span class="mono" style="font-size: 12px; color: rgba(255, 255, 255, 0.45)"
+              >-0.2px</span
+            ><span style="font-size: 12px; color: rgba(255, 255, 255, 0.35)"
+              >Action labels, button text</span
+            >
+          </div>
+          <div
+            class="table-row"
+            style="
+              display: grid;
+              grid-template-columns: 180px 64px 70px 80px 1fr;
+              padding: 14px 24px;
+              align-items: center;
+            ">
+            <span style="font-size: 13px; font-weight: 600; color: #fff">Caption</span
+            ><span class="mono" style="font-size: 12px; color: #ff0048">11px</span
+            ><span class="mono" style="font-size: 12px; color: rgba(255, 255, 255, 0.45)">400</span
+            ><span class="mono" style="font-size: 12px; color: rgba(255, 255, 255, 0.45)"
+              >0.05px</span
+            ><span style="font-size: 12px; color: rgba(255, 255, 255, 0.35)"
+              >Date stamps, secondary info</span
+            >
+          </div>
+          <div
+            class="table-row"
+            style="
+              display: grid;
+              grid-template-columns: 180px 64px 70px 80px 1fr;
+              padding: 14px 24px;
+              align-items: center;
+            ">
+            <span style="font-size: 13px; font-weight: 600; color: #fff">Overline</span
+            ><span class="mono" style="font-size: 12px; color: #ff0048">9.5px</span
+            ><span class="mono" style="font-size: 12px; color: rgba(255, 255, 255, 0.45)">700</span
+            ><span class="mono" style="font-size: 12px; color: rgba(255, 255, 255, 0.45)">1px</span
+            ><span style="font-size: 12px; color: rgba(255, 255, 255, 0.35)"
+              >Section labels, status pills (UPPERCASE)</span
+            >
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══════════════════════════════════════════════════════ SPACING & GEOMETRY -->
+      <section class="section" style="margin-bottom: 100px">
+        <div class="section-title">
+          <span
+            class="mono"
+            style="font-size: 11px; color: rgba(255, 255, 255, 0.2); letter-spacing: 2px"
+            >04</span
+          >
+          <h2 style="font-size: 28px; font-weight: 600; letter-spacing: -0.8px">
+            Spacing &amp; Geometry
+          </h2>
+          <div style="flex: 1; height: 1px; background: rgba(255, 255, 255, 0.06)"></div>
+        </div>
+        <div class="grid-2">
+          <div>
+            <span class="overline">Spacing Scale</span>
+            <div style="display: flex; flex-direction: column; gap: 12px">
+              <div style="display: flex; align-items: center; gap: 16px">
+                <span class="mono" style="width: 32px; font-size: 11px; color: #ff0048">xs</span>
+                <div
+                  style="background: #ff0048; height: 20px; width: 10px; border-radius: 4px"></div>
+                <span class="mono" style="font-size: 11px; color: rgba(255, 255, 255, 0.35)"
+                  >4px</span
+                >
+              </div>
+              <div style="display: flex; align-items: center; gap: 16px">
+                <span class="mono" style="width: 32px; font-size: 11px; color: #ff0048">sm</span>
+                <div
+                  style="background: #ff0048; height: 20px; width: 20px; border-radius: 4px"></div>
+                <span class="mono" style="font-size: 11px; color: rgba(255, 255, 255, 0.35)"
+                  >8px</span
+                >
+              </div>
+              <div style="display: flex; align-items: center; gap: 16px">
+                <span class="mono" style="width: 32px; font-size: 11px; color: #ff0048">md</span>
+                <div
+                  style="background: #ff0048; height: 20px; width: 32px; border-radius: 4px"></div>
+                <span class="mono" style="font-size: 11px; color: rgba(255, 255, 255, 0.35)"
+                  >13px</span
+                >
+              </div>
+              <div style="display: flex; align-items: center; gap: 16px">
+                <span class="mono" style="width: 32px; font-size: 11px; color: #ff0048">lg</span>
+                <div
+                  style="background: #ff0048; height: 20px; width: 45px; border-radius: 4px"></div>
+                <span class="mono" style="font-size: 11px; color: rgba(255, 255, 255, 0.35)"
+                  >18px</span
+                >
+              </div>
+              <div style="display: flex; align-items: center; gap: 16px">
+                <span class="mono" style="width: 32px; font-size: 11px; color: #ff0048">xl</span>
+                <div
+                  style="background: #ff0048; height: 20px; width: 55px; border-radius: 4px"></div>
+                <span class="mono" style="font-size: 11px; color: rgba(255, 255, 255, 0.35)"
+                  >22px</span
+                >
+              </div>
+              <div style="display: flex; align-items: center; gap: 16px">
+                <span class="mono" style="width: 32px; font-size: 11px; color: #ff0048">2xl</span>
+                <div
+                  style="background: #ff0048; height: 20px; width: 65px; border-radius: 4px"></div>
+                <span class="mono" style="font-size: 11px; color: rgba(255, 255, 255, 0.35)"
+                  >26px</span
+                >
+              </div>
+              <div style="display: flex; align-items: center; gap: 16px">
+                <span class="mono" style="width: 32px; font-size: 11px; color: #ff0048">3xl</span>
+                <div
+                  style="background: #ff0048; height: 20px; width: 80px; border-radius: 4px"></div>
+                <span class="mono" style="font-size: 11px; color: rgba(255, 255, 255, 0.35)"
+                  >32px</span
+                >
+              </div>
+            </div>
+          </div>
+          <div>
+            <span class="overline">Border Radius Tokens</span>
+            <div style="display: flex; flex-direction: column; gap: 13px">
+              <div style="display: flex; align-items: center; gap: 16px">
+                <div
+                  style="
+                    width: 48px;
+                    height: 26px;
+                    background: rgba(255, 0, 72, 0.15);
+                    border: 1px solid rgba(255, 0, 72, 0.3);
+                    border-radius: 28px;
+                    flex-shrink: 0;
+                  "></div>
+                <span
+                  class="mono"
+                  style="width: 40px; font-size: 11px; color: #ff0048; flex-shrink: 0"
+                  >28px</span
+                ><span style="font-size: 11px; color: rgba(255, 255, 255, 0.35)"
+                  >card (balance, bills)</span
+                >
+              </div>
+              <div style="display: flex; align-items: center; gap: 16px">
+                <div
+                  style="
+                    width: 48px;
+                    height: 26px;
+                    background: rgba(255, 0, 72, 0.15);
+                    border: 1px solid rgba(255, 0, 72, 0.3);
+                    border-radius: 100px;
+                    flex-shrink: 0;
+                  "></div>
+                <span
+                  class="mono"
+                  style="width: 40px; font-size: 11px; color: #ff0048; flex-shrink: 0"
+                  >pill</span
+                ><span style="font-size: 11px; color: rgba(255, 255, 255, 0.35)"
+                  >dock, badges, tag pills</span
+                >
+              </div>
+              <div style="display: flex; align-items: center; gap: 16px">
+                <div
+                  style="
+                    width: 48px;
+                    height: 26px;
+                    background: rgba(255, 0, 72, 0.15);
+                    border: 1px solid rgba(255, 0, 72, 0.3);
+                    border-radius: 20px;
+                    flex-shrink: 0;
+                  "></div>
+                <span
+                  class="mono"
+                  style="width: 40px; font-size: 11px; color: #ff0048; flex-shrink: 0"
+                  >20px</span
+                ><span style="font-size: 11px; color: rgba(255, 255, 255, 0.35)"
+                  >people / person cards</span
+                >
+              </div>
+              <div style="display: flex; align-items: center; gap: 16px">
+                <div
+                  style="
+                    width: 48px;
+                    height: 26px;
+                    background: rgba(255, 0, 72, 0.15);
+                    border: 1px solid rgba(255, 0, 72, 0.3);
+                    border-radius: 18px;
+                    flex-shrink: 0;
+                  "></div>
+                <span
+                  class="mono"
+                  style="width: 40px; font-size: 11px; color: #ff0048; flex-shrink: 0"
+                  >18px</span
+                ><span style="font-size: 11px; color: rgba(255, 255, 255, 0.35)"
+                  >quick action chips</span
+                >
+              </div>
+              <div style="display: flex; align-items: center; gap: 16px">
+                <div
+                  style="
+                    width: 48px;
+                    height: 26px;
+                    background: rgba(255, 0, 72, 0.15);
+                    border: 1px solid rgba(255, 0, 72, 0.3);
+                    border-radius: 16px;
+                    flex-shrink: 0;
+                  "></div>
+                <span
+                  class="mono"
+                  style="width: 40px; font-size: 11px; color: #ff0048; flex-shrink: 0"
+                  >16px</span
+                ><span style="font-size: 11px; color: rgba(255, 255, 255, 0.35)">form fields</span>
+              </div>
+              <div style="display: flex; align-items: center; gap: 16px">
+                <div
+                  style="
+                    width: 48px;
+                    height: 26px;
+                    background: rgba(255, 0, 72, 0.15);
+                    border: 1px solid rgba(255, 0, 72, 0.3);
+                    border-radius: 14px;
+                    flex-shrink: 0;
+                  "></div>
+                <span
+                  class="mono"
+                  style="width: 40px; font-size: 11px; color: #ff0048; flex-shrink: 0"
+                  >14px</span
+                ><span style="font-size: 11px; color: rgba(255, 255, 255, 0.35)"
+                  >venue icon badges on bill rows</span
+                >
+              </div>
+              <div style="display: flex; align-items: center; gap: 16px">
+                <div
+                  style="
+                    width: 48px;
+                    height: 26px;
+                    background: rgba(255, 0, 72, 0.15);
+                    border: 1px solid rgba(255, 0, 72, 0.3);
+                    border-radius: 12px;
+                    flex-shrink: 0;
+                  "></div>
+                <span
+                  class="mono"
+                  style="width: 40px; font-size: 11px; color: #ff0048; flex-shrink: 0"
+                  >12px</span
+                ><span style="font-size: 11px; color: rgba(255, 255, 255, 0.35)"
+                  >rabbit logo square</span
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══════════════════════════════════════════════════════ COMPONENTS -->
+      <section class="section" style="margin-bottom: 100px">
+        <div class="section-title">
+          <span
+            class="mono"
+            style="font-size: 11px; color: rgba(255, 255, 255, 0.2); letter-spacing: 2px"
+            >05</span
+          >
+          <h2 style="font-size: 28px; font-weight: 600; letter-spacing: -0.8px">Components</h2>
+          <div style="flex: 1; height: 1px; background: rgba(255, 255, 255, 0.06)"></div>
+        </div>
+
+        <span class="overline">Card Variants</span>
+        <div class="grid-3" style="margin-bottom: 48px">
+          <!-- PINK BALANCE CARD -->
+          <div
+            style="
+              border-radius: 28px;
+              background: #ff0048;
+              padding: 26px;
+              overflow: hidden;
+              position: relative;
+            ">
+            <div
+              style="
+                position: absolute;
+                right: -40px;
+                top: -40px;
+                width: 160px;
+                height: 160px;
+                border-radius: 50%;
+                background: rgba(255, 255, 255, 0.06);
+              "></div>
+            <div
+              style="
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-start;
+                margin-bottom: 20px;
+              ">
+              <div
+                style="
+                  font-size: 24px;
+                  font-weight: 500;
+                  letter-spacing: -1.2px;
+                  color: #450010;
+                  line-height: 1.1;
+                ">
+                Your<br />Balance
+              </div>
+              <div
+                style="
+                  background: rgba(69, 0, 16, 0.13);
+                  border-radius: 100px;
+                  padding: 5px 12px;
+                  font-size: 9px;
+                  font-weight: 700;
+                  color: #450010;
+                  letter-spacing: 1.2px;
+                  text-transform: uppercase;
+                ">
+                Feb 2026
+              </div>
+            </div>
+            <div
+              style="
+                font-size: 9px;
+                font-weight: 700;
+                color: #450010;
+                text-transform: uppercase;
+                letter-spacing: 1.6px;
+                opacity: 0.5;
+                margin-bottom: 4px;
+              ">
+              Net ahead
+            </div>
+            <div
+              style="
+                font-size: 48px;
+                font-weight: 300;
+                color: #450010;
+                letter-spacing: -3px;
+                line-height: 1;
+              ">
+              $15.50
+            </div>
+            <div style="height: 1px; background: rgba(69, 0, 16, 0.15); margin: 16px 0 14px"></div>
+            <div style="display: flex; gap: 0">
+              <div style="flex: 1">
+                <div
+                  style="
+                    font-size: 9px;
+                    font-weight: 700;
+                    color: #450010;
+                    text-transform: uppercase;
+                    letter-spacing: 1px;
+                    opacity: 0.5;
+                    margin-bottom: 4px;
+                  ">
+                  Owed to you
+                </div>
+                <div
+                  style="font-size: 17px; font-weight: 600; color: #450010; letter-spacing: -0.8px">
+                  $27.50
+                </div>
+              </div>
+              <div
+                style="
+                  width: 1px;
+                  background: rgba(69, 0, 16, 0.15);
+                  margin: 0 14px;
+                  align-self: stretch;
+                "></div>
+              <div style="flex: 1">
+                <div
+                  style="
+                    font-size: 9px;
+                    font-weight: 700;
+                    color: #450010;
+                    text-transform: uppercase;
+                    letter-spacing: 1px;
+                    opacity: 0.5;
+                    margin-bottom: 4px;
+                  ">
+                  You owe
+                </div>
+                <div
+                  style="font-size: 17px; font-weight: 600; color: #450010; letter-spacing: -0.8px">
+                  $12.00
+                </div>
+              </div>
+            </div>
+            <div style="height: 1px; background: rgba(69, 0, 16, 0.15); margin: 14px 0"></div>
+            <div style="display: flex; gap: 10px">
+              <div
+                style="
+                  flex: 1;
+                  background: rgba(69, 0, 16, 0.13);
+                  border-radius: 14px;
+                  padding: 11px 0;
+                  text-align: center;
+                  font-size: 12px;
+                  font-weight: 700;
+                  color: #450010;
+                ">
+                Settle Up
+              </div>
+              <div
+                style="
+                  flex: 1;
+                  background: rgba(69, 0, 16, 0.08);
+                  border-radius: 14px;
+                  padding: 11px 0;
+                  text-align: center;
+                  font-size: 12px;
+                  font-weight: 700;
+                  color: #450010;
+                ">
+                Remind
+              </div>
+            </div>
+          </div>
+
+          <!-- GRAY BILLS CARD -->
+          <div style="border-radius: 28px; background: #e6e6e6; padding: 24px">
+            <div
+              style="
+                display: flex;
+                justify-content: space-between;
+                align-items: flex-start;
+                margin-bottom: 20px;
+              ">
+              <div
+                style="
+                  font-size: 24px;
+                  font-weight: 500;
+                  letter-spacing: -1.2px;
+                  color: #000;
+                  line-height: 1.1;
+                ">
+                Recent<br />Bills
+              </div>
+              <div
+                style="
+                  background: rgba(0, 0, 0, 0.08);
+                  border-radius: 100px;
+                  padding: 5px 12px;
+                  font-size: 9px;
+                  font-weight: 700;
+                  color: rgba(0, 0, 0, 0.45);
+                  letter-spacing: 0.8px;
+                  text-transform: uppercase;
+                ">
+                See all
+              </div>
+            </div>
+            <div>
+              <div
+                style="
+                  display: flex;
+                  align-items: center;
+                  gap: 12px;
+                  padding: 12px 0;
+                  border-bottom: 1px solid rgba(0, 0, 0, 0.07);
+                ">
+                <div
+                  style="
+                    width: 44px;
+                    height: 44px;
+                    border-radius: 13px;
+                    background: rgba(255, 107, 53, 0.1);
+                    border: 1px solid rgba(255, 107, 53, 0.2);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 18px;
+                    flex-shrink: 0;
+                  ">
+                  🍽
+                </div>
+                <div style="flex: 1; min-width: 0">
+                  <div
+                    style="
+                      display: flex;
+                      justify-content: space-between;
+                      align-items: center;
+                      margin-bottom: 4px;
+                    ">
+                    <div
+                      style="
+                        font-size: 13px;
+                        font-weight: 700;
+                        color: #000;
+                        letter-spacing: -0.2px;
+                      ">
+                      Grill &amp; Chill
+                    </div>
+                    <div
+                      style="
+                        background: #fff3e0;
+                        border-radius: 100px;
+                        padding: 2px 7px;
+                        font-size: 8px;
+                        font-weight: 700;
+                        color: #fb8c00;
+                        letter-spacing: 0.5px;
+                        text-transform: uppercase;
+                      ">
+                      pending
+                    </div>
+                  </div>
+                  <div
+                    style="font-size: 13px; font-weight: 700; color: #000; letter-spacing: -0.4px">
+                    $12.00
+                  </div>
+                </div>
+              </div>
+              <div
+                style="
+                  display: flex;
+                  align-items: center;
+                  gap: 12px;
+                  padding: 12px 0;
+                  border-bottom: 1px solid rgba(0, 0, 0, 0.07);
+                ">
+                <div
+                  style="
+                    width: 44px;
+                    height: 44px;
+                    border-radius: 13px;
+                    background: rgba(232, 53, 10, 0.1);
+                    border: 1px solid rgba(232, 53, 10, 0.2);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 18px;
+                    flex-shrink: 0;
+                  ">
+                  🔥
+                </div>
+                <div style="flex: 1">
+                  <div
+                    style="
+                      display: flex;
+                      justify-content: space-between;
+                      align-items: center;
+                      margin-bottom: 4px;
+                    ">
+                    <div
+                      style="
+                        font-size: 13px;
+                        font-weight: 700;
+                        color: #000;
+                        letter-spacing: -0.2px;
+                      ">
+                      Nando's
+                    </div>
+                    <div
+                      style="
+                        background: #e8f5ee;
+                        border-radius: 100px;
+                        padding: 2px 7px;
+                        font-size: 8px;
+                        font-weight: 700;
+                        color: #00a550;
+                        letter-spacing: 0.5px;
+                        text-transform: uppercase;
+                      ">
+                      settled
+                    </div>
+                  </div>
+                  <div
+                    style="
+                      font-size: 13px;
+                      font-weight: 700;
+                      color: #00a550;
+                      letter-spacing: -0.4px;
+                    ">
+                    $8.00
+                  </div>
+                </div>
+              </div>
+              <div style="display: flex; align-items: center; gap: 12px; padding: 12px 0">
+                <div
+                  style="
+                    width: 44px;
+                    height: 44px;
+                    border-radius: 13px;
+                    background: rgba(154, 111, 0, 0.1);
+                    border: 1px solid rgba(154, 111, 0, 0.2);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 18px;
+                    flex-shrink: 0;
+                  ">
+                  🛍
+                </div>
+                <div style="flex: 1">
+                  <div
+                    style="
+                      display: flex;
+                      justify-content: space-between;
+                      align-items: center;
+                      margin-bottom: 4px;
+                    ">
+                    <div
+                      style="
+                        font-size: 13px;
+                        font-weight: 700;
+                        color: #000;
+                        letter-spacing: -0.2px;
+                      ">
+                      Avondale
+                    </div>
+                    <div
+                      style="
+                        background: #eef3fd;
+                        border-radius: 100px;
+                        padding: 2px 7px;
+                        font-size: 8px;
+                        font-weight: 700;
+                        color: #1a73e8;
+                        letter-spacing: 0.5px;
+                        text-transform: uppercase;
+                      ">
+                      partial
+                    </div>
+                  </div>
+                  <div
+                    style="font-size: 13px; font-weight: 700; color: #000; letter-spacing: -0.4px">
+                    ZiG 4,200
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- WHITE PEOPLE CARDS -->
+          <div>
+            <span class="overline">People Cards (112px wide)</span>
+            <div style="display: flex; gap: 10px">
+              <div
+                style="
+                  width: 112px;
+                  background: #fff;
+                  border-radius: 20px;
+                  padding: 14px;
+                  border: 1px solid #ebebeb;
+                  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+                ">
+                <div
+                  style="
+                    width: 42px;
+                    height: 42px;
+                    border-radius: 21px;
+                    background: rgba(26, 115, 232, 0.1);
+                    border: 2px solid rgba(26, 115, 232, 0.33);
+                    margin-bottom: 10px;
+                  "></div>
+                <div
+                  style="
+                    font-size: 12.5px;
+                    font-weight: 700;
+                    color: #0e0e0e;
+                    letter-spacing: -0.2px;
+                    margin-bottom: 2px;
+                  ">
+                  Sasha
+                </div>
+                <div
+                  style="
+                    font-size: 9.5px;
+                    font-weight: 700;
+                    color: #00a550;
+                    letter-spacing: 0.2px;
+                    margin-bottom: 3px;
+                    text-transform: uppercase;
+                  ">
+                  owes you
+                </div>
+                <div
+                  style="font-size: 15px; font-weight: 700; color: #00a550; letter-spacing: -0.6px">
+                  $8.50
+                </div>
+              </div>
+              <div
+                style="
+                  width: 112px;
+                  background: #fff;
+                  border-radius: 20px;
+                  padding: 14px;
+                  border: 1px solid #ebebeb;
+                  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+                ">
+                <div
+                  style="
+                    width: 42px;
+                    height: 42px;
+                    border-radius: 21px;
+                    background: rgba(0, 165, 80, 0.1);
+                    border: 2px solid rgba(0, 165, 80, 0.33);
+                    margin-bottom: 10px;
+                  "></div>
+                <div
+                  style="
+                    font-size: 12.5px;
+                    font-weight: 700;
+                    color: #0e0e0e;
+                    letter-spacing: -0.2px;
+                    margin-bottom: 2px;
+                  ">
+                  Kuda
+                </div>
+                <div
+                  style="
+                    font-size: 9.5px;
+                    font-weight: 700;
+                    color: #00a550;
+                    letter-spacing: 0.2px;
+                    margin-bottom: 3px;
+                    text-transform: uppercase;
+                  ">
+                  owes you
+                </div>
+                <div
+                  style="font-size: 15px; font-weight: 700; color: #00a550; letter-spacing: -0.6px">
+                  $14.00
+                </div>
+              </div>
+              <div
+                style="
+                  width: 112px;
+                  background: #fff;
+                  border-radius: 20px;
+                  padding: 14px;
+                  border: 1px solid #ebebeb;
+                  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+                ">
+                <div
+                  style="
+                    width: 42px;
+                    height: 42px;
+                    border-radius: 21px;
+                    background: rgba(240, 90, 40, 0.1);
+                    border: 2px solid rgba(240, 90, 40, 0.33);
+                    margin-bottom: 10px;
+                  "></div>
+                <div
+                  style="
+                    font-size: 12.5px;
+                    font-weight: 700;
+                    color: #0e0e0e;
+                    letter-spacing: -0.2px;
+                    margin-bottom: 2px;
+                  ">
+                  Rudo
+                </div>
+                <div
+                  style="
+                    font-size: 9.5px;
+                    font-weight: 700;
+                    color: #ff0048;
+                    letter-spacing: 0.2px;
+                    margin-bottom: 3px;
+                    text-transform: uppercase;
+                  ">
+                  you owe
+                </div>
+                <div
+                  style="font-size: 15px; font-weight: 700; color: #ff0048; letter-spacing: -0.6px">
+                  $12.00
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- STATUS + CHIPS + DOCK -->
+        <span class="overline">Status Pills</span>
+        <div style="display: flex; gap: 20px; margin-bottom: 40px; flex-wrap: wrap">
+          <div style="display: flex; flex-direction: column; gap: 6px">
+            <div
+              style="
+                background: #fff3e0;
+                border-radius: 100px;
+                padding: 4px 10px;
+                display: inline-block;
+              ">
+              <span
+                style="
+                  font-size: 9px;
+                  font-weight: 700;
+                  color: #fb8c00;
+                  letter-spacing: 0.5px;
+                  text-transform: uppercase;
+                "
+                >pending</span
+              >
+            </div>
+            <span class="mono" style="font-size: 9px; color: var(--muted)"
+              >fg #FB8C00 · bg #FFF3E0</span
+            >
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 6px">
+            <div
+              style="
+                background: #e8f5ee;
+                border-radius: 100px;
+                padding: 4px 10px;
+                display: inline-block;
+              ">
+              <span
+                style="
+                  font-size: 9px;
+                  font-weight: 700;
+                  color: #00a550;
+                  letter-spacing: 0.5px;
+                  text-transform: uppercase;
+                "
+                >settled</span
+              >
+            </div>
+            <span class="mono" style="font-size: 9px; color: var(--muted)"
+              >fg #00A550 · bg #E8F5EE</span
+            >
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 6px">
+            <div
+              style="
+                background: #eef3fd;
+                border-radius: 100px;
+                padding: 4px 10px;
+                display: inline-block;
+              ">
+              <span
+                style="
+                  font-size: 9px;
+                  font-weight: 700;
+                  color: #1a73e8;
+                  letter-spacing: 0.5px;
+                  text-transform: uppercase;
+                "
+                >partial</span
+              >
+            </div>
+            <span class="mono" style="font-size: 9px; color: var(--muted)"
+              >fg #1A73E8 · bg #EEF3FD</span
+            >
+          </div>
+        </div>
+
+        <span class="overline">Quick Action Chips</span>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 40px">
+          <div
+            style="
+              background: #ff0048;
+              border-radius: 18px;
+              padding: 8px 18px 8px 10px;
+              display: flex;
+              align-items: center;
+              gap: 8px;
+              box-shadow: 0 8px 14px rgba(255, 0, 72, 0.38);
+            ">
+            <div
+              style="
+                width: 36px;
+                height: 36px;
+                border-radius: 12px;
+                background: rgba(255, 255, 255, 0.22);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+              ">
+              <div style="font-size: 16px">+</div>
+            </div>
+            <span style="font-size: 13.5px; font-weight: 600; color: #fff; letter-spacing: -0.2px"
+              >New Split</span
+            >
+          </div>
+          <div
+            style="
+              background: #fff;
+              border: 1px solid #e8e8e8;
+              border-radius: 18px;
+              padding: 8px 18px 8px 10px;
+              display: flex;
+              align-items: center;
+              gap: 8px;
+              box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+            ">
+            <div
+              style="
+                width: 36px;
+                height: 36px;
+                border-radius: 12px;
+                background: #f4f4f4;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+              ">
+              <div style="font-size: 16px">⊞</div>
+            </div>
+            <span
+              style="font-size: 13.5px; font-weight: 600; color: #0e0e0e; letter-spacing: -0.2px"
+              >Scan QR</span
+            >
+          </div>
+          <div
+            style="
+              background: #fff;
+              border: 1px solid #e8e8e8;
+              border-radius: 18px;
+              padding: 8px 18px 8px 10px;
+              display: flex;
+              align-items: center;
+              gap: 8px;
+              box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+            ">
+            <div style="width: 36px; height: 36px; border-radius: 12px; background: #f4f4f4"></div>
+            <span
+              style="font-size: 13.5px; font-weight: 600; color: #0e0e0e; letter-spacing: -0.2px"
+              >Request</span
+            >
+          </div>
+        </div>
+
+        <span class="overline">Navigation Dock</span>
+        <div style="display: flex; justify-content: flex-start; margin-bottom: 12px">
+          <div
+            style="
+              display: inline-flex;
+              align-items: center;
+              background: #111111;
+              border-radius: 100px;
+              padding: 8px;
+              box-shadow: 0 14px 32px rgba(0, 0, 0, 0.4);
+              gap: 2px;
+            ">
+            <div
+              style="
+                padding: 14px 22px;
+                border-radius: 100px;
+                background: #2c2c2c;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 4px;
+              ">
+              <div
+                style="
+                  width: 22px;
+                  height: 22px;
+                  border-radius: 5px;
+                  background: #fff;
+                  opacity: 0.9;
+                "></div>
+              <div style="width: 4px; height: 4px; border-radius: 2px; background: #ff0048"></div>
+            </div>
+            <div
+              style="
+                padding: 14px 22px;
+                border-radius: 100px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+              ">
+              <div
+                style="
+                  width: 22px;
+                  height: 22px;
+                  border-radius: 5px;
+                  background: #5a5a5a;
+                  opacity: 0.5;
+                "></div>
+            </div>
+            <div
+              style="
+                width: 60px;
+                height: 60px;
+                border-radius: 30px;
+                background: #ff0048;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                box-shadow: 0 8px 18px rgba(255, 0, 72, 0.6);
+                margin: 0 6px;
+                flex-shrink: 0;
+                font-size: 28px;
+                color: #fff;
+                font-weight: 100;
+              ">
+              +
+            </div>
+            <div
+              style="
+                padding: 14px 22px;
+                border-radius: 100px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+              ">
+              <div
+                style="
+                  width: 22px;
+                  height: 22px;
+                  border-radius: 5px;
+                  background: #5a5a5a;
+                  opacity: 0.5;
+                "></div>
+            </div>
+            <div
+              style="
+                padding: 14px 22px;
+                border-radius: 100px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+              ">
+              <div
+                style="
+                  width: 22px;
+                  height: 22px;
+                  border-radius: 5px;
+                  background: #5a5a5a;
+                  opacity: 0.5;
+                "></div>
+            </div>
+          </div>
+        </div>
+        <span class="mono" style="font-size: 11px; color: rgba(255, 255, 255, 0.25)"
+          >bg #111111 · pill r:100 · FAB: 60×60 #FF0048 · active: bg #2C2C2C + 4px dot #FF0048</span
+        >
+      </section>
+
+      <!-- ═══════════════════════════════════════════════════════ ELEVATION -->
+      <section class="section" style="margin-bottom: 100px">
+        <div class="section-title">
+          <span
+            class="mono"
+            style="font-size: 11px; color: rgba(255, 255, 255, 0.2); letter-spacing: 2px"
+            >06</span
+          >
+          <h2 style="font-size: 28px; font-weight: 600; letter-spacing: -0.8px">
+            Elevation &amp; Shadow
+          </h2>
+          <div style="flex: 1; height: 1px; background: rgba(255, 255, 255, 0.06)"></div>
+        </div>
+        <div class="grid-5">
+          <div
+            style="
+              padding: 28px 20px;
+              border-radius: 20px;
+              background: #fff;
+              box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+              display: flex;
+              flex-direction: column;
+              gap: 12px;
+            ">
+            <div style="font-size: 13px; font-weight: 700; color: #0e0e0e">Ambient</div>
+            <div class="mono" style="font-size: 10px; color: rgba(0, 0, 0, 0.4); line-height: 1.6">
+              0 2px 6px rgba(0,0,0,0.05)
+            </div>
+            <div style="font-size: 11px; color: rgba(0, 0, 0, 0.4)">
+              Cards on white bg, form fields
+            </div>
+          </div>
+          <div
+            style="
+              padding: 28px 20px;
+              border-radius: 20px;
+              background: #fff;
+              box-shadow: 0 5px 12px rgba(0, 0, 0, 0.09);
+              display: flex;
+              flex-direction: column;
+              gap: 12px;
+            ">
+            <div style="font-size: 13px; font-weight: 700; color: #0e0e0e">Lift</div>
+            <div class="mono" style="font-size: 10px; color: rgba(0, 0, 0, 0.4); line-height: 1.6">
+              0 5px 12px rgba(0,0,0,0.09)
+            </div>
+            <div style="font-size: 11px; color: rgba(0, 0, 0, 0.4)">People cards on hover</div>
+          </div>
+          <div
+            style="
+              padding: 28px 20px;
+              border-radius: 20px;
+              background: #fff;
+              box-shadow: 0 14px 32px rgba(0, 0, 0, 0.4);
+              display: flex;
+              flex-direction: column;
+              gap: 12px;
+            ">
+            <div style="font-size: 13px; font-weight: 700; color: #0e0e0e">Float</div>
+            <div class="mono" style="font-size: 10px; color: rgba(0, 0, 0, 0.4); line-height: 1.6">
+              0 14px 32px rgba(0,0,0,0.4)
+            </div>
+            <div style="font-size: 11px; color: rgba(0, 0, 0, 0.4)">Nav dock</div>
+          </div>
+          <div
+            style="
+              padding: 28px 20px;
+              border-radius: 20px;
+              background: #ff0048;
+              box-shadow: 0 8px 18px rgba(255, 0, 72, 0.6);
+              display: flex;
+              flex-direction: column;
+              gap: 12px;
+            ">
+            <div style="font-size: 13px; font-weight: 700; color: #fff">Glow</div>
+            <div
+              class="mono"
+              style="font-size: 10px; color: rgba(255, 255, 255, 0.55); line-height: 1.6">
+              0 8px 18px rgba(255,0,72,0.6)
+            </div>
+            <div style="font-size: 11px; color: rgba(255, 255, 255, 0.5)">Pink FAB button</div>
+          </div>
+          <div
+            style="
+              padding: 28px 20px;
+              border-radius: 20px;
+              background: rgba(255, 255, 255, 0.06);
+              border: 1px solid rgba(255, 255, 255, 0.08);
+              box-shadow: 0 5px 10px rgba(255, 0, 72, 0.4);
+              display: flex;
+              flex-direction: column;
+              gap: 12px;
+            ">
+            <div style="font-size: 13px; font-weight: 700; color: #fff">Logo Glow</div>
+            <div
+              class="mono"
+              style="font-size: 10px; color: rgba(255, 255, 255, 0.4); line-height: 1.6">
+              0 5px 10px rgba(255,0,72,0.4)
+            </div>
+            <div style="font-size: 11px; color: rgba(255, 255, 255, 0.35)">Rabbit logo icon</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══════════════════════════════════════════════════════ MOTION -->
+      <section class="section" style="margin-bottom: 100px">
+        <div class="section-title">
+          <span
+            class="mono"
+            style="font-size: 11px; color: rgba(255, 255, 255, 0.2); letter-spacing: 2px"
+            >07</span
+          >
+          <h2 style="font-size: 28px; font-weight: 600; letter-spacing: -0.8px">
+            Motion &amp; Animation
+          </h2>
+          <div style="flex: 1; height: 1px; background: rgba(255, 255, 255, 0.06)"></div>
+        </div>
+        <div class="table-grid" style="margin-bottom: 20px">
+          <div
+            class="table-head"
+            style="display: grid; grid-template-columns: 160px 240px 220px 1fr; padding: 12px 24px">
+            <span
+              class="mono"
+              style="
+                font-size: 9px;
+                color: var(--muted);
+                letter-spacing: 2px;
+                text-transform: uppercase;
+              "
+              >Name</span
+            >
+            <span
+              class="mono"
+              style="
+                font-size: 9px;
+                color: var(--muted);
+                letter-spacing: 2px;
+                text-transform: uppercase;
+              "
+              >Spec</span
+            >
+            <span
+              class="mono"
+              style="
+                font-size: 9px;
+                color: var(--muted);
+                letter-spacing: 2px;
+                text-transform: uppercase;
+              "
+              >Timing</span
+            >
+            <span
+              class="mono"
+              style="
+                font-size: 9px;
+                color: var(--muted);
+                letter-spacing: 2px;
+                text-transform: uppercase;
+              "
+              >Usage</span
+            >
+          </div>
+          <div
+            class="table-row"
+            style="
+              display: grid;
+              grid-template-columns: 160px 240px 220px 1fr;
+              padding: 14px 24px;
+              align-items: start;
+            ">
+            <span style="font-size: 12.5px; font-weight: 600; color: #fff">Page Enter</span
+            ><span
+              class="mono"
+              style="font-size: 11px; color: rgba(255, 255, 255, 0.4); line-height: 1.6"
+              >opacity 0→1, y -10→0</span
+            ><span class="mono" style="font-size: 11px; color: #ff0048">260ms timing</span
+            ><span style="font-size: 12px; color: rgba(255, 255, 255, 0.35)"
+              >Header, section fades on mount</span
+            >
+          </div>
+          <div
+            class="table-row"
+            style="
+              display: grid;
+              grid-template-columns: 160px 240px 220px 1fr;
+              padding: 14px 24px;
+              align-items: start;
+            ">
+            <span style="font-size: 12.5px; font-weight: 600; color: #fff">Card Enter</span
+            ><span
+              class="mono"
+              style="font-size: 11px; color: rgba(255, 255, 255, 0.4); line-height: 1.6"
+              >opacity 0→1, y 22→0</span
+            ><span class="mono" style="font-size: 11px; color: #ff0048">300ms timing d:60</span
+            ><span style="font-size: 12px; color: rgba(255, 255, 255, 0.35)"
+              >Balance card, bills card</span
+            >
+          </div>
+          <div
+            class="table-row"
+            style="
+              display: grid;
+              grid-template-columns: 160px 240px 220px 1fr;
+              padding: 14px 24px;
+              align-items: start;
+            ">
+            <span style="font-size: 12.5px; font-weight: 600; color: #fff">Dock Spring</span
+            ><span
+              class="mono"
+              style="font-size: 11px; color: rgba(255, 255, 255, 0.4); line-height: 1.6"
+              >opacity 0→1, y 40→0</span
+            ><span class="mono" style="font-size: 11px; color: #ff0048">spring k:190 d:22</span
+            ><span style="font-size: 12px; color: rgba(255, 255, 255, 0.35)">Nav dock entry</span>
+          </div>
+          <div
+            class="table-row"
+            style="
+              display: grid;
+              grid-template-columns: 160px 240px 220px 1fr;
+              padding: 14px 24px;
+              align-items: start;
+            ">
+            <span style="font-size: 12.5px; font-weight: 600; color: #fff">FAB Press</span
+            ><span
+              class="mono"
+              style="font-size: 11px; color: rgba(255, 255, 255, 0.4); line-height: 1.6"
+              >scale 1→0.85</span
+            ><span class="mono" style="font-size: 11px; color: #ff0048">spring k:400 d:18</span
+            ><span style="font-size: 12px; color: rgba(255, 255, 255, 0.35)"
+              >FAB press feedback</span
+            >
+          </div>
+          <div
+            class="table-row"
+            style="
+              display: grid;
+              grid-template-columns: 160px 240px 220px 1fr;
+              padding: 14px 24px;
+              align-items: start;
+            ">
+            <span style="font-size: 12.5px; font-weight: 600; color: #fff">Tab Press</span
+            ><span
+              class="mono"
+              style="font-size: 11px; color: rgba(255, 255, 255, 0.4); line-height: 1.6"
+              >scale 1→0.82</span
+            ><span class="mono" style="font-size: 11px; color: #ff0048">spring k:500 d:25</span
+            ><span style="font-size: 12px; color: rgba(255, 255, 255, 0.35)"
+              >Dock tab press feedback</span
+            >
+          </div>
+        </div>
+        <div
+          style="
+            padding: 20px 24px;
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+          ">
+          <div
+            style="
+              font-size: 13px;
+              font-weight: 700;
+              color: rgba(255, 255, 255, 0.65);
+              margin-bottom: 8px;
+            ">
+            ⚠ Never use spring for AnimatePresence content transitions
+          </div>
+          <p style="font-size: 12.5px; color: rgba(255, 255, 255, 0.4); line-height: 1.7">
+            Content enter/exit (cards, screens mounting) must use
+            <span class="mono" style="color: rgba(255, 255, 255, 0.7)">type: 'timing'</span> with
+            190–300ms. Spring on AnimatePresence causes jarring bounce. Reserve spring exclusively
+            for interactive press feedback (scale transforms).
+          </p>
+        </div>
+      </section>
+
+      <!-- ═══════════════════════════════════════════════════════ CURRENCY -->
+      <section class="section" style="margin-bottom: 100px">
+        <div class="section-title">
+          <span
+            class="mono"
+            style="font-size: 11px; color: rgba(255, 255, 255, 0.2); letter-spacing: 2px"
+            >08</span
+          >
+          <h2 style="font-size: 28px; font-weight: 600; letter-spacing: -0.8px">
+            Currency Formatting
+          </h2>
+          <div style="flex: 1; height: 1px; background: rgba(255, 255, 255, 0.06)"></div>
+        </div>
+        <div class="grid-3">
+          <div class="card-ghost">
+            <span
+              class="mono"
+              style="
+                font-size: 9px;
+                color: #ff0048;
+                letter-spacing: 2px;
+                text-transform: uppercase;
+                display: block;
+                margin-bottom: 12px;
+              "
+              >USD Amount</span
+            >
+            <div
+              style="
+                font-size: 42px;
+                font-weight: 300;
+                color: #fff;
+                letter-spacing: -2.5px;
+                margin-bottom: 16px;
+                line-height: 1;
+              ">
+              $12.00
+            </div>
+            <p style="font-size: 12px; color: rgba(255, 255, 255, 0.4); line-height: 1.6">
+              Prefix "$". Always 2 decimal places. Small: 20–22px/600. Hero: 62px/300 on balance
+              card.
+            </p>
+          </div>
+          <div class="card-ghost">
+            <span
+              class="mono"
+              style="
+                font-size: 9px;
+                color: #ff0048;
+                letter-spacing: 2px;
+                text-transform: uppercase;
+                display: block;
+                margin-bottom: 12px;
+              "
+              >ZiG Amount</span
+            >
+            <div
+              style="
+                font-size: 42px;
+                font-weight: 300;
+                color: #fff;
+                letter-spacing: -2.5px;
+                margin-bottom: 16px;
+                line-height: 1;
+              ">
+              ZiG 4,200
+            </div>
+            <p style="font-size: 12px; color: rgba(255, 255, 255, 0.4); line-height: 1.6">
+              Prefix "ZiG ". Zero decimal places. Thousands separator via
+              <span class="mono">.toLocaleString()</span>.
+            </p>
+          </div>
+          <div class="card-ghost">
+            <span
+              class="mono"
+              style="
+                font-size: 9px;
+                color: #ff0048;
+                letter-spacing: 2px;
+                text-transform: uppercase;
+                display: block;
+                margin-bottom: 12px;
+              "
+              >Net Display</span
+            >
+            <div
+              style="
+                font-size: 42px;
+                font-weight: 300;
+                color: #fff;
+                letter-spacing: -2.5px;
+                margin-bottom: 16px;
+                line-height: 1;
+              ">
+              $15.50
+            </div>
+            <p style="font-size: 12px; color: rgba(255, 255, 255, 0.4); line-height: 1.6">
+              Always shown as positive value. "Net ahead" overline label when net > 0. Hero card:
+              62px/300.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ═══════════════════════════════════════════════════════ LLM PROMPT -->
+      <section class="section" style="margin-bottom: 60px">
+        <div class="section-title">
+          <span
+            class="mono"
+            style="font-size: 11px; color: rgba(255, 255, 255, 0.2); letter-spacing: 2px"
+            >09</span
+          >
+          <h2 style="font-size: 28px; font-weight: 600; letter-spacing: -0.8px">
+            LLM Starter Prompt
+          </h2>
+          <div style="flex: 1; height: 1px; background: rgba(255, 255, 255, 0.06)"></div>
+        </div>
+        <div
+          style="
+            border-radius: 20px;
+            background: #0a0a0a;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+          ">
+          <div
+            style="
+              padding: 16px 24px;
+              border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+            ">
+            <span
+              class="mono"
+              style="
+                font-size: 10px;
+                color: #ff0048;
+                letter-spacing: 2px;
+                text-transform: uppercase;
+              "
+              >Copy-paste context block for new LLM sessions</span
+            >
+            <span class="mono" style="font-size: 10px; color: rgba(255, 255, 255, 0.25)"
+              >TypeScript / React Native</span
+            >
+          </div>
+          <pre
+            style="
+              padding: 28px 32px;
+              font-size: 12px;
+              color: rgba(255, 255, 255, 0.55);
+              line-height: 2;
+              font-family: 'JetBrains Mono', monospace;
+            ">
+You are building a screen for Umo — a React Native (Expo) bill-splitting app for Zimbabwe.
+
+STACK: Expo SDK 54, NativeWind, Tailwind 3.4, moti, lucide-react-native, react-native-safe-area-context
+NAVIGATION: App.tsx state machine — Screen = 'onboarding' | 'signup' | 'signin' | 'services' | 'home'
+
+DESIGN SYSTEM:
+  Background:    #F4F4F4 (light mode app background)
+  Primary pink:  #FF0048  (buttons, FAB, logo, form focus rings)
+  Pink-text:     #450010  (ALL text on pink surfaces — never pure black/white)
+  Cards:         #E6E6E6 (platinum) | #FFFFFF (white) | #FF0048 (balance card)
+  Dark text:     #0E0E0E
+  Borders:       #EBEBEB (alt) | #CCCCCC (standard)
+  Muted text:    #555555
+  Success:       #00C853 | Settled text: #00A550
+  Dock bg:       #111111
+
+TYPOGRAPHY (font: Geist):
+  Hero number:   62px / weight 300 / letterSpacing -4
+  Card title:    31px / weight 500 / letterSpacing -1.5
+  Stat value:    22px / weight 600 / letterSpacing -1
+  Greeting:      21px / weight 700 / letterSpacing -0.9
+  List item:     14.5px / weight 700 / letterSpacing -0.3
+  Body label:    13.5px / weight 600 / letterSpacing -0.2
+  Caption:       11px / weight 400
+  Overline:      9.5–10px / weight 700 / uppercase / letterSpacing 1–1.6
+
+RADII: card:28 | pill:100 | people-card:20 | action-chip:18 | form-field:16 | icon-badge:14 | logo:12
+ICONS: lucide-react-native v0.575.0, strokeWidth 1.75 default, 2–2.5 for small UI icons
+ANIMATIONS: type:'timing' for content (190–300ms). type:'spring' ONLY for press scale feedback.
+CURRENCIES: USD = "$12.00" (2dp) | ZiG = "ZiG 4,200" (0dp, toLocaleString)
+
+Component files:
+  HomeScreen:    components/screens/HomeScreen.tsx  (~1064 lines, self-contained)
+  Auth:          components/screens/SignUpScreen.tsx | SignInScreen.tsx | ServicesScreen.tsx</pre
+          >
+        </div>
+      </section>
+
+      <!-- FOOTER -->
+      <footer
+        style="
+          padding-top: 48px;
+          border-top: 1px solid rgba(255, 255, 255, 0.06);
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        ">
+        <div>
+          <div
+            class="serif"
+            style="font-size: 22px; color: rgba(255, 255, 255, 0.2); letter-spacing: -0.5px">
+            Umo Design System
+          </div>
+          <div
+            class="mono"
+            style="font-size: 10px; color: rgba(255, 255, 255, 0.2); margin-top: 4px">
+            v1.0 · Feb 2026 · internal use
+          </div>
+        </div>
+        <div style="display: flex; gap: 8px; align-items: center">
+          <div style="width: 28px; height: 28px; border-radius: 50%; background: #ff0048"></div>
+          <div style="width: 28px; height: 28px; border-radius: 50%; background: #e6e6e6"></div>
+          <div style="width: 28px; height: 28px; border-radius: 50%; background: #111111"></div>
+          <div
+            style="
+              width: 28px;
+              height: 28px;
+              border-radius: 50%;
+              background: #f4f4f4;
+              border: 1px solid #444;
+            "></div>
+          <div style="width: 28px; height: 28px; border-radius: 50%; background: #00c853"></div>
+        </div>
+      </footer>
+    </main>
+  </body>
+</html>
