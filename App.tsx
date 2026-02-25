@@ -5,30 +5,30 @@ import { Rabbit } from 'lucide-react-native';
 import { MotiView } from 'moti';
 import { View, Text, Pressable } from 'react-native';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+import { PillBadge } from 'components/ui';
 
-/** Tiny receipt row used in the hero preview card */
 function PreviewItem({ name, price, checked }: { name: string; price: string; checked: boolean }) {
   return (
     <View
-      className="flex-row items-center justify-between py-[7px]"
-      style={{ borderBottomWidth: 1, borderBottomColor: 'rgba(0,0,0,0.07)' }}>
-      <View className="flex-row items-center gap-[10px]">
+      className="flex-row items-center justify-between"
+      style={{ paddingVertical: 9, borderBottomWidth: 1, borderBottomColor: 'rgba(0,0,0,0.07)' }}>
+      <View className="flex-row items-center" style={{ gap: 10 }}>
         <View
           style={{
-            width: 15,
-            height: 15,
-            borderRadius: 8,
-            backgroundColor: checked ? '#111111' : 'transparent',
+            width: 14,
+            height: 14,
+            borderRadius: 7,
+            backgroundColor: checked ? '#111' : 'transparent',
             borderWidth: 1.5,
-            borderColor: checked ? '#111111' : 'rgba(0,0,0,0.22)',
+            borderColor: checked ? '#111' : 'rgba(0,0,0,0.2)',
           }}
         />
         <Text
           style={{
             fontSize: 13,
             fontWeight: '500',
-            color: '#111111',
-            opacity: checked ? 1 : 0.35,
+            color: '#111',
+            opacity: checked ? 1 : 0.32,
             letterSpacing: -0.2,
           }}>
           {name}
@@ -38,8 +38,8 @@ function PreviewItem({ name, price, checked }: { name: string; price: string; ch
         style={{
           fontSize: 13,
           fontWeight: '600',
-          color: '#111111',
-          opacity: checked ? 1 : 0.35,
+          color: '#111',
+          opacity: checked ? 1 : 0.32,
           letterSpacing: -0.3,
         }}>
         {price}
@@ -54,7 +54,7 @@ export default function App() {
       <SafeAreaView className="flex-1 bg-[#F4F4F4]">
         <StatusBar style="dark" />
 
-        {/* Left spine — decorative vertical rule from inspo */}
+        {/* Left spine */}
         <View
           pointerEvents="none"
           style={{
@@ -63,143 +63,127 @@ export default function App() {
             top: 0,
             bottom: 0,
             width: 1,
-            backgroundColor: '#E0E0E0',
+            backgroundColor: '#E2E2E2',
           }}
         />
 
-        <View className="flex-1 pb-6 pt-2" style={{ paddingLeft: 44, paddingRight: 24 }}>
-          {/* ── Top bar: wordmark + rabbit badge ── */}
+        <View className="flex-1 pb-8 pt-2" style={{ paddingLeft: 44, paddingRight: 22 }}>
+          {/* Top bar */}
           <MotiView
             from={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ type: 'timing', duration: 380, delay: 0 }}
+            transition={{ type: 'timing', duration: 300 }}
             className="flex-row items-center justify-between py-3">
-            <Text style={{ fontSize: 20, fontWeight: '600', color: '#111111', letterSpacing: -1 }}>
+            <Text style={{ fontSize: 19, fontWeight: '600', color: '#111', letterSpacing: -0.9 }}>
               umo
             </Text>
             <View
-              className="h-9 w-9 items-center justify-center rounded-[13px] bg-[#FF0048]"
+              className="h-9 w-9 items-center justify-center rounded-[12px] bg-[#FF0048]"
               style={{
                 shadowColor: '#FF0048',
                 shadowOffset: { width: 0, height: 4 },
-                shadowOpacity: 0.35,
+                shadowOpacity: 0.4,
                 shadowRadius: 8,
-                elevation: 4,
+                elevation: 5,
               }}>
-              <Rabbit size={18} color="#FFFFFF" strokeWidth={1.75} />
+              <Rabbit size={17} color="#fff" strokeWidth={1.75} />
             </View>
           </MotiView>
 
           <View className="flex-1 justify-between">
-            {/* ── Hero headline ── */}
-            <View className="mt-7">
-              <MotiView
-                from={{ opacity: 0, translateY: 28 }}
-                animate={{ opacity: 1, translateY: 0 }}
-                transition={{ type: 'spring', stiffness: 180, damping: 22, delay: 80 }}>
-                <Text
-                  style={{
-                    fontSize: 56,
-                    fontWeight: '500',
-                    color: '#111111',
-                    letterSpacing: -3.5,
-                    lineHeight: 58,
-                  }}>
-                  {'The bill\nsplitter\nZimbabwe\ndeserves.'}
-                </Text>
-              </MotiView>
-
-              <MotiView
-                from={{ opacity: 0, translateY: 10 }}
-                animate={{ opacity: 1, translateY: 0 }}
-                transition={{ type: 'spring', delay: 200 }}
-                className="mt-4 flex-row items-center gap-2">
-                {/* Tiny pink accent dot */}
-                <View className="h-[6px] w-[6px] rounded-full bg-[#FF0048]" />
-                <Text style={{ fontSize: 14, color: '#555555', letterSpacing: 0.1 }}>
-                  Multi-currency · EcoCash · Friends
-                </Text>
-              </MotiView>
-            </View>
-
-            {/* ── Hero visual: live mini UI preview ── */}
+            {/* Headline */}
             <MotiView
-              from={{ opacity: 0, translateY: 40, scale: 0.97 }}
-              animate={{ opacity: 1, translateY: 0, scale: 1 }}
-              transition={{ type: 'spring', stiffness: 160, damping: 20, delay: 290 }}
-              className="my-5">
-              {/* Platinum receipt card */}
-              <View
-                className="rounded-[24px] bg-[#E6E6E6] p-5"
+              from={{ opacity: 0, translateY: 24 }}
+              animate={{ opacity: 1, translateY: 0 }}
+              transition={{ type: 'spring', stiffness: 180, damping: 22, delay: 80 }}
+              style={{ marginTop: 20 }}>
+              <Text
                 style={{
-                  shadowColor: '#000',
-                  shadowOffset: { width: 0, height: 3 },
-                  shadowOpacity: 0.08,
-                  shadowRadius: 14,
-                  elevation: 3,
+                  fontSize: 50,
+                  fontWeight: '500',
+                  color: '#111',
+                  letterSpacing: -3,
+                  lineHeight: 52,
                 }}>
-                {/* Card header row */}
-                <View className="mb-[14px] flex-row items-start justify-between">
+                {'The bill\nsplitter Zim-\nbabwe needs.'}
+              </Text>
+              <View className="mt-[14px] flex-row items-center" style={{ gap: 7 }}>
+                <View
+                  style={{ width: 6, height: 6, borderRadius: 3, backgroundColor: '#FF0048' }}
+                />
+                <Text style={{ fontSize: 13, color: '#777', letterSpacing: 0.1 }}>
+                  USD · ZiG · EcoCash · InnBucks
+                </Text>
+              </View>
+            </MotiView>
+
+            {/* Card stack */}
+            <MotiView
+              from={{ opacity: 0, translateY: 32, scale: 0.97 }}
+              animate={{ opacity: 1, translateY: 0, scale: 1 }}
+              transition={{ type: 'spring', stiffness: 150, damping: 20, delay: 260 }}
+              style={{ marginVertical: 16 }}>
+              {/* ── Platinum receipt card ── */}
+              <View
+                style={{
+                  backgroundColor: '#E6E6E6',
+                  borderRadius: 24,
+                  padding: 20,
+                  // paddingBottom is intentional empty space the pink card peeks into
+                  paddingBottom: 44,
+                  shadowColor: '#000',
+                  shadowOffset: { width: 0, height: 2 },
+                  shadowOpacity: 0.07,
+                  shadowRadius: 12,
+                  elevation: 2,
+                }}>
+                {/* Header */}
+                <View className="mb-3 flex-row items-start justify-between">
                   <View>
                     <Text
                       style={{
-                        fontSize: 17,
+                        fontSize: 16,
                         fontWeight: '600',
-                        color: '#111111',
-                        letterSpacing: -0.6,
+                        color: '#111',
+                        letterSpacing: -0.5,
                       }}>
                       Dinner @ Gava's
                     </Text>
-                    <Text style={{ fontSize: 12, color: '#555555', marginTop: 2 }}>
+                    <Text style={{ fontSize: 12, color: '#666', marginTop: 2 }}>
                       Sat, 22 Feb · 4 people
                     </Text>
                   </View>
-
-                  {/* Vertical pill */}
-                  <View
-                    className="items-center justify-center rounded-full bg-[rgba(0,0,0,0.07)]"
-                    style={{ paddingHorizontal: 5, paddingVertical: 10 }}>
-                    <Text
-                      style={{
-                        fontSize: 7.5,
-                        fontWeight: '800',
-                        textTransform: 'uppercase',
-                        letterSpacing: 0.8,
-                        color: '#111111',
-                        transform: [{ rotate: '90deg' }],
-                        width: 36,
-                        textAlign: 'center',
-                      }}>
-                      RECEIPT
-                    </Text>
-                  </View>
+                  <PillBadge label="RECEIPT" variant="muted" />
                 </View>
 
-                {/* Items with dashed left flow line */}
+                {/* Items — dashed left flow line */}
                 <View
                   style={{
                     borderLeftWidth: 1,
-                    borderLeftColor: 'rgba(0,0,0,0.15)',
+                    borderLeftColor: 'rgba(0,0,0,0.14)',
                     borderStyle: 'dashed',
                     paddingLeft: 14,
                     marginLeft: 3,
                   }}>
                   <PreviewItem name="Nyama Choma" price="$18" checked={true} />
                   <PreviewItem name="Sadza & Relish" price="$9" checked={true} />
-                  <PreviewItem name="Stoney Tangawizi (×2)" price="$4" checked={false} />
+                  <PreviewItem name="Stoney ×2" price="$4" checked={false} />
                 </View>
               </View>
 
-              {/* Pink "Your Share" card — overlaps receipt card */}
+              {/* ── Pink "Your Share" card — peeks into receipt's paddingBottom ── */}
               <View
-                className="mx-4 rounded-[24px] bg-[#FF0048] p-5"
                 style={{
-                  marginTop: -18,
+                  backgroundColor: '#FF0048',
+                  borderRadius: 24,
+                  padding: 20,
+                  marginTop: -40, // exactly covers the reserved paddingBottom
+                  marginHorizontal: 12,
                   shadowColor: '#FF0048',
-                  shadowOffset: { width: 0, height: 10 },
-                  shadowOpacity: 0.32,
-                  shadowRadius: 20,
-                  elevation: 8,
+                  shadowOffset: { width: 0, height: 12 },
+                  shadowOpacity: 0.38,
+                  shadowRadius: 24,
+                  elevation: 10,
                 }}>
                 <View className="flex-row items-end justify-between">
                   <View>
@@ -210,30 +194,34 @@ export default function App() {
                         textTransform: 'uppercase',
                         letterSpacing: 1.2,
                         color: '#450010',
-                        opacity: 0.65,
+                        opacity: 0.6,
                       }}>
                       Your Share
                     </Text>
                     <Text
                       style={{
-                        fontSize: 42,
+                        fontSize: 44,
                         fontWeight: '600',
                         color: '#450010',
                         letterSpacing: -2.5,
                         lineHeight: 48,
-                        marginTop: 2,
+                        marginTop: 1,
                       }}>
                       $13.50
                     </Text>
                   </View>
-                  <View className="items-end gap-[6px]">
+                  <View style={{ alignItems: 'flex-end', gap: 6 }}>
                     <Text
-                      style={{ fontSize: 12, fontWeight: '500', color: '#450010', opacity: 0.6 }}>
-                      of $54.00 total
+                      style={{ fontSize: 12, fontWeight: '500', color: '#450010', opacity: 0.55 }}>
+                      of $54.00
                     </Text>
                     <View
-                      className="rounded-full px-3 py-[5px]"
-                      style={{ backgroundColor: 'rgba(69,0,16,0.14)' }}>
+                      style={{
+                        backgroundColor: 'rgba(69,0,16,0.14)',
+                        borderRadius: 100,
+                        paddingHorizontal: 10,
+                        paddingVertical: 5,
+                      }}>
                       <Text
                         style={{
                           fontSize: 9.5,
@@ -250,68 +238,45 @@ export default function App() {
               </View>
             </MotiView>
 
-            {/* ── Bottom CTAs ── */}
-            <View className="gap-3">
-              {/* Primary CTA */}
+            {/* CTAs */}
+            <View style={{ gap: 10 }}>
               <MotiView
-                from={{ opacity: 0, translateY: 16 }}
+                from={{ opacity: 0, translateY: 14 }}
                 animate={{ opacity: 1, translateY: 0 }}
-                transition={{ type: 'spring', delay: 400 }}>
+                transition={{ type: 'spring', delay: 380 }}>
                 <Pressable
-                  className="flex-row items-center justify-between rounded-[18px] bg-[#FF0048] px-6 py-[18px]"
                   style={{
+                    backgroundColor: '#FF0048',
+                    borderRadius: 18,
+                    paddingHorizontal: 24,
+                    paddingVertical: 17,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
                     shadowColor: '#FF0048',
                     shadowOffset: { width: 0, height: 8 },
-                    shadowOpacity: 0.32,
-                    shadowRadius: 16,
+                    shadowOpacity: 0.3,
+                    shadowRadius: 14,
                     elevation: 6,
                   }}
                   android_ripple={{ color: 'rgba(255,255,255,0.15)' }}>
                   <Text style={{ fontSize: 16, fontWeight: '600', color: '#450010' }}>
                     Get Started
                   </Text>
-                  <Text style={{ fontSize: 18, fontWeight: '400', color: '#450010' }}>→</Text>
+                  <Text style={{ fontSize: 18, color: '#450010' }}>→</Text>
                 </Pressable>
               </MotiView>
 
-              {/* Secondary — sign in */}
               <MotiView
                 from={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ type: 'timing', duration: 480, delay: 480 }}>
-                <Pressable
-                  className="items-center py-3"
-                  android_ripple={{ color: 'rgba(0,0,0,0.05)' }}>
-                  <Text style={{ fontSize: 14, color: '#555555' }}>
+                transition={{ type: 'timing', duration: 400, delay: 460 }}>
+                <Pressable className="items-center py-[10px]">
+                  <Text style={{ fontSize: 13.5, color: '#666' }}>
                     Already have an account?{' '}
-                    <Text style={{ color: '#111111', fontWeight: '600' }}>Sign in</Text>
+                    <Text style={{ color: '#111', fontWeight: '600' }}>Sign in</Text>
                   </Text>
                 </Pressable>
-              </MotiView>
-
-              {/* Payment method chips */}
-              <MotiView
-                from={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ type: 'timing', duration: 500, delay: 560 }}
-                className="flex-row items-center justify-center gap-2 pt-1">
-                {['USD', 'ZiG', 'EcoCash', 'InnBucks'].map((label) => (
-                  <View
-                    key={label}
-                    className="rounded-full px-[10px] py-[5px]"
-                    style={{ backgroundColor: 'rgba(0,0,0,0.06)' }}>
-                    <Text
-                      style={{
-                        fontSize: 9.5,
-                        fontWeight: '700',
-                        textTransform: 'uppercase',
-                        letterSpacing: 0.8,
-                        color: '#555555',
-                      }}>
-                      {label}
-                    </Text>
-                  </View>
-                ))}
               </MotiView>
             </View>
           </View>
