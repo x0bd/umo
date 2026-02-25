@@ -13,158 +13,190 @@ const SERVICES = [
     id: 'ecocash',
     name: 'EcoCash',
     sub: 'Econet mobile money',
+    initials: 'EC',
     color: '#00A550',
-    accent: '#E5F7EE',
+    light: '#E5F7EE',
   },
   {
     id: 'innbucks',
     name: 'InnBucks',
     sub: 'Innscor digital wallet',
+    initials: 'IB',
     color: '#F05A28',
-    accent: '#FEF0EB',
+    light: '#FEF0EB',
   },
   {
     id: 'onemoney',
     name: 'OneMoney',
     sub: 'NetOne mobile money',
+    initials: 'OM',
     color: '#8B1CC8',
-    accent: '#F4EAFB',
+    light: '#F4EAFB',
   },
   {
     id: 'paynow',
     name: 'PayNow',
     sub: 'Online card payments',
+    initials: 'PN',
     color: '#1A73E8',
-    accent: '#E8F1FD',
+    light: '#E8F1FD',
   },
   {
     id: 'mukuru',
     name: 'Mukuru',
     sub: 'Send & receive money',
+    initials: 'MK',
     color: '#D0202A',
-    accent: '#FBEAEA',
+    light: '#FBEAEA',
   },
   {
     id: 'usd',
     name: 'USD Cash',
     sub: 'US Dollar bills',
-    color: '#2E7D48',
-    accent: '#EAF4EE',
+    initials: '$',
+    color: '#1B6B36',
+    light: '#EAF4EE',
   },
   {
     id: 'zig',
     name: 'ZiG Cash',
     sub: 'Zimbabwe Gold currency',
-    color: '#B8860B',
-    accent: '#FBF5E0',
+    initials: 'Z',
+    color: '#9A6F00',
+    light: '#FBF5E0',
   },
   {
     id: 'zipit',
     name: 'ZIPIT',
     sub: 'Instant bank transfer',
+    initials: 'ZP',
     color: '#1B3A6B',
-    accent: '#E8EDF5',
+    light: '#E8EDF5',
   },
 ];
 
-function ServiceTile({
+function ServiceRow({
   service,
   selected,
   onToggle,
   delay,
+  isLast,
 }: {
   service: (typeof SERVICES)[0];
   selected: boolean;
   onToggle: () => void;
   delay: number;
+  isLast: boolean;
 }) {
   const [pressed, setPressed] = useState(false);
+
   return (
     <MotiView
-      from={{ opacity: 0, scale: 0.88, translateY: 12 }}
-      animate={{ opacity: 1, scale: 1, translateY: 0 }}
-      transition={{ type: 'timing', duration: 260, delay }}>
+      from={{ opacity: 0, translateX: -16 }}
+      animate={{ opacity: 1, translateX: 0 }}
+      transition={{ type: 'timing', duration: 220, delay }}>
       <Pressable
         onPress={onToggle}
         onPressIn={() => setPressed(true)}
         onPressOut={() => setPressed(false)}>
         <MotiView
-          animate={{
-            scale: pressed ? 0.97 : 1,
-            borderColor: selected ? '#FF0048' : '#EBEBEB',
-            backgroundColor: selected ? '#FFF4F6' : '#FFFFFF',
-          }}
+          animate={{ backgroundColor: selected ? '#FFF6F8' : '#FFFFFF' }}
           transition={{ type: 'timing', duration: 160 }}
-          style={{
-            borderRadius: 20,
-            borderWidth: 1.5,
-            padding: 16,
-            minHeight: 96,
-            justifyContent: 'space-between',
-            overflow: 'hidden',
-          }}>
-          {/* BRAND DOT */}
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-            <View
+          style={{ paddingHorizontal: 16, paddingVertical: 14 }}>
+          <MotiView
+            animate={{ scale: pressed ? 0.985 : 1 }}
+            transition={{ type: 'spring', stiffness: 500, damping: 28 }}
+            style={{ flexDirection: 'row', alignItems: 'center', gap: 14 }}>
+
+            {/* BRAND BADGE */}
+            <MotiView
+              animate={{
+                backgroundColor: selected ? service.color : service.light,
+              }}
+              transition={{ type: 'timing', duration: 200 }}
               style={{
-                width: 30,
-                height: 30,
-                borderRadius: 10,
-                backgroundColor: service.accent,
+                width: 48,
+                height: 48,
+                borderRadius: 14,
                 alignItems: 'center',
                 justifyContent: 'center',
               }}>
-              <View
+              <Text
                 style={{
-                  width: 10,
-                  height: 10,
-                  borderRadius: 5,
-                  backgroundColor: service.color,
-                }}
-              />
+                  fontSize: service.initials.length === 1 ? 20 : 13,
+                  fontWeight: '800',
+                  color: selected ? '#fff' : service.color,
+                  letterSpacing: -0.5,
+                }}>
+                {service.initials}
+              </Text>
+            </MotiView>
+
+            {/* TEXT */}
+            <View style={{ flex: 1 }}>
+              <Text
+                style={{
+                  fontSize: 16,
+                  fontWeight: '700',
+                  color: '#0E0E0E',
+                  letterSpacing: -0.5,
+                  marginBottom: 2,
+                }}>
+                {service.name}
+              </Text>
+              <Text
+                style={{
+                  fontSize: 12.5,
+                  fontWeight: '400',
+                  color: '#999',
+                  letterSpacing: 0.05,
+                }}>
+                {service.sub}
+              </Text>
             </View>
 
-            {/* CHECKMARK */}
-            <AnimatePresence>
-              {selected && (
-                <MotiView
-                  from={{ scale: 0, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  exit={{ scale: 0, opacity: 0 }}
-                  transition={{ type: 'spring', stiffness: 500, damping: 24 }}
-                  style={{
-                    width: 20,
-                    height: 20,
-                    borderRadius: 10,
-                    backgroundColor: '#FF0048',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    marginLeft: 'auto',
-                  }}>
-                  <Check size={11} color="#fff" strokeWidth={3} />
-                </MotiView>
-              )}
-            </AnimatePresence>
-          </View>
-
-          {/* TEXT */}
-          <View style={{ marginTop: 12 }}>
-            <Text
+            {/* CHECKBOX */}
+            <MotiView
+              animate={{
+                backgroundColor: selected ? '#FF0048' : 'transparent',
+                borderColor: selected ? '#FF0048' : '#D4D4D4',
+              }}
+              transition={{ type: 'timing', duration: 160 }}
               style={{
-                fontSize: 14.5,
-                fontWeight: '700',
-                color: '#0E0E0E',
-                letterSpacing: -0.4,
-                marginBottom: 2,
+                width: 26,
+                height: 26,
+                borderRadius: 13,
+                borderWidth: 2,
+                alignItems: 'center',
+                justifyContent: 'center',
               }}>
-              {service.name}
-            </Text>
-            <Text style={{ fontSize: 11.5, color: '#999', letterSpacing: 0.05 }}>
-              {service.sub}
-            </Text>
-          </View>
+              <AnimatePresence>
+                {selected && (
+                  <MotiView
+                    from={{ scale: 0, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    exit={{ scale: 0, opacity: 0 }}
+                    transition={{ type: 'spring', stiffness: 560, damping: 22 }}>
+                    <Check size={13} color="#fff" strokeWidth={3} />
+                  </MotiView>
+                )}
+              </AnimatePresence>
+            </MotiView>
+          </MotiView>
         </MotiView>
       </Pressable>
+
+      {/* SEPARATOR */}
+      {!isLast && (
+        <View
+          style={{
+            height: 1,
+            backgroundColor: '#F2F2F2',
+            marginLeft: 78,
+            marginRight: 0,
+          }}
+        />
+      )}
     </MotiView>
   );
 }
@@ -186,12 +218,13 @@ export function ServicesScreen({ onDone }: Props) {
         style={{ flex: 1 }}
         contentContainerStyle={{ paddingBottom: insets.bottom + 120 }}
         showsVerticalScrollIndicator={false}>
-        {/* HERO SECTION */}
+
+        {/* HEADER */}
         <MotiView
           from={{ opacity: 0, translateY: 14 }}
           animate={{ opacity: 1, translateY: 0 }}
           transition={{ type: 'timing', duration: 240 }}
-          style={{ paddingTop: insets.top + 32, paddingHorizontal: 20 }}>
+          style={{ paddingTop: insets.top + 32, paddingHorizontal: 24, paddingBottom: 28 }}>
           <View style={{ flexDirection: 'row' }}>
             {/* LEFT SPINE */}
             <View
@@ -204,14 +237,10 @@ export function ServicesScreen({ onDone }: Props) {
                 borderRadius: 1,
               }}
             />
-
             <View style={{ flex: 1 }}>
               {/* EYEBROW */}
-              <View
-                style={{ flexDirection: 'row', alignItems: 'center', gap: 7, marginBottom: 14 }}>
-                <View
-                  style={{ width: 4, height: 4, borderRadius: 2, backgroundColor: '#FF0048' }}
-                />
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 7, marginBottom: 14 }}>
+                <View style={{ width: 4, height: 4, borderRadius: 2, backgroundColor: '#FF0048' }} />
                 <Text
                   style={{
                     fontSize: 10,
@@ -226,30 +255,24 @@ export function ServicesScreen({ onDone }: Props) {
                 <AnimatePresence>
                   {hasSelection && (
                     <MotiView
-                      from={{ opacity: 0, scale: 0.8 }}
+                      from={{ opacity: 0, scale: 0.75 }}
                       animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.8 }}
-                      transition={{ type: 'timing', duration: 160 }}
+                      exit={{ opacity: 0, scale: 0.75 }}
+                      transition={{ type: 'spring', stiffness: 400, damping: 24 }}
                       style={{
                         backgroundColor: '#FF0048',
                         borderRadius: 100,
                         paddingHorizontal: 10,
-                        paddingVertical: 3,
+                        paddingVertical: 4,
                       }}>
                       <Text
-                        style={{
-                          fontSize: 10,
-                          fontWeight: '700',
-                          color: '#fff',
-                          letterSpacing: 0.5,
-                        }}>
-                        {selected.length} selected
+                        style={{ fontSize: 10, fontWeight: '700', color: '#fff', letterSpacing: 0.6 }}>
+                        {selected.length} of {SERVICES.length}
                       </Text>
                     </MotiView>
                   )}
                 </AnimatePresence>
               </View>
-
               <Text
                 style={{
                   fontSize: 44,
@@ -267,34 +290,62 @@ export function ServicesScreen({ onDone }: Props) {
                   color: '#5A5A5A',
                   lineHeight: 22,
                   letterSpacing: 0.05,
-                  marginBottom: 28,
                 }}>
-                {"We'll suggest the fastest way to settle for your table."}
+                {"We'll show the right options at your table."}
               </Text>
             </View>
           </View>
         </MotiView>
 
-        {/* GRID */}
-        <View style={{ paddingHorizontal: 20 }}>
-          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 12 }}>
+        {/* LIST CARD */}
+        <View style={{ marginHorizontal: 20 }}>
+          <Text
+            style={{
+              fontSize: 10,
+              fontWeight: '700',
+              letterSpacing: 2.8,
+              color: '#AAAAAA',
+              textTransform: 'uppercase',
+              marginBottom: 10,
+              paddingLeft: 4,
+            }}>
+            Payment methods
+          </Text>
+          <View
+            style={{
+              backgroundColor: '#fff',
+              borderRadius: 22,
+              overflow: 'hidden',
+              borderWidth: 1,
+              borderColor: '#EBEBEB',
+            }}>
             {SERVICES.map((service, i) => (
-              <View key={service.id} style={{ width: '47%' }}>
-                <ServiceTile
-                  service={service}
-                  selected={selected.includes(service.id)}
-                  onToggle={() => toggle(service.id)}
-                  delay={i * 40}
-                />
-              </View>
+              <ServiceRow
+                key={service.id}
+                service={service}
+                selected={selected.includes(service.id)}
+                onToggle={() => toggle(service.id)}
+                delay={i * 35}
+                isLast={i === SERVICES.length - 1}
+              />
             ))}
           </View>
+          <Text
+            style={{
+              fontSize: 11.5,
+              color: '#BBBBBB',
+              letterSpacing: 0.1,
+              lineHeight: 17,
+              marginTop: 10,
+              paddingLeft: 4,
+            }}>
+            You can change this any time from your profile.
+          </Text>
         </View>
       </ScrollView>
 
       {/* STICKY CTA */}
-      <MotiView
-        animate={{ opacity: 1, translateY: 0 }}
+      <View
         style={{
           position: 'absolute',
           bottom: 0,
@@ -308,17 +359,15 @@ export function ServicesScreen({ onDone }: Props) {
           borderTopColor: '#E8E8E8',
         }}>
         <Pressable
-          onPress={() => {
-            if (hasSelection) onDone(selected);
-          }}
+          onPress={() => { if (hasSelection) onDone(selected); }}
           onPressIn={() => setSubmitPressed(true)}
           onPressOut={() => setSubmitPressed(false)}>
           <MotiView
             animate={{
               scale: submitPressed ? 0.97 : 1,
-              backgroundColor: hasSelection ? '#FF0048' : '#E0E0E0',
+              backgroundColor: hasSelection ? '#FF0048' : '#E6E6E6',
             }}
-            transition={{ type: 'timing', duration: 160 }}
+            transition={{ type: 'timing', duration: 150 }}
             style={{
               borderRadius: 18,
               paddingHorizontal: 24,
@@ -328,7 +377,7 @@ export function ServicesScreen({ onDone }: Props) {
               justifyContent: 'space-between',
               shadowColor: hasSelection ? '#FF0048' : 'transparent',
               shadowOffset: { width: 0, height: 10 },
-              shadowOpacity: 0.3,
+              shadowOpacity: 0.28,
               shadowRadius: 18,
               elevation: hasSelection ? 8 : 0,
             }}>
@@ -339,7 +388,7 @@ export function ServicesScreen({ onDone }: Props) {
                 color: hasSelection ? '#fff' : '#AAAAAA',
                 letterSpacing: -0.3,
               }}>
-              {hasSelection ? "All set, let's go" : 'Select at least one'}
+              {hasSelection ? "All set — let's go" : 'Select at least one'}
             </Text>
             <View
               style={{
@@ -350,11 +399,14 @@ export function ServicesScreen({ onDone }: Props) {
                 alignItems: 'center',
                 justifyContent: 'center',
               }}>
-              <Text style={{ fontSize: 16, color: hasSelection ? '#fff' : '#CCC' }}>→</Text>
+              <Text
+                style={{ fontSize: 16, color: hasSelection ? '#fff' : '#CCCCCC' }}>
+                →
+              </Text>
             </View>
           </MotiView>
         </Pressable>
-      </MotiView>
+      </View>
     </View>
   );
 }
