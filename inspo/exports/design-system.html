@@ -231,12 +231,187 @@
         white-space: pre-wrap;
         word-break: break-word;
       }
+
+      /* ── SMOOTH SCROLL ─────────────────────────── */
+      html {
+        scroll-behavior: smooth;
+      }
+
+      /* ── STICKY TOC ─────────────────────────────── */
+      .toc {
+        position: fixed;
+        left: max(20px, calc(50% - 660px));
+        top: 50%;
+        transform: translateY(-50%);
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        z-index: 100;
+        opacity: 0;
+        animation: fadeUp 0.6s ease 0.8s both;
+      }
+      .toc a {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 9px;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.2);
+        text-decoration: none;
+        transition:
+          color 0.15s ease,
+          letter-spacing 0.15s ease;
+        padding: 3px 0;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        white-space: nowrap;
+      }
+      .toc a::before {
+        content: '';
+        width: 16px;
+        height: 1px;
+        background: rgba(255, 255, 255, 0.2);
+        transition:
+          width 0.15s ease,
+          background 0.15s ease;
+        flex-shrink: 0;
+      }
+      .toc a:hover {
+        color: #ff0048;
+        letter-spacing: 2px;
+      }
+      .toc a:hover::before {
+        width: 24px;
+        background: #ff0048;
+      }
+      .toc a.active {
+        color: rgba(255, 255, 255, 0.7);
+      }
+      .toc a.active::before {
+        width: 22px;
+        background: rgba(255, 255, 255, 0.5);
+      }
+      @media (max-width: 1280px) {
+        .toc {
+          display: none;
+        }
+      }
+
+      /* ── CARD HOVER POLISH ──────────────────────── */
+      .card-ghost {
+        transition:
+          background 0.2s ease,
+          border-color 0.2s ease,
+          transform 0.2s ease;
+      }
+      .card-ghost:hover {
+        background: rgba(255, 255, 255, 0.06);
+        border-color: rgba(255, 255, 255, 0.12);
+        transform: translateY(-2px);
+      }
+
+      /* ── TABLE ROW HOVER ────────────────────────── */
+      .table-row {
+        transition: background 0.15s ease;
+      }
+      .table-row:hover {
+        background: rgba(255, 255, 255, 0.04) !important;
+      }
+
+      /* ── SECTION NUMBER ─────────────────────────── */
+      .sec-num {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 11px;
+        color: rgba(255, 255, 255, 0.15);
+        letter-spacing: 2px;
+        transition: color 0.2s ease;
+      }
+      .section-title:hover .sec-num {
+        color: #ff0048;
+      }
+
+      /* ── HERO GLOW ──────────────────────────────── */
+      .hero-glow {
+        position: absolute;
+        top: -80px;
+        left: -60px;
+        width: 500px;
+        height: 500px;
+        background: radial-gradient(ellipse at center, rgba(255, 0, 72, 0.08) 0%, transparent 70%);
+        pointer-events: none;
+        filter: blur(40px);
+      }
+
+      /* ── COPY BUTTON ────────────────────────────── */
+      .copy-btn {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 9px;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.35);
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        padding: 6px 12px;
+        cursor: pointer;
+        transition: all 0.15s ease;
+      }
+      .copy-btn:hover {
+        color: #fff;
+        background: rgba(255, 255, 255, 0.1);
+        border-color: rgba(255, 255, 255, 0.2);
+      }
+      .copy-btn.copied {
+        color: #00c853;
+        border-color: rgba(0, 200, 83, 0.3);
+        background: rgba(0, 200, 83, 0.08);
+      }
+
+      /* ── PINK MARKER DOTS (section labels) ──────── */
+      .overline {
+        position: relative;
+        padding-left: 14px;
+      }
+      .overline::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 4px;
+        height: 4px;
+        border-radius: 50%;
+        background: #ff0048;
+        opacity: 0.6;
+      }
+
+      /* ── SELECTION ──────────────────────────────── */
+      ::selection {
+        background: rgba(255, 0, 72, 0.25);
+        color: #fff;
+      }
     </style>
   </head>
   <body>
+    <!-- ── STICKY TOC ───────────────────────────────────── -->
+    <nav class="toc" aria-label="Page sections">
+      <a href="#principles">01 · Principles</a>
+      <a href="#colors">02 · Colors</a>
+      <a href="#typography">03 · Typography</a>
+      <a href="#geometry">04 · Geometry</a>
+      <a href="#components">05 · Components</a>
+      <a href="#elevation">06 · Elevation</a>
+      <a href="#motion">07 · Motion</a>
+      <a href="#currency">08 · Currency</a>
+      <a href="#llm">09 · LLM Prompt</a>
+    </nav>
     <main>
       <!-- ═══════════════════════════════════════════════════════ HERO -->
-      <header class="section" style="margin-bottom: 112px">
+      <header
+        id="hero"
+        class="section"
+        style="margin-bottom: 112px; position: relative; overflow: visible">
+        <div class="hero-glow"></div>
         <div
           style="
             display: flex;
@@ -395,13 +570,9 @@
       </header>
 
       <!-- ═══════════════════════════════════════════════════════ PRINCIPLES -->
-      <section class="section" style="margin-bottom: 100px">
+      <section id="principles" class="section" style="margin-bottom: 100px">
         <div class="section-title">
-          <span
-            class="mono"
-            style="font-size: 11px; color: rgba(255, 255, 255, 0.2); letter-spacing: 2px"
-            >01</span
-          >
+          <span class="sec-num">01</span>
           <h2 style="font-size: 28px; font-weight: 600; letter-spacing: -0.8px">
             Design Principles
           </h2>
@@ -491,13 +662,9 @@
       </section>
 
       <!-- ═══════════════════════════════════════════════════════ COLORS -->
-      <section class="section" style="margin-bottom: 100px">
+      <section id="colors" class="section" style="margin-bottom: 100px">
         <div class="section-title">
-          <span
-            class="mono"
-            style="font-size: 11px; color: rgba(255, 255, 255, 0.2); letter-spacing: 2px"
-            >02</span
-          >
+          <span class="sec-num">02</span>
           <h2 style="font-size: 28px; font-weight: 600; letter-spacing: -0.8px">Color System</h2>
           <div style="flex: 1; height: 1px; background: rgba(255, 255, 255, 0.06)"></div>
         </div>
@@ -814,13 +981,9 @@
       </section>
 
       <!-- ═══════════════════════════════════════════════════════ TYPOGRAPHY -->
-      <section class="section" style="margin-bottom: 100px">
+      <section id="typography" class="section" style="margin-bottom: 100px">
         <div class="section-title">
-          <span
-            class="mono"
-            style="font-size: 11px; color: rgba(255, 255, 255, 0.2); letter-spacing: 2px"
-            >03</span
-          >
+          <span class="sec-num">03</span>
           <h2 style="font-size: 28px; font-weight: 600; letter-spacing: -0.8px">Typography</h2>
           <div style="flex: 1; height: 1px; background: rgba(255, 255, 255, 0.06)"></div>
         </div>
@@ -1118,13 +1281,9 @@
       </section>
 
       <!-- ═══════════════════════════════════════════════════════ SPACING & GEOMETRY -->
-      <section class="section" style="margin-bottom: 100px">
+      <section id="geometry" class="section" style="margin-bottom: 100px">
         <div class="section-title">
-          <span
-            class="mono"
-            style="font-size: 11px; color: rgba(255, 255, 255, 0.2); letter-spacing: 2px"
-            >04</span
-          >
+          <span class="sec-num">04</span>
           <h2 style="font-size: 28px; font-weight: 600; letter-spacing: -0.8px">
             Spacing &amp; Geometry
           </h2>
@@ -1325,13 +1484,9 @@
       </section>
 
       <!-- ═══════════════════════════════════════════════════════ COMPONENTS -->
-      <section class="section" style="margin-bottom: 100px">
+      <section id="components" class="section" style="margin-bottom: 100px">
         <div class="section-title">
-          <span
-            class="mono"
-            style="font-size: 11px; color: rgba(255, 255, 255, 0.2); letter-spacing: 2px"
-            >05</span
-          >
+          <span class="sec-num">05</span>
           <h2 style="font-size: 28px; font-weight: 600; letter-spacing: -0.8px">Components</h2>
           <div style="flex: 1; height: 1px; background: rgba(255, 255, 255, 0.06)"></div>
         </div>
@@ -2100,13 +2255,9 @@
       </section>
 
       <!-- ═══════════════════════════════════════════════════════ ELEVATION -->
-      <section class="section" style="margin-bottom: 100px">
+      <section id="elevation" class="section" style="margin-bottom: 100px">
         <div class="section-title">
-          <span
-            class="mono"
-            style="font-size: 11px; color: rgba(255, 255, 255, 0.2); letter-spacing: 2px"
-            >06</span
-          >
+          <span class="sec-num">06</span>
           <h2 style="font-size: 28px; font-weight: 600; letter-spacing: -0.8px">
             Elevation &amp; Shadow
           </h2>
@@ -2204,13 +2355,9 @@
       </section>
 
       <!-- ═══════════════════════════════════════════════════════ MOTION -->
-      <section class="section" style="margin-bottom: 100px">
+      <section id="motion" class="section" style="margin-bottom: 100px">
         <div class="section-title">
-          <span
-            class="mono"
-            style="font-size: 11px; color: rgba(255, 255, 255, 0.2); letter-spacing: 2px"
-            >07</span
-          >
+          <span class="sec-num">07</span>
           <h2 style="font-size: 28px; font-weight: 600; letter-spacing: -0.8px">
             Motion &amp; Animation
           </h2>
@@ -2376,13 +2523,9 @@
       </section>
 
       <!-- ═══════════════════════════════════════════════════════ CURRENCY -->
-      <section class="section" style="margin-bottom: 100px">
+      <section id="currency" class="section" style="margin-bottom: 100px">
         <div class="section-title">
-          <span
-            class="mono"
-            style="font-size: 11px; color: rgba(255, 255, 255, 0.2); letter-spacing: 2px"
-            >08</span
-          >
+          <span class="sec-num">08</span>
           <h2 style="font-size: 28px; font-weight: 600; letter-spacing: -0.8px">
             Currency Formatting
           </h2>
@@ -2480,13 +2623,9 @@
       </section>
 
       <!-- ═══════════════════════════════════════════════════════ LLM PROMPT -->
-      <section class="section" style="margin-bottom: 60px">
+      <section id="llm" class="section" style="margin-bottom: 60px">
         <div class="section-title">
-          <span
-            class="mono"
-            style="font-size: 11px; color: rgba(255, 255, 255, 0.2); letter-spacing: 2px"
-            >09</span
-          >
+          <span class="sec-num">09</span>
           <h2 style="font-size: 28px; font-weight: 600; letter-spacing: -0.8px">
             LLM Starter Prompt
           </h2>
@@ -2517,9 +2656,16 @@
               "
               >Copy-paste context block for new LLM sessions</span
             >
-            <span class="mono" style="font-size: 10px; color: rgba(255, 255, 255, 0.25)"
-              >TypeScript / React Native</span
-            >
+            <button
+              class="copy-btn"
+              id="llm-copy-btn"
+              style="
+                padding: 6px 14px;
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                cursor: pointer;
+              ">
+              Copy
+            </button>
           </div>
           <pre
             style="
@@ -2604,5 +2750,41 @@ Component files:
         </div>
       </footer>
     </main>
+    <script>
+      // Copy button for LLM prompt
+      const copyBtn = document.getElementById('llm-copy-btn');
+      if (copyBtn) {
+        copyBtn.addEventListener('click', () => {
+          const pre = copyBtn.closest('section').querySelector('pre');
+          navigator.clipboard.writeText(pre ? pre.textContent : '').then(() => {
+            copyBtn.textContent = 'Copied!';
+            copyBtn.classList.add('copied');
+            setTimeout(() => {
+              copyBtn.textContent = 'Copy';
+              copyBtn.classList.remove('copied');
+            }, 2000);
+          });
+        });
+      }
+      // TOC active state on scroll
+      const tocLinks = document.querySelectorAll('.toc a');
+      const anchors = Array.from(tocLinks)
+        .map((a) => document.querySelector(a.getAttribute('href')))
+        .filter(Boolean);
+      const onScroll = () => {
+        let active = anchors[0];
+        anchors.forEach((s) => {
+          if (window.scrollY >= s.offsetTop - 220) active = s;
+        });
+        tocLinks.forEach((a) => {
+          const isActive = a.getAttribute('href') === '#' + active.id;
+          a.style.color = isActive ? '#FF0048' : '';
+          const line = a.previousElementSibling;
+          if (line) line.style.background = isActive ? '#FF0048' : '';
+        });
+      };
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+    </script>
   </body>
 </html>
