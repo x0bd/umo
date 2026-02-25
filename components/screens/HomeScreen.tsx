@@ -4,11 +4,14 @@
   Bell,
   ChevronRight,
   Clock,
+  Flame,
   Home,
   Plus,
   QrCode,
   Rabbit,
   RefreshCw,
+  ShoppingBag,
+  UtensilsCrossed,
   Users,
   Wallet,
 } from 'lucide-react-native';
@@ -49,7 +52,8 @@ const SESSIONS = [
   {
     id: '1',
     venue: 'Grill & Chill',
-    venuePhoto: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=120&h=120&fit=crop',
+    venueIcon: UtensilsCrossed,
+    venueColor: '#FF6B35',
     date: 'Today',
     status: 'pending',
     myShare: 12.0,
@@ -64,7 +68,8 @@ const SESSIONS = [
   {
     id: '2',
     venue: "Nando's Borrowdale",
-    venuePhoto: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=120&h=120&fit=crop',
+    venueIcon: Flame,
+    venueColor: '#E8350A',
     date: 'Yesterday',
     status: 'settled',
     myShare: 8.0,
@@ -78,7 +83,8 @@ const SESSIONS = [
   {
     id: '3',
     venue: 'Avondale Flea Market',
-    venuePhoto: 'https://images.unsplash.com/photo-1488459716781-31db52582fe9?w=120&h=120&fit=crop',
+    venueIcon: ShoppingBag,
+    venueColor: '#9A6F00',
     date: 'Mon 24 Feb',
     status: 'partial',
     myShare: 4200,
@@ -514,73 +520,53 @@ export function HomeScreen({ onNewSession }: Props) {
               </View>
             </View>
 
-            {/* FLOW */}
+            {/* HERO AMOUNT */}
+            <View style={{ marginBottom: 20 }}>
+              <Text
+                style={{
+                  fontSize: 11,
+                  fontWeight: '700',
+                  color: '#450010',
+                  letterSpacing: 1.6,
+                  textTransform: 'uppercase',
+                  opacity: 0.5,
+                  marginBottom: 6,
+                }}>
+                Net ahead
+              </Text>
+              <Text
+                style={{
+                  fontSize: 62,
+                  fontWeight: '300',
+                  color: '#450010',
+                  letterSpacing: -4,
+                  lineHeight: 62,
+                }}>
+                ${net.toFixed(2)}
+              </Text>
+            </View>
+
+            {/* HAIRLINE */}
             <View
               style={{
-                paddingLeft: 20,
-                borderLeftWidth: 1,
-                borderLeftColor: 'rgba(69,0,16,0.22)',
-                marginLeft: 4,
-                gap: 18,
-                marginBottom: 24,
-              }}>
-              {/* NET */}
-              <View style={{ position: 'relative' }}>
+                height: 1,
+                backgroundColor: 'rgba(69,0,16,0.15)',
+                marginBottom: 18,
+              }}
+            />
+
+            {/* STATS ROW */}
+            <View style={{ flexDirection: 'row', marginBottom: 22 }}>
+              {/* OWED TO YOU */}
+              <View style={{ flex: 1 }}>
                 <View
                   style={{
-                    position: 'absolute',
-                    left: -25,
-                    top: 9,
-                    width: 8,
-                    height: 8,
-                    borderBottomWidth: 1,
-                    borderRightWidth: 1,
-                    borderColor: '#450010',
-                    transform: [{ rotate: '45deg' }],
-                    opacity: 0.5,
-                  }}
-                />
-                <Text
-                  style={{
-                    fontSize: 10,
-                    fontWeight: '700',
-                    color: '#450010',
-                    textTransform: 'uppercase',
-                    letterSpacing: 1.2,
-                    opacity: 0.55,
-                    marginBottom: 3,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    gap: 4,
+                    marginBottom: 5,
                   }}>
-                  Net owed to you
-                </Text>
-                <Text
-                  style={{
-                    fontSize: 56,
-                    fontWeight: '500',
-                    color: '#450010',
-                    letterSpacing: -3.2,
-                    lineHeight: 58,
-                  }}>
-                  ${net.toFixed(2)}
-                </Text>
-              </View>
-
-              {/* STATS ROW */}
-              <View style={{ flexDirection: 'row', gap: 16 }}>
-                <View style={{ flex: 1, position: 'relative' }}>
-                  <View
-                    style={{
-                      position: 'absolute',
-                      left: -25,
-                      top: 7,
-                      width: 8,
-                      height: 8,
-                      borderBottomWidth: 1,
-                      borderRightWidth: 1,
-                      borderColor: '#450010',
-                      transform: [{ rotate: '45deg' }],
-                      opacity: 0.35,
-                    }}
-                  />
+                  <ArrowDownLeft size={11} color="#450010" strokeWidth={2.5} opacity={0.55} />
                   <Text
                     style={{
                       fontSize: 9.5,
@@ -588,42 +574,59 @@ export function HomeScreen({ onNewSession }: Props) {
                       color: '#450010',
                       textTransform: 'uppercase',
                       letterSpacing: 1,
-                      opacity: 0.55,
-                      marginBottom: 3,
+                      opacity: 0.5,
                     }}>
                     Owed to you
                   </Text>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-                    <ArrowDownLeft size={13} color="#450010" strokeWidth={2.5} />
-                    <Text
-                      style={{
-                        fontSize: 20,
-                        fontWeight: '600',
-                        color: '#450010',
-                        letterSpacing: -0.8,
-                      }}>
-                      ${BALANCE.owedToYou.toFixed(2)}
-                    </Text>
-                  </View>
-                  {/* Mini face row of who owes */}
-                  <View style={{ flexDirection: 'row', marginTop: 7 }}>
-                    {FRIENDS.filter((f) => f.owes > 0)
-                      .slice(0, 3)
-                      .map((f, i) => (
-                        <View key={i} style={{ marginLeft: i === 0 ? 0 : -6 }}>
-                          <PersonAvatar
-                            photoKey={f.key}
-                            initials={f.initials}
-                            color={f.color}
-                            size={20}
-                            borderColor="rgba(255,0,72,0.4)"
-                            borderWidth={1.5}
-                          />
-                        </View>
-                      ))}
-                  </View>
                 </View>
-                <View style={{ flex: 1 }}>
+                <Text
+                  style={{
+                    fontSize: 22,
+                    fontWeight: '600',
+                    color: '#450010',
+                    letterSpacing: -1,
+                    marginBottom: 8,
+                  }}>
+                  ${BALANCE.owedToYou.toFixed(2)}
+                </Text>
+                <View style={{ flexDirection: 'row' }}>
+                  {FRIENDS.filter((f) => f.owes > 0)
+                    .slice(0, 3)
+                    .map((f, i) => (
+                      <View key={i} style={{ marginLeft: i === 0 ? 0 : -7 }}>
+                        <PersonAvatar
+                          photoKey={f.key}
+                          initials={f.initials}
+                          color={f.color}
+                          size={22}
+                          borderColor="rgba(255,0,72,0.35)"
+                          borderWidth={1.5}
+                        />
+                      </View>
+                    ))}
+                </View>
+              </View>
+
+              {/* VERTICAL DIVIDER */}
+              <View
+                style={{
+                  width: 1,
+                  backgroundColor: 'rgba(69,0,16,0.15)',
+                  marginHorizontal: 18,
+                  alignSelf: 'stretch',
+                }}
+              />
+
+              {/* YOU OWE */}
+              <View style={{ flex: 1 }}>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    gap: 4,
+                    marginBottom: 5,
+                  }}>
+                  <ArrowUpRight size={11} color="#450010" strokeWidth={2.5} opacity={0.55} />
                   <Text
                     style={{
                       fontSize: 9.5,
@@ -631,69 +634,96 @@ export function HomeScreen({ onNewSession }: Props) {
                       color: '#450010',
                       textTransform: 'uppercase',
                       letterSpacing: 1,
-                      opacity: 0.55,
-                      marginBottom: 3,
+                      opacity: 0.5,
                     }}>
                     You owe
                   </Text>
-                  <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-                    <ArrowUpRight size={13} color="#450010" strokeWidth={2.5} />
-                    <Text
-                      style={{
-                        fontSize: 20,
-                        fontWeight: '600',
-                        color: '#450010',
-                        letterSpacing: -0.8,
-                      }}>
-                      ${BALANCE.youOwe.toFixed(2)}
-                    </Text>
-                  </View>
-                  <View style={{ flexDirection: 'row', marginTop: 7 }}>
-                    {FRIENDS.filter((f) => f.owes < 0)
-                      .slice(0, 2)
-                      .map((f, i) => (
-                        <View key={i} style={{ marginLeft: i === 0 ? 0 : -6 }}>
-                          <PersonAvatar
-                            photoKey={f.key}
-                            initials={f.initials}
-                            color={f.color}
-                            size={20}
-                            borderColor="rgba(255,0,72,0.4)"
-                            borderWidth={1.5}
-                          />
-                        </View>
-                      ))}
-                  </View>
+                </View>
+                <Text
+                  style={{
+                    fontSize: 22,
+                    fontWeight: '600',
+                    color: '#450010',
+                    letterSpacing: -1,
+                    marginBottom: 8,
+                  }}>
+                  ${BALANCE.youOwe.toFixed(2)}
+                </Text>
+                <View style={{ flexDirection: 'row' }}>
+                  {FRIENDS.filter((f) => f.owes < 0)
+                    .slice(0, 2)
+                    .map((f, i) => (
+                      <View key={i} style={{ marginLeft: i === 0 ? 0 : -7 }}>
+                        <PersonAvatar
+                          photoKey={f.key}
+                          initials={f.initials}
+                          color={f.color}
+                          size={22}
+                          borderColor="rgba(255,0,72,0.35)"
+                          borderWidth={1.5}
+                        />
+                      </View>
+                    ))}
                 </View>
               </View>
             </View>
 
-            {/* SETTLE UP CTA */}
-            <Pressable
+            {/* HAIRLINE */}
+            <View
               style={{
-                backgroundColor: '#450010',
-                borderRadius: 16,
-                padding: 18,
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-              }}>
-              <Text
-                style={{ fontSize: 15.5, fontWeight: '600', color: '#fff', letterSpacing: -0.2 }}>
-                Settle Up
-              </Text>
-              <View
+                height: 1,
+                backgroundColor: 'rgba(69,0,16,0.15)',
+                marginBottom: 16,
+              }}
+            />
+
+            {/* INLINE ACTIONS */}
+            <View style={{ flexDirection: 'row', gap: 10 }}>
+              <Pressable
                 style={{
-                  width: 28,
-                  height: 28,
-                  borderRadius: 8,
-                  backgroundColor: 'rgba(255,255,255,0.12)',
+                  flex: 1,
+                  flexDirection: 'row',
                   alignItems: 'center',
                   justifyContent: 'center',
+                  gap: 6,
+                  paddingVertical: 13,
+                  backgroundColor: 'rgba(69,0,16,0.13)',
+                  borderRadius: 14,
                 }}>
-                <ChevronRight size={16} color="rgba(255,255,255,0.7)" strokeWidth={2} />
-              </View>
-            </Pressable>
+                <RefreshCw size={13} color="#450010" strokeWidth={2.2} />
+                <Text
+                  style={{
+                    fontSize: 13,
+                    fontWeight: '700',
+                    color: '#450010',
+                    letterSpacing: -0.1,
+                  }}>
+                  Settle Up
+                </Text>
+              </Pressable>
+              <Pressable
+                style={{
+                  flex: 1,
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: 6,
+                  paddingVertical: 13,
+                  backgroundColor: 'rgba(69,0,16,0.08)',
+                  borderRadius: 14,
+                }}>
+                <Bell size={13} color="#450010" strokeWidth={2.2} />
+                <Text
+                  style={{
+                    fontSize: 13,
+                    fontWeight: '700',
+                    color: '#450010',
+                    letterSpacing: -0.1,
+                  }}>
+                  Remind
+                </Text>
+              </Pressable>
+            </View>
           </View>
         </MotiView>
 
@@ -914,30 +944,10 @@ export function HomeScreen({ onNewSession }: Props) {
               </Pressable>
             </View>
 
-            {/* FLOW CONTAINER */}
-            <View
-              style={{
-                paddingLeft: 20,
-                borderLeftWidth: 1,
-                borderLeftColor: 'rgba(0,0,0,0.14)',
-                marginLeft: 4,
-              }}>
+            {/* SESSIONS LIST */}
+            <View>
               {SESSIONS.map((session, i) => (
-                <View key={session.id} style={{ position: 'relative' }}>
-                  <View
-                    style={{
-                      position: 'absolute',
-                      left: -25,
-                      top: 22,
-                      width: 8,
-                      height: 8,
-                      borderBottomWidth: 1,
-                      borderRightWidth: 1,
-                      borderColor: 'rgba(0,0,0,0.45)',
-                      transform: [{ rotate: '45deg' }],
-                    }}
-                  />
-
+                <View key={session.id}>
                   <Pressable>
                     <View
                       style={{
@@ -948,20 +958,23 @@ export function HomeScreen({ onNewSession }: Props) {
                         alignItems: 'center',
                         gap: 13,
                       }}>
-                      {/* VENUE PHOTO */}
+                      {/* VENUE ICON BADGE */}
                       <View
                         style={{
                           width: 50,
                           height: 50,
                           borderRadius: 14,
-                          overflow: 'hidden',
-                          backgroundColor: '#ccc',
+                          backgroundColor: session.venueColor + '18',
+                          borderWidth: 1,
+                          borderColor: session.venueColor + '30',
                           flexShrink: 0,
+                          alignItems: 'center',
+                          justifyContent: 'center',
                         }}>
-                        <Image
-                          source={{ uri: session.venuePhoto }}
-                          style={{ width: '100%', height: '100%' }}
-                          resizeMode="cover"
+                        <session.venueIcon
+                          size={22}
+                          color={session.venueColor}
+                          strokeWidth={1.75}
                         />
                       </View>
 
