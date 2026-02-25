@@ -21,15 +21,15 @@ interface Props {
   onNewSession?: () => void;
 }
 
-// ─── Photo seeds (pravatar gives consistent faces per seed) ───────────────────
+// ─── Unsplash portrait photos ────────────────────────────────────────────────
 const PHOTOS = {
-  TM: 'https://i.pravatar.cc/120?u=tendai_moyo_zw',
-  SN: 'https://i.pravatar.cc/120?u=sasha_ndlovu_zw',
-  KC: 'https://i.pravatar.cc/120?u=kuda_chidziva_zw',
-  AM: 'https://i.pravatar.cc/120?u=ash_mapurisa_zw',
-  RM: 'https://i.pravatar.cc/120?u=rudo_mutasa_zw',
-  BN: 'https://i.pravatar.cc/120?u=bry_nyamhere_zw',
-  JK: 'https://i.pravatar.cc/120?u=jake_kariuki_zw',
+  TM: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&h=200&fit=crop&crop=faces',
+  SN: 'https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=200&h=200&fit=crop&crop=faces',
+  KC: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&h=200&fit=crop&crop=faces',
+  AM: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&h=200&fit=crop&crop=faces',
+  RM: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=200&h=200&fit=crop&crop=faces',
+  BN: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&h=200&fit=crop&crop=faces',
+  JK: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=200&h=200&fit=crop&crop=faces',
 };
 
 // ─── Mock data ────────────────────────────────────────────────────────────────
@@ -49,7 +49,7 @@ const SESSIONS = [
   {
     id: '1',
     venue: 'Grill & Chill',
-    venuePhoto: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=110&h=110&fit=crop',
+    venuePhoto: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=120&h=120&fit=crop',
     date: 'Today',
     status: 'pending',
     myShare: 12.0,
@@ -64,7 +64,7 @@ const SESSIONS = [
   {
     id: '2',
     venue: "Nando's Borrowdale",
-    venuePhoto: 'https://images.unsplash.com/photo-1567521464027-f127ff144326?w=110&h=110&fit=crop',
+    venuePhoto: 'https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=120&h=120&fit=crop',
     date: 'Yesterday',
     status: 'settled',
     myShare: 8.0,
@@ -78,7 +78,7 @@ const SESSIONS = [
   {
     id: '3',
     venue: 'Avondale Flea Market',
-    venuePhoto: 'https://images.unsplash.com/photo-1533900298318-6b8da08a523e?w=110&h=110&fit=crop',
+    venuePhoto: 'https://images.unsplash.com/photo-1488459716781-31db52582fe9?w=120&h=120&fit=crop',
     date: 'Mon 24 Feb',
     status: 'partial',
     myShare: 4200,
@@ -182,7 +182,9 @@ function ParticipantStack({
             alignItems: 'center',
             justifyContent: 'center',
           }}>
-          <Text style={{ fontSize: 8, fontWeight: '700', color: '#555' }}>+{participants.length - 4}</Text>
+          <Text style={{ fontSize: 8, fontWeight: '700', color: '#555' }}>
+            +{participants.length - 4}
+          </Text>
         </View>
       )}
     </View>
@@ -271,7 +273,11 @@ function NavDock({
           elevation: 20,
         }}>
         <DockTab icon={Home} active={activeTab === 'home'} onPress={() => onTabChange('home')} />
-        <DockTab icon={Clock} active={activeTab === 'activity'} onPress={() => onTabChange('activity')} />
+        <DockTab
+          icon={Clock}
+          active={activeTab === 'activity'}
+          onPress={() => onTabChange('activity')}
+        />
 
         {/* Centre FAB */}
         <Pressable
@@ -299,8 +305,16 @@ function NavDock({
           </MotiView>
         </Pressable>
 
-        <DockTab icon={Users} active={activeTab === 'people'} onPress={() => onTabChange('people')} />
-        <DockTab icon={Wallet} active={activeTab === 'wallet'} onPress={() => onTabChange('wallet')} />
+        <DockTab
+          icon={Users}
+          active={activeTab === 'people'}
+          onPress={() => onTabChange('people')}
+        />
+        <DockTab
+          icon={Wallet}
+          active={activeTab === 'wallet'}
+          onPress={() => onTabChange('wallet')}
+        />
       </MotiView>
     </View>
   );
@@ -320,7 +334,6 @@ export function HomeScreen({ onNewSession }: Props) {
           paddingTop: insets.top + 18,
           paddingBottom: insets.bottom + 128,
         }}>
-
         {/* ── HEADER ───────────────────────────────────────────────── */}
         <MotiView
           from={{ opacity: 0, translateY: -10 }}
@@ -333,7 +346,6 @@ export function HomeScreen({ onNewSession }: Props) {
             alignItems: 'center',
             justifyContent: 'space-between',
           }}>
-
           {/* LOGO + GREETING */}
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 11 }}>
             <View
@@ -353,10 +365,24 @@ export function HomeScreen({ onNewSession }: Props) {
               <Rabbit size={17} color="#fff" strokeWidth={1.75} />
             </View>
             <View>
-              <Text style={{ fontSize: 10, fontWeight: '600', color: '#BBBBBB', letterSpacing: 2.2, textTransform: 'uppercase' }}>
+              <Text
+                style={{
+                  fontSize: 10,
+                  fontWeight: '600',
+                  color: '#BBBBBB',
+                  letterSpacing: 2.2,
+                  textTransform: 'uppercase',
+                }}>
                 Good morning
               </Text>
-              <Text style={{ fontSize: 21, fontWeight: '700', color: '#0E0E0E', letterSpacing: -0.9, lineHeight: 23 }}>
+              <Text
+                style={{
+                  fontSize: 21,
+                  fontWeight: '700',
+                  color: '#0E0E0E',
+                  letterSpacing: -0.9,
+                  lineHeight: 23,
+                }}>
                 {USER.name} 👋
               </Text>
             </View>
@@ -383,11 +409,31 @@ export function HomeScreen({ onNewSession }: Props) {
               }}>
               <Bell size={17} color="#444" strokeWidth={1.5} />
               {/* Badge */}
-              <View style={{ position: 'absolute', top: 8, right: 9, width: 7, height: 7, borderRadius: 4, backgroundColor: '#FF0048', borderWidth: 1.5, borderColor: '#fff' }} />
+              <View
+                style={{
+                  position: 'absolute',
+                  top: 8,
+                  right: 9,
+                  width: 7,
+                  height: 7,
+                  borderRadius: 4,
+                  backgroundColor: '#FF0048',
+                  borderWidth: 1.5,
+                  borderColor: '#fff',
+                }}
+              />
             </Pressable>
 
             {/* User photo avatar */}
-            <View style={{ borderRadius: 13, overflow: 'hidden', width: 42, height: 42, borderWidth: 2, borderColor: '#FF0048' }}>
+            <View
+              style={{
+                borderRadius: 13,
+                overflow: 'hidden',
+                width: 42,
+                height: 42,
+                borderWidth: 2,
+                borderColor: '#FF0048',
+              }}>
               <Image source={{ uri: USER.photo }} style={{ width: '100%', height: '100%' }} />
             </View>
           </View>
@@ -399,34 +445,121 @@ export function HomeScreen({ onNewSession }: Props) {
           animate={{ opacity: 1, translateY: 0 }}
           transition={{ type: 'timing', duration: 300, delay: 60 }}
           style={{ marginHorizontal: 20, marginBottom: 14 }}>
-          <View style={{ backgroundColor: '#FF0048', borderRadius: 28, padding: 26, overflow: 'hidden' }}>
-
+          <View
+            style={{
+              backgroundColor: '#FF0048',
+              borderRadius: 28,
+              padding: 26,
+              overflow: 'hidden',
+            }}>
             {/* DECORATIVE CIRCLE (depth texture) */}
-            <View style={{ position: 'absolute', right: -48, top: -48, width: 180, height: 180, borderRadius: 90, backgroundColor: 'rgba(255,255,255,0.06)' }} />
-            <View style={{ position: 'absolute', right: -10, bottom: 40, width: 100, height: 100, borderRadius: 50, backgroundColor: 'rgba(255,255,255,0.04)' }} />
+            <View
+              style={{
+                position: 'absolute',
+                right: -48,
+                top: -48,
+                width: 180,
+                height: 180,
+                borderRadius: 90,
+                backgroundColor: 'rgba(255,255,255,0.06)',
+              }}
+            />
+            <View
+              style={{
+                position: 'absolute',
+                right: -10,
+                bottom: 40,
+                width: 100,
+                height: 100,
+                borderRadius: 50,
+                backgroundColor: 'rgba(255,255,255,0.04)',
+              }}
+            />
 
             {/* TITLE ROW */}
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 20 }}>
-              <Text style={{ fontSize: 31, fontWeight: '500', letterSpacing: -1.5, color: '#450010', lineHeight: 33 }}>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                alignItems: 'flex-start',
+                marginBottom: 20,
+              }}>
+              <Text
+                style={{
+                  fontSize: 31,
+                  fontWeight: '500',
+                  letterSpacing: -1.5,
+                  color: '#450010',
+                  lineHeight: 33,
+                }}>
                 Your{'\n'}Balance
               </Text>
-              <View style={{ backgroundColor: 'rgba(69,0,16,0.13)', borderRadius: 100, paddingHorizontal: 13, paddingVertical: 6 }}>
-                <Text style={{ fontSize: 10, fontWeight: '700', color: '#450010', letterSpacing: 1.2, textTransform: 'uppercase' }}>
+              <View
+                style={{
+                  backgroundColor: 'rgba(69,0,16,0.13)',
+                  borderRadius: 100,
+                  paddingHorizontal: 13,
+                  paddingVertical: 6,
+                }}>
+                <Text
+                  style={{
+                    fontSize: 10,
+                    fontWeight: '700',
+                    color: '#450010',
+                    letterSpacing: 1.2,
+                    textTransform: 'uppercase',
+                  }}>
                   Feb 2026
                 </Text>
               </View>
             </View>
 
             {/* FLOW */}
-            <View style={{ paddingLeft: 20, borderLeftWidth: 1, borderLeftColor: 'rgba(69,0,16,0.22)', marginLeft: 4, gap: 18, marginBottom: 24 }}>
-
+            <View
+              style={{
+                paddingLeft: 20,
+                borderLeftWidth: 1,
+                borderLeftColor: 'rgba(69,0,16,0.22)',
+                marginLeft: 4,
+                gap: 18,
+                marginBottom: 24,
+              }}>
               {/* NET */}
               <View style={{ position: 'relative' }}>
-                <View style={{ position: 'absolute', left: -25, top: 9, width: 8, height: 8, borderBottomWidth: 1, borderRightWidth: 1, borderColor: '#450010', transform: [{ rotate: '45deg' }], opacity: 0.5 }} />
-                <Text style={{ fontSize: 10, fontWeight: '700', color: '#450010', textTransform: 'uppercase', letterSpacing: 1.2, opacity: 0.55, marginBottom: 3 }}>
+                <View
+                  style={{
+                    position: 'absolute',
+                    left: -25,
+                    top: 9,
+                    width: 8,
+                    height: 8,
+                    borderBottomWidth: 1,
+                    borderRightWidth: 1,
+                    borderColor: '#450010',
+                    transform: [{ rotate: '45deg' }],
+                    opacity: 0.5,
+                  }}
+                />
+                <Text
+                  style={{
+                    fontSize: 10,
+                    fontWeight: '700',
+                    color: '#450010',
+                    textTransform: 'uppercase',
+                    letterSpacing: 1.2,
+                    opacity: 0.55,
+                    marginBottom: 3,
+                  }}>
                   Net owed to you
                 </Text>
-                <Text style={{ fontSize: 56, fontWeight: '500', color: '#450010', letterSpacing: -3.2, lineHeight: 58 }}>
+                <Text
+                  style={{
+                    fontSize: 56,
+                    fontWeight: '500',
+                    color: '#450010',
+                    letterSpacing: -3.2,
+                    lineHeight: 58,
+                  }}>
                   ${net.toFixed(2)}
                 </Text>
               </View>
@@ -434,41 +567,102 @@ export function HomeScreen({ onNewSession }: Props) {
               {/* STATS ROW */}
               <View style={{ flexDirection: 'row', gap: 16 }}>
                 <View style={{ flex: 1, position: 'relative' }}>
-                  <View style={{ position: 'absolute', left: -25, top: 7, width: 8, height: 8, borderBottomWidth: 1, borderRightWidth: 1, borderColor: '#450010', transform: [{ rotate: '45deg' }], opacity: 0.35 }} />
-                  <Text style={{ fontSize: 9.5, fontWeight: '700', color: '#450010', textTransform: 'uppercase', letterSpacing: 1, opacity: 0.55, marginBottom: 3 }}>
+                  <View
+                    style={{
+                      position: 'absolute',
+                      left: -25,
+                      top: 7,
+                      width: 8,
+                      height: 8,
+                      borderBottomWidth: 1,
+                      borderRightWidth: 1,
+                      borderColor: '#450010',
+                      transform: [{ rotate: '45deg' }],
+                      opacity: 0.35,
+                    }}
+                  />
+                  <Text
+                    style={{
+                      fontSize: 9.5,
+                      fontWeight: '700',
+                      color: '#450010',
+                      textTransform: 'uppercase',
+                      letterSpacing: 1,
+                      opacity: 0.55,
+                      marginBottom: 3,
+                    }}>
                     Owed to you
                   </Text>
                   <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
                     <ArrowDownLeft size={13} color="#450010" strokeWidth={2.5} />
-                    <Text style={{ fontSize: 20, fontWeight: '600', color: '#450010', letterSpacing: -0.8 }}>
+                    <Text
+                      style={{
+                        fontSize: 20,
+                        fontWeight: '600',
+                        color: '#450010',
+                        letterSpacing: -0.8,
+                      }}>
                       ${BALANCE.owedToYou.toFixed(2)}
                     </Text>
                   </View>
                   {/* Mini face row of who owes */}
                   <View style={{ flexDirection: 'row', marginTop: 7 }}>
-                    {FRIENDS.filter(f => f.owes > 0).slice(0, 3).map((f, i) => (
-                      <View key={i} style={{ marginLeft: i === 0 ? 0 : -6 }}>
-                        <PersonAvatar photoKey={f.key} initials={f.initials} color={f.color} size={20} borderColor="rgba(255,0,72,0.4)" borderWidth={1.5} />
-                      </View>
-                    ))}
+                    {FRIENDS.filter((f) => f.owes > 0)
+                      .slice(0, 3)
+                      .map((f, i) => (
+                        <View key={i} style={{ marginLeft: i === 0 ? 0 : -6 }}>
+                          <PersonAvatar
+                            photoKey={f.key}
+                            initials={f.initials}
+                            color={f.color}
+                            size={20}
+                            borderColor="rgba(255,0,72,0.4)"
+                            borderWidth={1.5}
+                          />
+                        </View>
+                      ))}
                   </View>
                 </View>
                 <View style={{ flex: 1 }}>
-                  <Text style={{ fontSize: 9.5, fontWeight: '700', color: '#450010', textTransform: 'uppercase', letterSpacing: 1, opacity: 0.55, marginBottom: 3 }}>
+                  <Text
+                    style={{
+                      fontSize: 9.5,
+                      fontWeight: '700',
+                      color: '#450010',
+                      textTransform: 'uppercase',
+                      letterSpacing: 1,
+                      opacity: 0.55,
+                      marginBottom: 3,
+                    }}>
                     You owe
                   </Text>
                   <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
                     <ArrowUpRight size={13} color="#450010" strokeWidth={2.5} />
-                    <Text style={{ fontSize: 20, fontWeight: '600', color: '#450010', letterSpacing: -0.8 }}>
+                    <Text
+                      style={{
+                        fontSize: 20,
+                        fontWeight: '600',
+                        color: '#450010',
+                        letterSpacing: -0.8,
+                      }}>
                       ${BALANCE.youOwe.toFixed(2)}
                     </Text>
                   </View>
                   <View style={{ flexDirection: 'row', marginTop: 7 }}>
-                    {FRIENDS.filter(f => f.owes < 0).slice(0, 2).map((f, i) => (
-                      <View key={i} style={{ marginLeft: i === 0 ? 0 : -6 }}>
-                        <PersonAvatar photoKey={f.key} initials={f.initials} color={f.color} size={20} borderColor="rgba(255,0,72,0.4)" borderWidth={1.5} />
-                      </View>
-                    ))}
+                    {FRIENDS.filter((f) => f.owes < 0)
+                      .slice(0, 2)
+                      .map((f, i) => (
+                        <View key={i} style={{ marginLeft: i === 0 ? 0 : -6 }}>
+                          <PersonAvatar
+                            photoKey={f.key}
+                            initials={f.initials}
+                            color={f.color}
+                            size={20}
+                            borderColor="rgba(255,0,72,0.4)"
+                            borderWidth={1.5}
+                          />
+                        </View>
+                      ))}
                   </View>
                 </View>
               </View>
@@ -484,7 +678,8 @@ export function HomeScreen({ onNewSession }: Props) {
                 justifyContent: 'space-between',
                 alignItems: 'center',
               }}>
-              <Text style={{ fontSize: 15.5, fontWeight: '600', color: '#fff', letterSpacing: -0.2 }}>
+              <Text
+                style={{ fontSize: 15.5, fontWeight: '600', color: '#fff', letterSpacing: -0.2 }}>
                 Settle Up
               </Text>
               <View
@@ -545,7 +740,13 @@ export function HomeScreen({ onNewSession }: Props) {
                       }}>
                       <Icon size={17} color={action.fg} strokeWidth={2} />
                     </View>
-                    <Text style={{ fontSize: 13.5, fontWeight: '600', color: action.fg, letterSpacing: -0.2 }}>
+                    <Text
+                      style={{
+                        fontSize: 13.5,
+                        fontWeight: '600',
+                        color: action.fg,
+                        letterSpacing: -0.2,
+                      }}>
                       {action.label}
                     </Text>
                   </MotiView>
@@ -561,11 +762,20 @@ export function HomeScreen({ onNewSession }: Props) {
           animate={{ opacity: 1, translateY: 0 }}
           transition={{ type: 'timing', duration: 260, delay: 150 }}
           style={{ marginBottom: 22 }}>
-
-          <View style={{ paddingHorizontal: 20, marginBottom: 13, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+          <View
+            style={{
+              paddingHorizontal: 20,
+              marginBottom: 13,
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+            }}>
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 7 }}>
               <View style={{ width: 3, height: 16, borderRadius: 2, backgroundColor: '#FF0048' }} />
-              <Text style={{ fontSize: 13, fontWeight: '700', color: '#0E0E0E', letterSpacing: -0.3 }}>People</Text>
+              <Text
+                style={{ fontSize: 13, fontWeight: '700', color: '#0E0E0E', letterSpacing: -0.3 }}>
+                People
+              </Text>
             </View>
             <Pressable style={{ flexDirection: 'row', alignItems: 'center', gap: 2 }}>
               <Text style={{ fontSize: 12, fontWeight: '600', color: '#BBBBBB' }}>Manage</Text>
@@ -576,59 +786,78 @@ export function HomeScreen({ onNewSession }: Props) {
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{ paddingHorizontal: 20, gap: 11 }}>
+            contentContainerStyle={{ paddingHorizontal: 20, gap: 10 }}>
             {FRIENDS.map((f, i) => {
               const isPositive = f.owes > 0;
               return (
                 <Pressable key={i}>
-                  <MotiView
+                  <View
                     style={{
                       backgroundColor: '#fff',
-                      borderRadius: 22,
+                      borderRadius: 20,
+                      padding: 14,
                       width: 112,
                       borderWidth: 1,
                       borderColor: '#EBEBEB',
-                      overflow: 'hidden',
                       shadowColor: '#000',
-                      shadowOffset: { width: 0, height: 3 },
-                      shadowOpacity: 0.06,
-                      shadowRadius: 8,
-                      elevation: 2,
+                      shadowOffset: { width: 0, height: 2 },
+                      shadowOpacity: 0.05,
+                      shadowRadius: 6,
+                      elevation: 1,
+                      alignItems: 'flex-start',
                     }}>
-                    {/* PHOTO HEADER */}
-                    <View style={{ height: 70, overflow: 'hidden', backgroundColor: f.color + '15' }}>
+                    {/* CIRCULAR PHOTO AVATAR */}
+                    <View
+                      style={{
+                        width: 42,
+                        height: 42,
+                        borderRadius: 21,
+                        overflow: 'hidden',
+                        borderWidth: 2,
+                        borderColor: f.color + '55',
+                        marginBottom: 10,
+                        backgroundColor: f.color + '18',
+                      }}>
                       <Image
                         source={{ uri: PHOTOS[f.key as keyof typeof PHOTOS] }}
                         style={{ width: '100%', height: '100%' }}
                         resizeMode="cover"
                       />
-                      {/* STATUS TINT overlay at bottom */}
-                      <View
-                        style={{
-                          position: 'absolute',
-                          bottom: 0,
-                          left: 0,
-                          right: 0,
-                          height: 28,
-                          backgroundColor: isPositive ? 'rgba(0,165,80,0.18)' : 'rgba(255,0,72,0.18)',
-                        }}
-                      />
                     </View>
-                    {/* CARD BODY */}
-                    <View style={{ padding: 11 }}>
-                      <Text style={{ fontSize: 12.5, fontWeight: '700', color: '#0E0E0E', letterSpacing: -0.2, marginBottom: 1 }} numberOfLines={1}>
-                        {f.name.split(' ')[0]}
-                      </Text>
-                      <Text style={{ fontSize: 9.5, fontWeight: '700', color: isPositive ? '#00A550' : '#FF0048', letterSpacing: 0.2, marginBottom: 3, textTransform: 'uppercase' }}>
-                        {isPositive ? 'owes you' : 'you owe'}
-                      </Text>
-                      <Text style={{ fontSize: 15, fontWeight: '700', color: isPositive ? '#00A550' : '#FF0048', letterSpacing: -0.6 }}>
-                        {f.currency === 'ZiG'
-                          ? `Z${Math.abs(f.owes).toLocaleString()}`
-                          : `$${Math.abs(f.owes).toFixed(2)}`}
-                      </Text>
-                    </View>
-                  </MotiView>
+                    <Text
+                      style={{
+                        fontSize: 12.5,
+                        fontWeight: '700',
+                        color: '#0E0E0E',
+                        letterSpacing: -0.2,
+                        marginBottom: 2,
+                      }}
+                      numberOfLines={1}>
+                      {f.name.split(' ')[0]}
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 9.5,
+                        fontWeight: '700',
+                        color: isPositive ? '#00A550' : '#FF0048',
+                        letterSpacing: 0.2,
+                        marginBottom: 3,
+                        textTransform: 'uppercase',
+                      }}>
+                      {isPositive ? 'owes you' : 'you owe'}
+                    </Text>
+                    <Text
+                      style={{
+                        fontSize: 15,
+                        fontWeight: '700',
+                        color: isPositive ? '#00A550' : '#FF0048',
+                        letterSpacing: -0.6,
+                      }}>
+                      {f.currency === 'ZiG'
+                        ? `Z${Math.abs(f.owes).toLocaleString()}`
+                        : `$${Math.abs(f.owes).toFixed(2)}`}
+                    </Text>
+                  </View>
                 </Pressable>
               );
             })}
@@ -642,24 +871,72 @@ export function HomeScreen({ onNewSession }: Props) {
           transition={{ type: 'timing', duration: 300, delay: 190 }}
           style={{ marginHorizontal: 20, marginBottom: 14 }}>
           <View style={{ backgroundColor: '#E6E6E6', borderRadius: 28, padding: 24 }}>
-
             {/* TITLE ROW */}
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 22 }}>
-              <Text style={{ fontSize: 30, fontWeight: '500', letterSpacing: -1.5, color: '#000', lineHeight: 32 }}>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                alignItems: 'flex-start',
+                marginBottom: 22,
+              }}>
+              <Text
+                style={{
+                  fontSize: 30,
+                  fontWeight: '500',
+                  letterSpacing: -1.5,
+                  color: '#000',
+                  lineHeight: 32,
+                }}>
                 Recent{'\n'}Bills
               </Text>
-              <Pressable style={{ paddingHorizontal: 12, paddingVertical: 5, borderRadius: 100, backgroundColor: 'rgba(0,0,0,0.08)', alignSelf: 'flex-start', marginTop: 4, flexDirection: 'row', alignItems: 'center', gap: 2 }}>
-                <Text style={{ fontSize: 10, fontWeight: '700', color: 'rgba(0,0,0,0.45)', letterSpacing: 0.8, textTransform: 'uppercase' }}>
+              <Pressable
+                style={{
+                  paddingHorizontal: 12,
+                  paddingVertical: 5,
+                  borderRadius: 100,
+                  backgroundColor: 'rgba(0,0,0,0.08)',
+                  alignSelf: 'flex-start',
+                  marginTop: 4,
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  gap: 2,
+                }}>
+                <Text
+                  style={{
+                    fontSize: 10,
+                    fontWeight: '700',
+                    color: 'rgba(0,0,0,0.45)',
+                    letterSpacing: 0.8,
+                    textTransform: 'uppercase',
+                  }}>
                   See all
                 </Text>
               </Pressable>
             </View>
 
             {/* FLOW CONTAINER */}
-            <View style={{ paddingLeft: 20, borderLeftWidth: 1, borderLeftColor: 'rgba(0,0,0,0.14)', marginLeft: 4 }}>
+            <View
+              style={{
+                paddingLeft: 20,
+                borderLeftWidth: 1,
+                borderLeftColor: 'rgba(0,0,0,0.14)',
+                marginLeft: 4,
+              }}>
               {SESSIONS.map((session, i) => (
                 <View key={session.id} style={{ position: 'relative' }}>
-                  <View style={{ position: 'absolute', left: -25, top: 22, width: 8, height: 8, borderBottomWidth: 1, borderRightWidth: 1, borderColor: 'rgba(0,0,0,0.45)', transform: [{ rotate: '45deg' }] }} />
+                  <View
+                    style={{
+                      position: 'absolute',
+                      left: -25,
+                      top: 22,
+                      width: 8,
+                      height: 8,
+                      borderBottomWidth: 1,
+                      borderRightWidth: 1,
+                      borderColor: 'rgba(0,0,0,0.45)',
+                      transform: [{ rotate: '45deg' }],
+                    }}
+                  />
 
                   <Pressable>
                     <View
@@ -672,7 +949,15 @@ export function HomeScreen({ onNewSession }: Props) {
                         gap: 13,
                       }}>
                       {/* VENUE PHOTO */}
-                      <View style={{ width: 50, height: 50, borderRadius: 14, overflow: 'hidden', backgroundColor: '#ccc', flexShrink: 0 }}>
+                      <View
+                        style={{
+                          width: 50,
+                          height: 50,
+                          borderRadius: 14,
+                          overflow: 'hidden',
+                          backgroundColor: '#ccc',
+                          flexShrink: 0,
+                        }}>
                         <Image
                           source={{ uri: session.venuePhoto }}
                           style={{ width: '100%', height: '100%' }}
@@ -682,25 +967,67 @@ export function HomeScreen({ onNewSession }: Props) {
 
                       {/* CONTENT */}
                       <View style={{ flex: 1 }}>
-                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 5 }}>
-                          <Text style={{ fontSize: 14.5, fontWeight: '700', color: '#000', letterSpacing: -0.3, flex: 1, marginRight: 8 }} numberOfLines={1}>
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            marginBottom: 5,
+                          }}>
+                          <Text
+                            style={{
+                              fontSize: 14.5,
+                              fontWeight: '700',
+                              color: '#000',
+                              letterSpacing: -0.3,
+                              flex: 1,
+                              marginRight: 8,
+                            }}
+                            numberOfLines={1}>
                             {session.venue}
                           </Text>
-                          <View style={{ backgroundColor: STATUS_BG[session.status], borderRadius: 100, paddingHorizontal: 8, paddingVertical: 3 }}>
-                            <Text style={{ fontSize: 9, fontWeight: '700', color: STATUS_COLORS[session.status], letterSpacing: 0.5, textTransform: 'uppercase' }}>
+                          <View
+                            style={{
+                              backgroundColor: STATUS_BG[session.status],
+                              borderRadius: 100,
+                              paddingHorizontal: 8,
+                              paddingVertical: 3,
+                            }}>
+                            <Text
+                              style={{
+                                fontSize: 9,
+                                fontWeight: '700',
+                                color: STATUS_COLORS[session.status],
+                                letterSpacing: 0.5,
+                                textTransform: 'uppercase',
+                              }}>
                               {session.status}
                             </Text>
                           </View>
                         </View>
 
-                        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                          }}>
                           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 7 }}>
-                            <ParticipantStack participants={session.participants} borderColor="#E6E6E6" />
+                            <ParticipantStack
+                              participants={session.participants}
+                              borderColor="#E6E6E6"
+                            />
                             <Text style={{ fontSize: 11, color: '#777', letterSpacing: 0.05 }}>
                               {session.date}
                             </Text>
                           </View>
-                          <Text style={{ fontSize: 15, fontWeight: '700', color: session.status === 'settled' ? '#00A550' : '#000', letterSpacing: -0.5 }}>
+                          <Text
+                            style={{
+                              fontSize: 15,
+                              fontWeight: '700',
+                              color: session.status === 'settled' ? '#00A550' : '#000',
+                              letterSpacing: -0.5,
+                            }}>
                             {session.currency === 'ZiG'
                               ? `ZiG ${(session.myShare as number).toLocaleString()}`
                               : `$${(session.myShare as number).toFixed(2)}`}
@@ -714,7 +1041,6 @@ export function HomeScreen({ onNewSession }: Props) {
             </View>
           </View>
         </MotiView>
-
       </ScrollView>
 
       {/* ── NAV DOCK ─────────────────────────────────────────────────── */}
