@@ -42,8 +42,7 @@ function Segments({ total, active }: { total: number; active: number }) {
           key={i}
           animate={{
             width: i === active ? 30 : 8,
-            backgroundColor:
-              i === active ? '#FF0048' : i < active ? '#FFAABB' : 'rgba(0,0,0,0.13)',
+            backgroundColor: i === active ? '#FF0048' : i < active ? '#FFAABB' : 'rgba(0,0,0,0.13)',
           }}
           transition={{ type: 'spring', stiffness: 320, damping: 28 }}
           style={{ height: 3, borderRadius: 2 }}
@@ -100,8 +99,10 @@ function GetStartedBtn({ onPress }: { onPress?: () => void }) {
           shadowRadius: 16,
           elevation: 8,
         }}>
-        <Text style={{ fontSize: 16, fontWeight: '600', color: '#450010' }}>Get Started</Text>
-        <Text style={{ fontSize: 18, color: '#450010' }}>→</Text>
+        <Text style={{ fontSize: 16, fontWeight: '700', color: '#450010', letterSpacing: -0.3 }}>
+          Get Started
+        </Text>
+        <Text style={{ fontSize: 17, color: '#450010', fontWeight: '600' }}>→</Text>
       </MotiView>
     </Pressable>
   );
@@ -159,7 +160,16 @@ function OnboardingScreen() {
           borderTopRightRadius: 32,
           overflow: 'hidden',
         }}>
-        <View style={{ position: 'absolute', left: 22, top: 24, bottom: 24, width: 1, backgroundColor: '#E2E2E2' }} />
+        <View
+          style={{
+            position: 'absolute',
+            left: 22,
+            top: 24,
+            bottom: 24,
+            width: 1,
+            backgroundColor: '#E2E2E2',
+          }}
+        />
         <View
           style={{
             flex: 1,
@@ -171,25 +181,58 @@ function OnboardingScreen() {
           <AnimatePresence exitBeforeEnter>
             <MotiView
               key={active}
-              from={{ opacity: 0, translateY: 22 }}
+              from={{ opacity: 0, translateY: 18 }}
               animate={{ opacity: 1, translateY: 0 }}
-              exit={{ opacity: 0, translateY: -14 }}
-              transition={{ type: 'spring', stiffness: 220, damping: 26, delay: 50 }}
+              exit={{ opacity: 0, translateY: -10 }}
+              transition={{ type: 'timing', duration: 190 }}
               style={{ flex: 1, justifyContent: 'space-between' }}>
               <View>
-                <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 18 }}>
-                  <View style={{ width: 5, height: 5, borderRadius: 2.5, backgroundColor: '#FF0048' }} />
-                  <Text style={{ fontSize: 10, fontWeight: '800', letterSpacing: 2.5, color: '#FF0048', textTransform: 'uppercase' }}>
+                <View
+                  style={{ flexDirection: 'row', alignItems: 'center', gap: 7, marginBottom: 20 }}>
+                  <View
+                    style={{ width: 4, height: 4, borderRadius: 2, backgroundColor: '#FF0048' }}
+                  />
+                  <Text
+                    style={{
+                      fontSize: 10,
+                      fontWeight: '700',
+                      letterSpacing: 3.5,
+                      color: '#FF0048',
+                      textTransform: 'uppercase',
+                    }}>
                     {SLIDES[active].eyebrow}
                   </Text>
-                  <Text style={{ fontSize: 10, fontWeight: '600', letterSpacing: 1.2, color: '#C0C0C0' }}>
-                    {String(active + 1).padStart(2, '0')} / {String(SLIDES.length).padStart(2, '0')}
+                  <View style={{ flex: 1 }} />
+                  <Text
+                    style={{
+                      fontSize: 10,
+                      fontWeight: '500',
+                      letterSpacing: 0.8,
+                      color: '#BBBBBB',
+                    }}>
+                    {String(active + 1).padStart(2, '0')}&thinsp;/&thinsp;
+                    {String(SLIDES.length).padStart(2, '0')}
                   </Text>
                 </View>
-                <Text style={{ fontSize: 40, fontWeight: '500', color: '#111', letterSpacing: -2.2, lineHeight: 42, marginBottom: 14 }}>
+                <Text
+                  style={{
+                    fontSize: 44,
+                    fontWeight: '600',
+                    color: '#0E0E0E',
+                    letterSpacing: -2.6,
+                    lineHeight: 46,
+                    marginBottom: 16,
+                  }}>
                   {SLIDES[active].headline}
                 </Text>
-                <Text style={{ fontSize: 14, color: '#666', lineHeight: 21, letterSpacing: 0.1, maxWidth: 290 }}>
+                <Text
+                  style={{
+                    fontSize: 14.5,
+                    color: '#5A5A5A',
+                    lineHeight: 22,
+                    letterSpacing: 0.05,
+                    maxWidth: 280,
+                  }}>
                   {SLIDES[active].sub}
                 </Text>
               </View>
@@ -201,8 +244,12 @@ function OnboardingScreen() {
                     from={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    transition={{ type: 'timing', duration: 180 }}
-                    style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+                    transition={{ type: 'timing', duration: 160 }}
+                    style={{
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                    }}>
                     <Segments total={SLIDES.length} active={active} />
                     <NextBtn onPress={() => goTo(active + 1)} />
                   </MotiView>
@@ -212,16 +259,18 @@ function OnboardingScreen() {
                     from={{ opacity: 0, translateY: 16 }}
                     animate={{ opacity: 1, translateY: 0 }}
                     exit={{ opacity: 0 }}
-                    transition={{ type: 'spring', stiffness: 200, damping: 24, delay: 100 }}
+                    transition={{ type: 'timing', duration: 200 }}
                     style={{ gap: 10 }}>
                     <View style={{ marginBottom: 4 }}>
                       <Segments total={SLIDES.length} active={active} />
                     </View>
                     <GetStartedBtn />
                     <Pressable style={{ alignItems: 'center', paddingVertical: 8 }}>
-                      <Text style={{ fontSize: 13.5, color: '#666' }}>
-                        Already have an account?{' '}
-                        <Text style={{ color: '#111', fontWeight: '600' }}>Sign in</Text>
+                      <Text style={{ fontSize: 13.5, color: '#888', letterSpacing: 0.1 }}>
+                        Already have an account?{'  '}
+                        <Text style={{ color: '#111', fontWeight: '700', letterSpacing: -0.1 }}>
+                          Sign in
+                        </Text>
                       </Text>
                     </Pressable>
                   </MotiView>
@@ -264,13 +313,21 @@ function OnboardingScreen() {
             }}>
             <Rabbit size={15} color="#fff" strokeWidth={1.75} />
           </View>
-          <Text style={{ fontSize: 16, fontWeight: '600', color: '#fff', letterSpacing: -0.7 }}>umo</Text>
+          <Text style={{ fontSize: 17, fontWeight: '700', color: '#fff', letterSpacing: -0.9 }}>
+            umo
+          </Text>
         </MotiView>
         <MotiView
           animate={{ opacity: isLast ? 0 : 1 }}
           transition={{ type: 'timing', duration: 250 }}>
           <Pressable onPress={() => goTo(SLIDES.length - 1)}>
-            <Text style={{ fontSize: 13, fontWeight: '600', color: 'rgba(255,255,255,0.72)', letterSpacing: 0.2 }}>
+            <Text
+              style={{
+                fontSize: 13,
+                fontWeight: '500',
+                color: 'rgba(255,255,255,0.65)',
+                letterSpacing: 0.3,
+              }}>
               Skip
             </Text>
           </Pressable>
