@@ -1,6 +1,9 @@
 import './global.css';
 
 import { StatusBar } from 'expo-status-bar';
+import { SignInScreen } from './components/screens/SignInScreen';
+import { SignUpScreen } from './components/screens/SignUpScreen';
+import { ServicesScreen } from './components/screens/ServicesScreen';
 import { Rabbit } from 'lucide-react-native';
 import { AnimatePresence, MotiView } from 'moti';
 import { useRef, useState } from 'react';
@@ -108,7 +111,13 @@ function GetStartedBtn({ onPress }: { onPress?: () => void }) {
   );
 }
 
-function OnboardingScreen() {
+function OnboardingScreen({
+  onGetStarted,
+  onSignIn,
+}: {
+  onGetStarted: () => void;
+  onSignIn: () => void;
+}) {
   const [active, setActive] = useState(0);
   const scrollRef = useRef<ScrollView>(null);
   const insets = useSafeAreaInsets();
@@ -264,8 +273,10 @@ function OnboardingScreen() {
                     <View style={{ marginBottom: 4 }}>
                       <Segments total={SLIDES.length} active={active} />
                     </View>
-                    <GetStartedBtn />
-                    <Pressable style={{ alignItems: 'center', paddingVertical: 8 }}>
+                    <GetStartedBtn onPress={onGetStarted} />
+                    <Pressable
+                      onPress={onSignIn}
+                      style={{ alignItems: 'center', paddingVertical: 8 }}>
                       <Text style={{ fontSize: 13.5, color: '#888', letterSpacing: 0.1 }}>
                         Already have an account?{'  '}
                         <Text style={{ color: '#111', fontWeight: '700', letterSpacing: -0.1 }}>
@@ -362,10 +373,36 @@ function OnboardingScreen() {
   );
 }
 
+type Screen = 'onboarding' | 'signup' | 'signin' | 'services';
+
 export default function App() {
+  const [screen, setScreen] = useState<Screen>('onboarding');
+
   return (
     <SafeAreaProvider>
-      <OnboardingScreen />
+      {screen === 'onboarding' && (
+        <OnboardingScreen
+          onGetStarted={() => setScreen('signup')}
+          onSignIn={() => setScreen('signin')}
+        />
+      )}
+      {screen === 'signup' && (
+        <SignUpScreen
+          onSignedUp={() => setScreen('services')}
+          onSignIn={() => setScreen('signin')}
+          onBack={() => setScreen('onboarding')}
+        />
+      )}
+      {screen === 'signin' && (
+        <SignInScreen
+          onSignedIn={() => setScreen('services')}
+          onSignUp={() => setScreen('signup')}
+          onBack={() => setScreen('onboarding')}
+        />
+      )}
+      {screen === 'services' && (
+        <ServicesScreen onDone={(_selected) => console.log('done', _selected)} />
+      )}
     </SafeAreaProvider>
   );
 }
