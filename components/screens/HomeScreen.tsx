@@ -463,57 +463,6 @@ export function HomeScreen({ onNewSession }: Props) {
               shadowRadius: 28,
               elevation: 14,
             }}>
-            {/* GRID PATTERN */}
-            {Array.from({ length: 9 }).map((_, i) => (
-              <View
-                key={`h${i}`}
-                style={{
-                  position: 'absolute',
-                  left: 0,
-                  right: 0,
-                  top: i * 36,
-                  height: 1,
-                  backgroundColor: 'rgba(255,255,255,0.04)',
-                }}
-              />
-            ))}
-            {Array.from({ length: 8 }).map((_, i) => (
-              <View
-                key={`v${i}`}
-                style={{
-                  position: 'absolute',
-                  top: 0,
-                  bottom: 0,
-                  left: i * 48,
-                  width: 1,
-                  backgroundColor: 'rgba(255,255,255,0.04)',
-                }}
-              />
-            ))}
-            {/* DECORATIVE GLOW */}
-            <View
-              style={{
-                position: 'absolute',
-                right: -60,
-                top: -60,
-                width: 240,
-                height: 240,
-                borderRadius: 120,
-                backgroundColor: 'rgba(255,0,72,0.1)',
-              }}
-            />
-            <View
-              style={{
-                position: 'absolute',
-                left: -50,
-                bottom: -30,
-                width: 180,
-                height: 180,
-                borderRadius: 90,
-                backgroundColor: 'rgba(255,0,72,0.04)',
-              }}
-            />
-
             {/* TITLE ROW */}
             <View
               style={{
@@ -848,74 +797,93 @@ export function HomeScreen({ onNewSession }: Props) {
             contentContainerStyle={{ paddingHorizontal: 20, gap: 10 }}>
             {FRIENDS.map((f, i) => {
               const isPositive = f.owes > 0;
+              const AmountIcon = isPositive ? ArrowDownLeft : ArrowUpRight;
               return (
                 <Pressable key={i}>
                   <View
                     style={{
-                      backgroundColor: '#fff',
-                      borderRadius: 20,
-                      padding: 14,
-                      width: 112,
-                      borderWidth: 1,
-                      borderColor: '#EBEBEB',
+                      backgroundColor: '#141414',
+                      borderRadius: 24,
+                      width: 130,
+                      overflow: 'hidden',
                       shadowColor: '#000',
-                      shadowOffset: { width: 0, height: 2 },
-                      shadowOpacity: 0.05,
-                      shadowRadius: 6,
-                      elevation: 1,
-                      alignItems: 'flex-start',
+                      shadowOffset: { width: 0, height: 8 },
+                      shadowOpacity: 0.22,
+                      shadowRadius: 16,
+                      elevation: 8,
                     }}>
-                    {/* CIRCULAR PHOTO AVATAR */}
-                    <View
-                      style={{
-                        width: 42,
-                        height: 42,
-                        borderRadius: 21,
-                        overflow: 'hidden',
-                        borderWidth: 2,
-                        borderColor: f.color + '55',
-                        marginBottom: 10,
-                        backgroundColor: f.color + '18',
-                      }}>
+                    {/* PHOTO BAND — full-width top */}
+                    <View style={{ width: '100%', height: 100, backgroundColor: '#222' }}>
                       <Image
                         source={{ uri: PHOTOS[f.key as keyof typeof PHOTOS] }}
                         style={{ width: '100%', height: '100%' }}
                         resizeMode="cover"
                       />
+                      {/* DIRECTION BADGE top-right */}
+                      <View
+                        style={{
+                          position: 'absolute',
+                          top: 9,
+                          right: 9,
+                          width: 26,
+                          height: 26,
+                          borderRadius: 13,
+                          backgroundColor: isPositive ? '#00A550' : '#FF0048',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }}>
+                        <AmountIcon size={13} color="#fff" strokeWidth={2.5} />
+                      </View>
                     </View>
-                    <Text
-                      style={{
-                        fontSize: 12.5,
-                        fontWeight: '700',
-                        color: '#0E0E0E',
-                        letterSpacing: -0.2,
-                        marginBottom: 2,
-                      }}
-                      numberOfLines={1}>
-                      {f.name.split(' ')[0]}
-                    </Text>
-                    <Text
-                      style={{
-                        fontSize: 9.5,
-                        fontWeight: '700',
-                        color: isPositive ? '#00A550' : '#FF0048',
-                        letterSpacing: 0.2,
-                        marginBottom: 3,
-                        textTransform: 'uppercase',
-                      }}>
-                      {isPositive ? 'owes you' : 'you owe'}
-                    </Text>
-                    <Text
-                      style={{
-                        fontSize: 15,
-                        fontWeight: '700',
-                        color: isPositive ? '#00A550' : '#FF0048',
-                        letterSpacing: -0.6,
-                      }}>
-                      {f.currency === 'ZiG'
-                        ? `Z${Math.abs(f.owes).toLocaleString()}`
-                        : `$${Math.abs(f.owes).toFixed(2)}`}
-                    </Text>
+
+                    {/* TEXT BODY */}
+                    <View style={{ padding: 13 }}>
+                      <Text
+                        style={{
+                          fontSize: 13,
+                          fontWeight: '700',
+                          color: '#fff',
+                          letterSpacing: -0.3,
+                          marginBottom: 2,
+                        }}
+                        numberOfLines={1}>
+                        {f.name.split(' ')[0]}
+                      </Text>
+                      <Text
+                        style={{
+                          fontSize: 9,
+                          fontWeight: '600',
+                          color: 'rgba(255,255,255,0.35)',
+                          letterSpacing: 1.2,
+                          textTransform: 'uppercase',
+                          marginBottom: 10,
+                        }}>
+                        {isPositive ? 'owes you' : 'you owe'}
+                      </Text>
+                      {/* AMOUNT ROW */}
+                      <View
+                        style={{
+                          backgroundColor: isPositive
+                            ? 'rgba(0,165,80,0.15)'
+                            : 'rgba(255,0,72,0.12)',
+                          borderRadius: 10,
+                          paddingHorizontal: 9,
+                          paddingVertical: 6,
+                          alignSelf: 'flex-start',
+                        }}>
+                        <Text
+                          style={{
+                            fontSize: 13.5,
+                            fontWeight: '700',
+                            color: isPositive ? '#00C853' : '#FF0048',
+                            letterSpacing: -0.5,
+                          }}>
+                          {f.currency === 'ZiG'
+                            ? `Z${Math.abs(f.owes).toLocaleString()}`
+                            : `$${Math.abs(f.owes).toFixed(2)}`}
+                        </Text>
+                      </View>
+                    </View>
                   </View>
                 </Pressable>
               );
