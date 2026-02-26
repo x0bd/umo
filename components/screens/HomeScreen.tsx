@@ -1,4 +1,5 @@
-﻿import {
+﻿import { HistoryScreen } from './HistoryScreen';
+import {
   ArrowDownLeft,
   ArrowUpRight,
   Bell,
@@ -349,715 +350,726 @@ export function HomeScreen({ onNewSession }: Props) {
 
   return (
     <View style={{ flex: 1, backgroundColor: '#F4F4F4' }}>
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{
-          paddingTop: insets.top + 18,
-          paddingBottom: insets.bottom + 128,
-        }}>
-        {/* ── HEADER ───────────────────────────────────────────────── */}
-        <MotiView
-          from={{ opacity: 0, translateY: -10 }}
-          animate={{ opacity: 1, translateY: 0 }}
-          transition={{ type: 'timing', duration: 260 }}
-          style={{
-            paddingHorizontal: 20,
-            marginBottom: 22,
-            flexDirection: 'row',
-            alignItems: 'center',
-            justifyContent: 'space-between',
+      {activeTab === 'activity' ? (
+        <HistoryScreen />
+      ) : (
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{
+            paddingTop: insets.top + 18,
+            paddingBottom: insets.bottom + 128,
           }}>
-          {/* LOGO + GREETING */}
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 11 }}>
-            <View
-              style={{
-                width: 38,
-                height: 38,
-                borderRadius: 12,
-                backgroundColor: '#FF0048',
-                alignItems: 'center',
-                justifyContent: 'center',
-                shadowColor: '#FF0048',
-                shadowOffset: { width: 0, height: 6 },
-                shadowOpacity: 0.35,
-                shadowRadius: 12,
-                elevation: 7,
-              }}>
-              <Rabbit size={17} color="#fff" strokeWidth={1.75} />
-            </View>
-            <View>
-              <Text
-                style={{
-                  fontSize: 9.5,
-                  fontWeight: '600',
-                  color: '#9A9A9A',
-                  letterSpacing: 1.6,
-                  textTransform: 'uppercase',
-                }}>
-                {greetingLabel}
-              </Text>
-              <Text
-                style={{
-                  fontSize: 23,
-                  fontWeight: '600',
-                  color: '#0E0E0E',
-                  letterSpacing: -0.8,
-                  lineHeight: 25,
-                }}>
-                {USER.name}
-              </Text>
-            </View>
-          </View>
-
-          {/* RIGHT — NOTIF + AVATAR */}
-          <View style={{ flexDirection: 'row', gap: 8, alignItems: 'center' }}>
-            {/* Bell with badge */}
-            <Pressable
-              style={{
-                width: 42,
-                height: 42,
-                borderRadius: 13,
-                backgroundColor: '#fff',
-                borderWidth: 1,
-                borderColor: '#EBEBEB',
-                alignItems: 'center',
-                justifyContent: 'center',
-                shadowColor: '#000',
-                shadowOffset: { width: 0, height: 2 },
-                shadowOpacity: 0.05,
-                shadowRadius: 5,
-                elevation: 1,
-              }}>
-              <Bell size={17} color="#444" strokeWidth={1.5} />
-              {/* Badge */}
-              <View
-                style={{
-                  position: 'absolute',
-                  top: 8,
-                  right: 9,
-                  width: 7,
-                  height: 7,
-                  borderRadius: 4,
-                  backgroundColor: '#FF0048',
-                  borderWidth: 1.5,
-                  borderColor: '#fff',
-                }}
-              />
-            </Pressable>
-
-            {/* User photo avatar */}
-            <View
-              style={{
-                borderRadius: 13,
-                overflow: 'hidden',
-                width: 42,
-                height: 42,
-                borderWidth: 1,
-                borderColor: 'rgba(0,0,0,0.07)',
-              }}>
-              <Image source={{ uri: USER.photo }} style={{ width: '100%', height: '100%' }} />
-            </View>
-          </View>
-        </MotiView>
-
-        {/* ── BALANCE CARD ───────────────────────────────────────────── */}
-        <MotiView
-          from={{ opacity: 0, translateY: 22 }}
-          animate={{ opacity: 1, translateY: 0 }}
-          transition={{ type: 'timing', duration: 300, delay: 60 }}
-          style={{ marginHorizontal: 20, marginBottom: 14 }}>
-          <View
-            style={{
-              backgroundColor: '#141414',
-              borderRadius: 28,
-              padding: 26,
-              overflow: 'hidden',
-              shadowColor: '#000',
-              shadowOffset: { width: 0, height: 12 },
-              shadowOpacity: 0.35,
-              shadowRadius: 28,
-              elevation: 14,
-            }}>
-            {/* TITLE ROW */}
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                alignItems: 'flex-start',
-                marginBottom: 20,
-              }}>
-              <Text
-                style={{
-                  fontSize: 31,
-                  fontWeight: '300',
-                  letterSpacing: -1.5,
-                  color: '#fff',
-                  lineHeight: 33,
-                }}>
-                Your{'\n'}Balance
-              </Text>
-              <View
-                style={{
-                  backgroundColor: 'rgba(255,0,72,0.15)',
-                  borderRadius: 100,
-                  paddingHorizontal: 13,
-                  paddingVertical: 6,
-                }}>
-                <Text
-                  style={{
-                    fontSize: 10,
-                    fontWeight: '700',
-                    color: '#FF0048',
-                    letterSpacing: 1.2,
-                    textTransform: 'uppercase',
-                  }}>
-                  Feb 2026
-                </Text>
-              </View>
-            </View>
-
-            {/* HERO AMOUNT */}
-            <View style={{ marginBottom: 20 }}>
-              <Text
-                style={{
-                  fontSize: 11,
-                  fontWeight: '700',
-                  color: '#FF0048',
-                  letterSpacing: 1.6,
-                  textTransform: 'uppercase',
-                  marginBottom: 6,
-                }}>
-                Net ahead
-              </Text>
-              <Text
-                style={{
-                  fontSize: 62,
-                  fontWeight: '300',
-                  color: '#fff',
-                  letterSpacing: -4,
-                  lineHeight: 62,
-                }}>
-                ${net.toFixed(2)}
-              </Text>
-            </View>
-
-            {/* HAIRLINE */}
-            <View
-              style={{
-                height: 1,
-                backgroundColor: 'rgba(255,255,255,0.07)',
-                marginBottom: 18,
-              }}
-            />
-
-            {/* STATS ROW */}
-            <View style={{ flexDirection: 'row', marginBottom: 22 }}>
-              {/* OWED TO YOU */}
-              <View style={{ flex: 1 }}>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    gap: 4,
-                    marginBottom: 5,
-                  }}>
-                  <ArrowDownLeft size={11} color="rgba(255,255,255,0.35)" strokeWidth={2.5} />
-                  <Text
-                    style={{
-                      fontSize: 9.5,
-                      fontWeight: '700',
-                      color: 'rgba(255,255,255,0.35)',
-                      textTransform: 'uppercase',
-                      letterSpacing: 1,
-                    }}>
-                    Owed to you
-                  </Text>
-                </View>
-                <Text
-                  style={{
-                    fontSize: 22,
-                    fontWeight: '600',
-                    color: '#fff',
-                    letterSpacing: -1,
-                    marginBottom: 8,
-                  }}>
-                  ${BALANCE.owedToYou.toFixed(2)}
-                </Text>
-                <View style={{ flexDirection: 'row' }}>
-                  {FRIENDS.filter((f) => f.owes > 0)
-                    .slice(0, 3)
-                    .map((f, i) => (
-                      <View key={i} style={{ marginLeft: i === 0 ? 0 : -7 }}>
-                        <PersonAvatar
-                          photoKey={f.key}
-                          initials={f.initials}
-                          color={f.color}
-                          size={22}
-                          borderColor="rgba(255,255,255,0.12)"
-                          borderWidth={1.5}
-                        />
-                      </View>
-                    ))}
-                </View>
-              </View>
-
-              {/* VERTICAL DIVIDER */}
-              <View
-                style={{
-                  width: 1,
-                  backgroundColor: 'rgba(255,255,255,0.07)',
-                  marginHorizontal: 18,
-                  alignSelf: 'stretch',
-                }}
-              />
-
-              {/* YOU OWE */}
-              <View style={{ flex: 1 }}>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    gap: 4,
-                    marginBottom: 5,
-                  }}>
-                  <ArrowUpRight size={11} color="rgba(255,255,255,0.35)" strokeWidth={2.5} />
-                  <Text
-                    style={{
-                      fontSize: 9.5,
-                      fontWeight: '700',
-                      color: 'rgba(255,255,255,0.35)',
-                      textTransform: 'uppercase',
-                      letterSpacing: 1,
-                    }}>
-                    You owe
-                  </Text>
-                </View>
-                <Text
-                  style={{
-                    fontSize: 22,
-                    fontWeight: '600',
-                    color: '#fff',
-                    letterSpacing: -1,
-                    marginBottom: 8,
-                  }}>
-                  ${BALANCE.youOwe.toFixed(2)}
-                </Text>
-                <View style={{ flexDirection: 'row' }}>
-                  {FRIENDS.filter((f) => f.owes < 0)
-                    .slice(0, 2)
-                    .map((f, i) => (
-                      <View key={i} style={{ marginLeft: i === 0 ? 0 : -7 }}>
-                        <PersonAvatar
-                          photoKey={f.key}
-                          initials={f.initials}
-                          color={f.color}
-                          size={22}
-                          borderColor="rgba(255,255,255,0.12)"
-                          borderWidth={1.5}
-                        />
-                      </View>
-                    ))}
-                </View>
-              </View>
-            </View>
-
-            {/* HAIRLINE */}
-            <View
-              style={{
-                height: 1,
-                backgroundColor: 'rgba(255,255,255,0.07)',
-                marginBottom: 16,
-              }}
-            />
-
-            {/* INLINE ACTIONS */}
-            <View style={{ flexDirection: 'row', gap: 10 }}>
-              <Pressable
-                style={{
-                  flex: 1,
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: 6,
-                  paddingVertical: 13,
-                  backgroundColor: '#FF0048',
-                  borderRadius: 14,
-                }}>
-                <RefreshCw size={13} color="#fff" strokeWidth={2.2} />
-                <Text
-                  style={{
-                    fontSize: 13,
-                    fontWeight: '700',
-                    color: '#fff',
-                    letterSpacing: -0.1,
-                  }}>
-                  Settle Up
-                </Text>
-              </Pressable>
-              <Pressable
-                style={{
-                  flex: 1,
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: 6,
-                  paddingVertical: 13,
-                  backgroundColor: 'rgba(255,255,255,0.07)',
-                  borderRadius: 14,
-                }}>
-                <Bell size={13} color="rgba(255,255,255,0.6)" strokeWidth={2.2} />
-                <Text
-                  style={{
-                    fontSize: 13,
-                    fontWeight: '700',
-                    color: 'rgba(255,255,255,0.6)',
-                    letterSpacing: -0.1,
-                  }}>
-                  Remind
-                </Text>
-              </Pressable>
-            </View>
-          </View>
-        </MotiView>
-
-        {/* ── QUICK ACTIONS ─────────────────────────────────────────── */}
-        <MotiView
-          from={{ opacity: 0, translateY: 14 }}
-          animate={{ opacity: 1, translateY: 0 }}
-          transition={{ type: 'timing', duration: 260, delay: 120 }}
-          style={{ marginBottom: 22 }}>
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{ paddingHorizontal: 20, gap: 10 }}>
-            {QUICK_ACTIONS.map((action, i) => {
-              const Icon = action.icon;
-              return (
-                <Pressable key={i}>
-                  <MotiView
-                    style={{
-                      backgroundColor: action.bg,
-                      borderRadius: 18,
-                      paddingRight: 18,
-                      paddingLeft: 6,
-                      paddingVertical: 6,
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      gap: 9,
-                      borderWidth: action.bg === '#fff' ? 1 : 0,
-                      borderColor: '#E8E8E8',
-                      shadowColor: action.bg === '#FF0048' ? '#FF0048' : '#000',
-                      shadowOffset: { width: 0, height: action.bg === '#FF0048' ? 8 : 2 },
-                      shadowOpacity: action.bg === '#FF0048' ? 0.38 : 0.05,
-                      shadowRadius: action.bg === '#FF0048' ? 14 : 6,
-                      elevation: action.bg === '#FF0048' ? 7 : 1,
-                    }}>
-                    <View
-                      style={{
-                        width: 36,
-                        height: 36,
-                        borderRadius: 12,
-                        backgroundColor: action.iconBg,
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                      }}>
-                      <Icon size={17} color={action.fg} strokeWidth={2} />
-                    </View>
-                    <Text
-                      style={{
-                        fontSize: 13.5,
-                        fontWeight: '600',
-                        color: action.fg,
-                        letterSpacing: -0.2,
-                      }}>
-                      {action.label}
-                    </Text>
-                  </MotiView>
-                </Pressable>
-              );
-            })}
-          </ScrollView>
-        </MotiView>
-
-        {/* ── PEOPLE — Who owes who ──────────────────────────────────── */}
-        <MotiView
-          from={{ opacity: 0, translateY: 14 }}
-          animate={{ opacity: 1, translateY: 0 }}
-          transition={{ type: 'timing', duration: 260, delay: 150 }}
-          style={{ marginBottom: 22 }}>
-          <View
+          {/* ── HEADER ───────────────────────────────────────────────── */}
+          <MotiView
+            from={{ opacity: 0, translateY: -10 }}
+            animate={{ opacity: 1, translateY: 0 }}
+            transition={{ type: 'timing', duration: 260 }}
             style={{
               paddingHorizontal: 20,
-              marginBottom: 13,
+              marginBottom: 22,
               flexDirection: 'row',
               alignItems: 'center',
               justifyContent: 'space-between',
             }}>
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 7 }}>
-              <View style={{ width: 3, height: 16, borderRadius: 2, backgroundColor: '#FF0048' }} />
-              <Text
-                style={{ fontSize: 13, fontWeight: '700', color: '#0E0E0E', letterSpacing: -0.3 }}>
-                People
-              </Text>
-            </View>
-            <Pressable style={{ flexDirection: 'row', alignItems: 'center', gap: 2 }}>
-              <Text style={{ fontSize: 12, fontWeight: '600', color: '#BBBBBB' }}>Manage</Text>
-              <ChevronRight size={13} color="#BBBBBB" strokeWidth={2.5} />
-            </Pressable>
-          </View>
-
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{ paddingHorizontal: 20, gap: 10 }}>
-            {FRIENDS.map((f, i) => {
-              const isPositive = f.owes > 0;
-              return (
-                <Pressable key={i}>
-                  <View
-                    style={{
-                      backgroundColor: '#FFFFFF',
-                      borderRadius: 22,
-                      padding: 14,
-                      width: 114,
-                      borderWidth: 1,
-                      borderColor: 'rgba(0,0,0,0.06)',
-                      shadowColor: '#000',
-                      shadowOffset: { width: 0, height: 4 },
-                      shadowOpacity: 0.08,
-                      shadowRadius: 10,
-                      elevation: 2,
-                      alignItems: 'flex-start',
-                    }}>
-                    <View
-                      style={{
-                        width: 42,
-                        height: 42,
-                        borderRadius: 21,
-                        overflow: 'hidden',
-                        borderWidth: 1,
-                        borderColor: 'rgba(0,0,0,0.08)',
-                        marginBottom: 10,
-                        backgroundColor: '#F2F2F2',
-                      }}>
-                      <Image
-                        source={{ uri: PHOTOS[f.key as keyof typeof PHOTOS] }}
-                        style={{ width: '100%', height: '100%' }}
-                        resizeMode="cover"
-                      />
-                    </View>
-
-                    <Text
-                      style={{
-                        fontSize: 12.5,
-                        fontWeight: '700',
-                        color: '#0E0E0E',
-                        letterSpacing: -0.25,
-                        marginBottom: 3,
-                      }}
-                      numberOfLines={1}>
-                      {f.name.split(' ')[0]}
-                    </Text>
-
-                    <View
-                      style={{
-                        paddingHorizontal: 8,
-                        paddingVertical: 3,
-                        borderRadius: 100,
-                        backgroundColor: isPositive ? 'rgba(0,165,80,0.1)' : 'rgba(255,0,72,0.1)',
-                        marginBottom: 8,
-                      }}>
-                      <Text
-                        style={{
-                          fontSize: 9,
-                          fontWeight: '700',
-                          color: isPositive ? '#00A550' : '#FF0048',
-                          letterSpacing: 0.45,
-                          textTransform: 'uppercase',
-                        }}>
-                        {isPositive ? 'owes you' : 'you owe'}
-                      </Text>
-                    </View>
-
-                    <Text
-                      style={{
-                        fontSize: 15.5,
-                        fontWeight: '700',
-                        color: isPositive ? '#00A550' : '#FF0048',
-                        letterSpacing: -0.55,
-                      }}>
-                      {f.currency === 'ZiG'
-                        ? `Z${Math.abs(f.owes).toLocaleString()}`
-                        : `$${Math.abs(f.owes).toFixed(2)}`}
-                    </Text>
-                  </View>
-                </Pressable>
-              );
-            })}
-          </ScrollView>
-        </MotiView>
-
-        {/* ── GRAY CARD — Recent Bills ──────────────────────────────── */}
-        <MotiView
-          from={{ opacity: 0, translateY: 20 }}
-          animate={{ opacity: 1, translateY: 0 }}
-          transition={{ type: 'timing', duration: 300, delay: 190 }}
-          style={{ marginHorizontal: 20, marginBottom: 14 }}>
-          <View style={{ backgroundColor: '#E6E6E6', borderRadius: 28, padding: 24 }}>
-            {/* TITLE ROW */}
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                alignItems: 'flex-start',
-                marginBottom: 22,
-              }}>
-              <Text
+            {/* LOGO + GREETING */}
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 11 }}>
+              <View
                 style={{
-                  fontSize: 30,
-                  fontWeight: '500',
-                  letterSpacing: -1.5,
-                  color: '#000',
-                  lineHeight: 32,
+                  width: 38,
+                  height: 38,
+                  borderRadius: 12,
+                  backgroundColor: '#FF0048',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  shadowColor: '#FF0048',
+                  shadowOffset: { width: 0, height: 6 },
+                  shadowOpacity: 0.35,
+                  shadowRadius: 12,
+                  elevation: 7,
                 }}>
-                Recent{'\n'}Bills
-              </Text>
+                <Rabbit size={17} color="#fff" strokeWidth={1.75} />
+              </View>
+              <View>
+                <Text
+                  style={{
+                    fontSize: 9.5,
+                    fontWeight: '600',
+                    color: '#9A9A9A',
+                    letterSpacing: 1.6,
+                    textTransform: 'uppercase',
+                  }}>
+                  {greetingLabel}
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 23,
+                    fontWeight: '600',
+                    color: '#0E0E0E',
+                    letterSpacing: -0.8,
+                    lineHeight: 25,
+                  }}>
+                  {USER.name}
+                </Text>
+              </View>
+            </View>
+
+            {/* RIGHT — NOTIF + AVATAR */}
+            <View style={{ flexDirection: 'row', gap: 8, alignItems: 'center' }}>
+              {/* Bell with badge */}
               <Pressable
                 style={{
-                  paddingHorizontal: 12,
-                  paddingVertical: 5,
-                  borderRadius: 100,
-                  backgroundColor: 'rgba(0,0,0,0.08)',
-                  alignSelf: 'flex-start',
-                  marginTop: 4,
-                  flexDirection: 'row',
+                  width: 42,
+                  height: 42,
+                  borderRadius: 13,
+                  backgroundColor: '#fff',
+                  borderWidth: 1,
+                  borderColor: '#EBEBEB',
                   alignItems: 'center',
-                  gap: 2,
+                  justifyContent: 'center',
+                  shadowColor: '#000',
+                  shadowOffset: { width: 0, height: 2 },
+                  shadowOpacity: 0.05,
+                  shadowRadius: 5,
+                  elevation: 1,
+                }}>
+                <Bell size={17} color="#444" strokeWidth={1.5} />
+                {/* Badge */}
+                <View
+                  style={{
+                    position: 'absolute',
+                    top: 8,
+                    right: 9,
+                    width: 7,
+                    height: 7,
+                    borderRadius: 4,
+                    backgroundColor: '#FF0048',
+                    borderWidth: 1.5,
+                    borderColor: '#fff',
+                  }}
+                />
+              </Pressable>
+
+              {/* User photo avatar */}
+              <View
+                style={{
+                  borderRadius: 13,
+                  overflow: 'hidden',
+                  width: 42,
+                  height: 42,
+                  borderWidth: 1,
+                  borderColor: 'rgba(0,0,0,0.07)',
+                }}>
+                <Image source={{ uri: USER.photo }} style={{ width: '100%', height: '100%' }} />
+              </View>
+            </View>
+          </MotiView>
+
+          {/* ── BALANCE CARD ───────────────────────────────────────────── */}
+          <MotiView
+            from={{ opacity: 0, translateY: 22 }}
+            animate={{ opacity: 1, translateY: 0 }}
+            transition={{ type: 'timing', duration: 300, delay: 60 }}
+            style={{ marginHorizontal: 20, marginBottom: 14 }}>
+            <View
+              style={{
+                backgroundColor: '#141414',
+                borderRadius: 28,
+                padding: 26,
+                overflow: 'hidden',
+                shadowColor: '#000',
+                shadowOffset: { width: 0, height: 12 },
+                shadowOpacity: 0.35,
+                shadowRadius: 28,
+                elevation: 14,
+              }}>
+              {/* TITLE ROW */}
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  alignItems: 'flex-start',
+                  marginBottom: 20,
                 }}>
                 <Text
                   style={{
-                    fontSize: 10,
-                    fontWeight: '700',
-                    color: 'rgba(0,0,0,0.45)',
-                    letterSpacing: 0.8,
-                    textTransform: 'uppercase',
+                    fontSize: 31,
+                    fontWeight: '300',
+                    letterSpacing: -1.5,
+                    color: '#fff',
+                    lineHeight: 33,
                   }}>
-                  See all
+                  Your{'\n'}Balance
                 </Text>
-              </Pressable>
-            </View>
+                <View
+                  style={{
+                    backgroundColor: 'rgba(255,0,72,0.15)',
+                    borderRadius: 100,
+                    paddingHorizontal: 13,
+                    paddingVertical: 6,
+                  }}>
+                  <Text
+                    style={{
+                      fontSize: 10,
+                      fontWeight: '700',
+                      color: '#FF0048',
+                      letterSpacing: 1.2,
+                      textTransform: 'uppercase',
+                    }}>
+                    Feb 2026
+                  </Text>
+                </View>
+              </View>
 
-            {/* SESSIONS LIST */}
-            <View>
-              {SESSIONS.map((session, i) => (
-                <View key={session.id}>
-                  <Pressable>
-                    <View
+              {/* HERO AMOUNT */}
+              <View style={{ marginBottom: 20 }}>
+                <Text
+                  style={{
+                    fontSize: 11,
+                    fontWeight: '700',
+                    color: '#FF0048',
+                    letterSpacing: 1.6,
+                    textTransform: 'uppercase',
+                    marginBottom: 6,
+                  }}>
+                  Net ahead
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 62,
+                    fontWeight: '300',
+                    color: '#fff',
+                    letterSpacing: -4,
+                    lineHeight: 62,
+                  }}>
+                  ${net.toFixed(2)}
+                </Text>
+              </View>
+
+              {/* HAIRLINE */}
+              <View
+                style={{
+                  height: 1,
+                  backgroundColor: 'rgba(255,255,255,0.07)',
+                  marginBottom: 18,
+                }}
+              />
+
+              {/* STATS ROW */}
+              <View style={{ flexDirection: 'row', marginBottom: 22 }}>
+                {/* OWED TO YOU */}
+                <View style={{ flex: 1 }}>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      gap: 4,
+                      marginBottom: 5,
+                    }}>
+                    <ArrowDownLeft size={11} color="rgba(255,255,255,0.35)" strokeWidth={2.5} />
+                    <Text
                       style={{
-                        paddingVertical: 14,
-                        borderBottomWidth: i < SESSIONS.length - 1 ? 1 : 0,
-                        borderBottomColor: 'rgba(0,0,0,0.07)',
+                        fontSize: 9.5,
+                        fontWeight: '700',
+                        color: 'rgba(255,255,255,0.35)',
+                        textTransform: 'uppercase',
+                        letterSpacing: 1,
+                      }}>
+                      Owed to you
+                    </Text>
+                  </View>
+                  <Text
+                    style={{
+                      fontSize: 22,
+                      fontWeight: '600',
+                      color: '#fff',
+                      letterSpacing: -1,
+                      marginBottom: 8,
+                    }}>
+                    ${BALANCE.owedToYou.toFixed(2)}
+                  </Text>
+                  <View style={{ flexDirection: 'row' }}>
+                    {FRIENDS.filter((f) => f.owes > 0)
+                      .slice(0, 3)
+                      .map((f, i) => (
+                        <View key={i} style={{ marginLeft: i === 0 ? 0 : -7 }}>
+                          <PersonAvatar
+                            photoKey={f.key}
+                            initials={f.initials}
+                            color={f.color}
+                            size={22}
+                            borderColor="rgba(255,255,255,0.12)"
+                            borderWidth={1.5}
+                          />
+                        </View>
+                      ))}
+                  </View>
+                </View>
+
+                {/* VERTICAL DIVIDER */}
+                <View
+                  style={{
+                    width: 1,
+                    backgroundColor: 'rgba(255,255,255,0.07)',
+                    marginHorizontal: 18,
+                    alignSelf: 'stretch',
+                  }}
+                />
+
+                {/* YOU OWE */}
+                <View style={{ flex: 1 }}>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      gap: 4,
+                      marginBottom: 5,
+                    }}>
+                    <ArrowUpRight size={11} color="rgba(255,255,255,0.35)" strokeWidth={2.5} />
+                    <Text
+                      style={{
+                        fontSize: 9.5,
+                        fontWeight: '700',
+                        color: 'rgba(255,255,255,0.35)',
+                        textTransform: 'uppercase',
+                        letterSpacing: 1,
+                      }}>
+                      You owe
+                    </Text>
+                  </View>
+                  <Text
+                    style={{
+                      fontSize: 22,
+                      fontWeight: '600',
+                      color: '#fff',
+                      letterSpacing: -1,
+                      marginBottom: 8,
+                    }}>
+                    ${BALANCE.youOwe.toFixed(2)}
+                  </Text>
+                  <View style={{ flexDirection: 'row' }}>
+                    {FRIENDS.filter((f) => f.owes < 0)
+                      .slice(0, 2)
+                      .map((f, i) => (
+                        <View key={i} style={{ marginLeft: i === 0 ? 0 : -7 }}>
+                          <PersonAvatar
+                            photoKey={f.key}
+                            initials={f.initials}
+                            color={f.color}
+                            size={22}
+                            borderColor="rgba(255,255,255,0.12)"
+                            borderWidth={1.5}
+                          />
+                        </View>
+                      ))}
+                  </View>
+                </View>
+              </View>
+
+              {/* HAIRLINE */}
+              <View
+                style={{
+                  height: 1,
+                  backgroundColor: 'rgba(255,255,255,0.07)',
+                  marginBottom: 16,
+                }}
+              />
+
+              {/* INLINE ACTIONS */}
+              <View style={{ flexDirection: 'row', gap: 10 }}>
+                <Pressable
+                  style={{
+                    flex: 1,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: 6,
+                    paddingVertical: 13,
+                    backgroundColor: '#FF0048',
+                    borderRadius: 14,
+                  }}>
+                  <RefreshCw size={13} color="#fff" strokeWidth={2.2} />
+                  <Text
+                    style={{
+                      fontSize: 13,
+                      fontWeight: '700',
+                      color: '#fff',
+                      letterSpacing: -0.1,
+                    }}>
+                    Settle Up
+                  </Text>
+                </Pressable>
+                <Pressable
+                  style={{
+                    flex: 1,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: 6,
+                    paddingVertical: 13,
+                    backgroundColor: 'rgba(255,255,255,0.07)',
+                    borderRadius: 14,
+                  }}>
+                  <Bell size={13} color="rgba(255,255,255,0.6)" strokeWidth={2.2} />
+                  <Text
+                    style={{
+                      fontSize: 13,
+                      fontWeight: '700',
+                      color: 'rgba(255,255,255,0.6)',
+                      letterSpacing: -0.1,
+                    }}>
+                    Remind
+                  </Text>
+                </Pressable>
+              </View>
+            </View>
+          </MotiView>
+
+          {/* ── QUICK ACTIONS ─────────────────────────────────────────── */}
+          <MotiView
+            from={{ opacity: 0, translateY: 14 }}
+            animate={{ opacity: 1, translateY: 0 }}
+            transition={{ type: 'timing', duration: 260, delay: 120 }}
+            style={{ marginBottom: 22 }}>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={{ paddingHorizontal: 20, gap: 10 }}>
+              {QUICK_ACTIONS.map((action, i) => {
+                const Icon = action.icon;
+                return (
+                  <Pressable key={i}>
+                    <MotiView
+                      style={{
+                        backgroundColor: action.bg,
+                        borderRadius: 18,
+                        paddingRight: 18,
+                        paddingLeft: 6,
+                        paddingVertical: 6,
                         flexDirection: 'row',
                         alignItems: 'center',
-                        gap: 13,
+                        gap: 9,
+                        borderWidth: action.bg === '#fff' ? 1 : 0,
+                        borderColor: '#E8E8E8',
+                        shadowColor: action.bg === '#FF0048' ? '#FF0048' : '#000',
+                        shadowOffset: { width: 0, height: action.bg === '#FF0048' ? 8 : 2 },
+                        shadowOpacity: action.bg === '#FF0048' ? 0.38 : 0.05,
+                        shadowRadius: action.bg === '#FF0048' ? 14 : 6,
+                        elevation: action.bg === '#FF0048' ? 7 : 1,
                       }}>
-                      {/* VENUE ICON BADGE */}
                       <View
                         style={{
-                          width: 50,
-                          height: 50,
-                          borderRadius: 14,
-                          backgroundColor: session.venueColor + '18',
-                          borderWidth: 1,
-                          borderColor: session.venueColor + '30',
-                          flexShrink: 0,
+                          width: 36,
+                          height: 36,
+                          borderRadius: 12,
+                          backgroundColor: action.iconBg,
                           alignItems: 'center',
                           justifyContent: 'center',
                         }}>
-                        <session.venueIcon
-                          size={22}
-                          color={session.venueColor}
-                          strokeWidth={1.75}
+                        <Icon size={17} color={action.fg} strokeWidth={2} />
+                      </View>
+                      <Text
+                        style={{
+                          fontSize: 13.5,
+                          fontWeight: '600',
+                          color: action.fg,
+                          letterSpacing: -0.2,
+                        }}>
+                        {action.label}
+                      </Text>
+                    </MotiView>
+                  </Pressable>
+                );
+              })}
+            </ScrollView>
+          </MotiView>
+
+          {/* ── PEOPLE — Who owes who ──────────────────────────────────── */}
+          <MotiView
+            from={{ opacity: 0, translateY: 14 }}
+            animate={{ opacity: 1, translateY: 0 }}
+            transition={{ type: 'timing', duration: 260, delay: 150 }}
+            style={{ marginBottom: 22 }}>
+            <View
+              style={{
+                paddingHorizontal: 20,
+                marginBottom: 13,
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              }}>
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 7 }}>
+                <View
+                  style={{ width: 3, height: 16, borderRadius: 2, backgroundColor: '#FF0048' }}
+                />
+                <Text
+                  style={{
+                    fontSize: 13,
+                    fontWeight: '700',
+                    color: '#0E0E0E',
+                    letterSpacing: -0.3,
+                  }}>
+                  People
+                </Text>
+              </View>
+              <Pressable style={{ flexDirection: 'row', alignItems: 'center', gap: 2 }}>
+                <Text style={{ fontSize: 12, fontWeight: '600', color: '#BBBBBB' }}>Manage</Text>
+                <ChevronRight size={13} color="#BBBBBB" strokeWidth={2.5} />
+              </Pressable>
+            </View>
+
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={{ paddingHorizontal: 20, gap: 10 }}>
+              {FRIENDS.map((f, i) => {
+                const isPositive = f.owes > 0;
+                return (
+                  <Pressable key={i}>
+                    <View
+                      style={{
+                        backgroundColor: '#FFFFFF',
+                        borderRadius: 22,
+                        padding: 14,
+                        width: 114,
+                        borderWidth: 1,
+                        borderColor: 'rgba(0,0,0,0.06)',
+                        shadowColor: '#000',
+                        shadowOffset: { width: 0, height: 4 },
+                        shadowOpacity: 0.08,
+                        shadowRadius: 10,
+                        elevation: 2,
+                        alignItems: 'flex-start',
+                      }}>
+                      <View
+                        style={{
+                          width: 42,
+                          height: 42,
+                          borderRadius: 21,
+                          overflow: 'hidden',
+                          borderWidth: 1,
+                          borderColor: 'rgba(0,0,0,0.08)',
+                          marginBottom: 10,
+                          backgroundColor: '#F2F2F2',
+                        }}>
+                        <Image
+                          source={{ uri: PHOTOS[f.key as keyof typeof PHOTOS] }}
+                          style={{ width: '100%', height: '100%' }}
+                          resizeMode="cover"
                         />
                       </View>
 
-                      {/* CONTENT */}
-                      <View style={{ flex: 1 }}>
+                      <Text
+                        style={{
+                          fontSize: 12.5,
+                          fontWeight: '700',
+                          color: '#0E0E0E',
+                          letterSpacing: -0.25,
+                          marginBottom: 3,
+                        }}
+                        numberOfLines={1}>
+                        {f.name.split(' ')[0]}
+                      </Text>
+
+                      <View
+                        style={{
+                          paddingHorizontal: 8,
+                          paddingVertical: 3,
+                          borderRadius: 100,
+                          backgroundColor: isPositive ? 'rgba(0,165,80,0.1)' : 'rgba(255,0,72,0.1)',
+                          marginBottom: 8,
+                        }}>
+                        <Text
+                          style={{
+                            fontSize: 9,
+                            fontWeight: '700',
+                            color: isPositive ? '#00A550' : '#FF0048',
+                            letterSpacing: 0.45,
+                            textTransform: 'uppercase',
+                          }}>
+                          {isPositive ? 'owes you' : 'you owe'}
+                        </Text>
+                      </View>
+
+                      <Text
+                        style={{
+                          fontSize: 15.5,
+                          fontWeight: '700',
+                          color: isPositive ? '#00A550' : '#FF0048',
+                          letterSpacing: -0.55,
+                        }}>
+                        {f.currency === 'ZiG'
+                          ? `Z${Math.abs(f.owes).toLocaleString()}`
+                          : `$${Math.abs(f.owes).toFixed(2)}`}
+                      </Text>
+                    </View>
+                  </Pressable>
+                );
+              })}
+            </ScrollView>
+          </MotiView>
+
+          {/* ── GRAY CARD — Recent Bills ──────────────────────────────── */}
+          <MotiView
+            from={{ opacity: 0, translateY: 20 }}
+            animate={{ opacity: 1, translateY: 0 }}
+            transition={{ type: 'timing', duration: 300, delay: 190 }}
+            style={{ marginHorizontal: 20, marginBottom: 14 }}>
+            <View style={{ backgroundColor: '#E6E6E6', borderRadius: 28, padding: 24 }}>
+              {/* TITLE ROW */}
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'space-between',
+                  alignItems: 'flex-start',
+                  marginBottom: 22,
+                }}>
+                <Text
+                  style={{
+                    fontSize: 30,
+                    fontWeight: '500',
+                    letterSpacing: -1.5,
+                    color: '#000',
+                    lineHeight: 32,
+                  }}>
+                  Recent{'\n'}Bills
+                </Text>
+                <Pressable
+                  style={{
+                    paddingHorizontal: 12,
+                    paddingVertical: 5,
+                    borderRadius: 100,
+                    backgroundColor: 'rgba(0,0,0,0.08)',
+                    alignSelf: 'flex-start',
+                    marginTop: 4,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    gap: 2,
+                  }}>
+                  <Text
+                    style={{
+                      fontSize: 10,
+                      fontWeight: '700',
+                      color: 'rgba(0,0,0,0.45)',
+                      letterSpacing: 0.8,
+                      textTransform: 'uppercase',
+                    }}>
+                    See all
+                  </Text>
+                </Pressable>
+              </View>
+
+              {/* SESSIONS LIST */}
+              <View>
+                {SESSIONS.map((session, i) => (
+                  <View key={session.id}>
+                    <Pressable>
+                      <View
+                        style={{
+                          paddingVertical: 14,
+                          borderBottomWidth: i < SESSIONS.length - 1 ? 1 : 0,
+                          borderBottomColor: 'rgba(0,0,0,0.07)',
+                          flexDirection: 'row',
+                          alignItems: 'center',
+                          gap: 13,
+                        }}>
+                        {/* VENUE ICON BADGE */}
                         <View
                           style={{
-                            flexDirection: 'row',
+                            width: 50,
+                            height: 50,
+                            borderRadius: 14,
+                            backgroundColor: session.venueColor + '18',
+                            borderWidth: 1,
+                            borderColor: session.venueColor + '30',
+                            flexShrink: 0,
                             alignItems: 'center',
-                            justifyContent: 'space-between',
-                            marginBottom: 5,
+                            justifyContent: 'center',
                           }}>
-                          <Text
-                            style={{
-                              fontSize: 14.5,
-                              fontWeight: '700',
-                              color: '#000',
-                              letterSpacing: -0.3,
-                              flex: 1,
-                              marginRight: 8,
-                            }}
-                            numberOfLines={1}>
-                            {session.venue}
-                          </Text>
+                          <session.venueIcon
+                            size={22}
+                            color={session.venueColor}
+                            strokeWidth={1.75}
+                          />
+                        </View>
+
+                        {/* CONTENT */}
+                        <View style={{ flex: 1 }}>
                           <View
                             style={{
-                              backgroundColor: STATUS_BG[session.status],
-                              borderRadius: 100,
-                              paddingHorizontal: 8,
-                              paddingVertical: 3,
+                              flexDirection: 'row',
+                              alignItems: 'center',
+                              justifyContent: 'space-between',
+                              marginBottom: 5,
                             }}>
                             <Text
                               style={{
-                                fontSize: 9,
+                                fontSize: 14.5,
                                 fontWeight: '700',
-                                color: STATUS_COLORS[session.status],
-                                letterSpacing: 0.5,
-                                textTransform: 'uppercase',
+                                color: '#000',
+                                letterSpacing: -0.3,
+                                flex: 1,
+                                marginRight: 8,
+                              }}
+                              numberOfLines={1}>
+                              {session.venue}
+                            </Text>
+                            <View
+                              style={{
+                                backgroundColor: STATUS_BG[session.status],
+                                borderRadius: 100,
+                                paddingHorizontal: 8,
+                                paddingVertical: 3,
                               }}>
-                              {session.status}
-                            </Text>
+                              <Text
+                                style={{
+                                  fontSize: 9,
+                                  fontWeight: '700',
+                                  color: STATUS_COLORS[session.status],
+                                  letterSpacing: 0.5,
+                                  textTransform: 'uppercase',
+                                }}>
+                                {session.status}
+                              </Text>
+                            </View>
                           </View>
-                        </View>
 
-                        <View
-                          style={{
-                            flexDirection: 'row',
-                            alignItems: 'center',
-                            justifyContent: 'space-between',
-                          }}>
-                          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 7 }}>
-                            <ParticipantStack
-                              participants={session.participants}
-                              borderColor="#E6E6E6"
-                            />
-                            <Text style={{ fontSize: 11, color: '#777', letterSpacing: 0.05 }}>
-                              {session.date}
+                          <View
+                            style={{
+                              flexDirection: 'row',
+                              alignItems: 'center',
+                              justifyContent: 'space-between',
+                            }}>
+                            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 7 }}>
+                              <ParticipantStack
+                                participants={session.participants}
+                                borderColor="#E6E6E6"
+                              />
+                              <Text style={{ fontSize: 11, color: '#777', letterSpacing: 0.05 }}>
+                                {session.date}
+                              </Text>
+                            </View>
+                            <Text
+                              style={{
+                                fontSize: 15,
+                                fontWeight: '700',
+                                color: session.status === 'settled' ? '#00A550' : '#000',
+                                letterSpacing: -0.5,
+                              }}>
+                              {session.currency === 'ZiG'
+                                ? `ZiG ${(session.myShare as number).toLocaleString()}`
+                                : `$${(session.myShare as number).toFixed(2)}`}
                             </Text>
                           </View>
-                          <Text
-                            style={{
-                              fontSize: 15,
-                              fontWeight: '700',
-                              color: session.status === 'settled' ? '#00A550' : '#000',
-                              letterSpacing: -0.5,
-                            }}>
-                            {session.currency === 'ZiG'
-                              ? `ZiG ${(session.myShare as number).toLocaleString()}`
-                              : `$${(session.myShare as number).toFixed(2)}`}
-                          </Text>
                         </View>
                       </View>
-                    </View>
-                  </Pressable>
-                </View>
-              ))}
+                    </Pressable>
+                  </View>
+                ))}
+              </View>
             </View>
-          </View>
-        </MotiView>
-      </ScrollView>
+          </MotiView>
+        </ScrollView>
+      )}
 
       {/* ── NAV DOCK ─────────────────────────────────────────────────── */}
       <NavDock activeTab={activeTab} onTabChange={setActiveTab} onNewSession={onNewSession} />
