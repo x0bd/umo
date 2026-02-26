@@ -359,37 +359,37 @@ export function HomeScreen({ onNewSession }: Props) {
                 width: 38,
                 height: 38,
                 borderRadius: 12,
-                backgroundColor: '#FF0048',
+                backgroundColor: '#111111',
                 alignItems: 'center',
                 justifyContent: 'center',
-                shadowColor: '#FF0048',
-                shadowOffset: { width: 0, height: 5 },
-                shadowOpacity: 0.4,
-                shadowRadius: 10,
-                elevation: 6,
+                shadowColor: '#000',
+                shadowOffset: { width: 0, height: 3 },
+                shadowOpacity: 0.18,
+                shadowRadius: 6,
+                elevation: 3,
               }}>
               <Rabbit size={17} color="#fff" strokeWidth={1.75} />
             </View>
             <View>
               <Text
                 style={{
-                  fontSize: 10,
+                  fontSize: 9.5,
                   fontWeight: '600',
-                  color: '#BBBBBB',
-                  letterSpacing: 2.2,
+                  color: '#9A9A9A',
+                  letterSpacing: 1.6,
                   textTransform: 'uppercase',
                 }}>
-                Good morning
+                Personal ledger
               </Text>
               <Text
                 style={{
-                  fontSize: 21,
-                  fontWeight: '700',
+                  fontSize: 23,
+                  fontWeight: '600',
                   color: '#0E0E0E',
-                  letterSpacing: -0.9,
-                  lineHeight: 23,
+                  letterSpacing: -0.8,
+                  lineHeight: 25,
                 }}>
-                {USER.name} 👋
+                {USER.name}
               </Text>
             </View>
           </View>
