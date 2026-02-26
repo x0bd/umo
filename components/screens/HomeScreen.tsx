@@ -437,15 +437,15 @@ export function HomeScreen({ onNewSession }: Props) {
                 overflow: 'hidden',
                 width: 42,
                 height: 42,
-                borderWidth: 2,
-                borderColor: '#FF0048',
+                borderWidth: 1,
+                borderColor: 'rgba(0,0,0,0.07)',
               }}>
               <Image source={{ uri: USER.photo }} style={{ width: '100%', height: '100%' }} />
             </View>
           </View>
         </MotiView>
 
-        {/* ── PINK CARD — Balance ───────────────────────────────────── */}
+        {/* ── BALANCE CARD ───────────────────────────────────────────── */}
         <MotiView
           from={{ opacity: 0, translateY: 22 }}
           animate={{ opacity: 1, translateY: 0 }}
@@ -453,32 +453,64 @@ export function HomeScreen({ onNewSession }: Props) {
           style={{ marginHorizontal: 20, marginBottom: 14 }}>
           <View
             style={{
-              backgroundColor: '#FF0048',
+              backgroundColor: '#141414',
               borderRadius: 28,
               padding: 26,
               overflow: 'hidden',
+              shadowColor: '#000',
+              shadowOffset: { width: 0, height: 12 },
+              shadowOpacity: 0.35,
+              shadowRadius: 28,
+              elevation: 14,
             }}>
-            {/* DECORATIVE CIRCLE (depth texture) */}
+            {/* GRID PATTERN */}
+            {Array.from({ length: 9 }).map((_, i) => (
+              <View
+                key={`h${i}`}
+                style={{
+                  position: 'absolute',
+                  left: 0,
+                  right: 0,
+                  top: i * 36,
+                  height: 1,
+                  backgroundColor: 'rgba(255,255,255,0.04)',
+                }}
+              />
+            ))}
+            {Array.from({ length: 8 }).map((_, i) => (
+              <View
+                key={`v${i}`}
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  bottom: 0,
+                  left: i * 48,
+                  width: 1,
+                  backgroundColor: 'rgba(255,255,255,0.04)',
+                }}
+              />
+            ))}
+            {/* DECORATIVE GLOW */}
             <View
               style={{
                 position: 'absolute',
-                right: -48,
-                top: -48,
-                width: 180,
-                height: 180,
-                borderRadius: 90,
-                backgroundColor: 'rgba(255,255,255,0.06)',
+                right: -60,
+                top: -60,
+                width: 240,
+                height: 240,
+                borderRadius: 120,
+                backgroundColor: 'rgba(255,0,72,0.1)',
               }}
             />
             <View
               style={{
                 position: 'absolute',
-                right: -10,
-                bottom: 40,
-                width: 100,
-                height: 100,
-                borderRadius: 50,
-                backgroundColor: 'rgba(255,255,255,0.04)',
+                left: -50,
+                bottom: -30,
+                width: 180,
+                height: 180,
+                borderRadius: 90,
+                backgroundColor: 'rgba(255,0,72,0.04)',
               }}
             />
 
@@ -493,16 +525,16 @@ export function HomeScreen({ onNewSession }: Props) {
               <Text
                 style={{
                   fontSize: 31,
-                  fontWeight: '500',
+                  fontWeight: '300',
                   letterSpacing: -1.5,
-                  color: '#450010',
+                  color: '#fff',
                   lineHeight: 33,
                 }}>
                 Your{'\n'}Balance
               </Text>
               <View
                 style={{
-                  backgroundColor: 'rgba(69,0,16,0.13)',
+                  backgroundColor: 'rgba(255,0,72,0.15)',
                   borderRadius: 100,
                   paddingHorizontal: 13,
                   paddingVertical: 6,
@@ -511,7 +543,7 @@ export function HomeScreen({ onNewSession }: Props) {
                   style={{
                     fontSize: 10,
                     fontWeight: '700',
-                    color: '#450010',
+                    color: '#FF0048',
                     letterSpacing: 1.2,
                     textTransform: 'uppercase',
                   }}>
@@ -526,10 +558,9 @@ export function HomeScreen({ onNewSession }: Props) {
                 style={{
                   fontSize: 11,
                   fontWeight: '700',
-                  color: '#450010',
+                  color: '#FF0048',
                   letterSpacing: 1.6,
                   textTransform: 'uppercase',
-                  opacity: 0.5,
                   marginBottom: 6,
                 }}>
                 Net ahead
@@ -538,7 +569,7 @@ export function HomeScreen({ onNewSession }: Props) {
                 style={{
                   fontSize: 62,
                   fontWeight: '300',
-                  color: '#450010',
+                  color: '#fff',
                   letterSpacing: -4,
                   lineHeight: 62,
                 }}>
@@ -550,7 +581,7 @@ export function HomeScreen({ onNewSession }: Props) {
             <View
               style={{
                 height: 1,
-                backgroundColor: 'rgba(69,0,16,0.15)',
+                backgroundColor: 'rgba(255,255,255,0.07)',
                 marginBottom: 18,
               }}
             />
@@ -566,15 +597,14 @@ export function HomeScreen({ onNewSession }: Props) {
                     gap: 4,
                     marginBottom: 5,
                   }}>
-                  <ArrowDownLeft size={11} color="#450010" strokeWidth={2.5} opacity={0.55} />
+                  <ArrowDownLeft size={11} color="rgba(255,255,255,0.35)" strokeWidth={2.5} />
                   <Text
                     style={{
                       fontSize: 9.5,
                       fontWeight: '700',
-                      color: '#450010',
+                      color: 'rgba(255,255,255,0.35)',
                       textTransform: 'uppercase',
                       letterSpacing: 1,
-                      opacity: 0.5,
                     }}>
                     Owed to you
                   </Text>
@@ -583,7 +613,7 @@ export function HomeScreen({ onNewSession }: Props) {
                   style={{
                     fontSize: 22,
                     fontWeight: '600',
-                    color: '#450010',
+                    color: '#fff',
                     letterSpacing: -1,
                     marginBottom: 8,
                   }}>
@@ -599,7 +629,7 @@ export function HomeScreen({ onNewSession }: Props) {
                           initials={f.initials}
                           color={f.color}
                           size={22}
-                          borderColor="rgba(255,0,72,0.35)"
+                          borderColor="rgba(255,255,255,0.12)"
                           borderWidth={1.5}
                         />
                       </View>
@@ -611,7 +641,7 @@ export function HomeScreen({ onNewSession }: Props) {
               <View
                 style={{
                   width: 1,
-                  backgroundColor: 'rgba(69,0,16,0.15)',
+                  backgroundColor: 'rgba(255,255,255,0.07)',
                   marginHorizontal: 18,
                   alignSelf: 'stretch',
                 }}
@@ -626,15 +656,14 @@ export function HomeScreen({ onNewSession }: Props) {
                     gap: 4,
                     marginBottom: 5,
                   }}>
-                  <ArrowUpRight size={11} color="#450010" strokeWidth={2.5} opacity={0.55} />
+                  <ArrowUpRight size={11} color="rgba(255,255,255,0.35)" strokeWidth={2.5} />
                   <Text
                     style={{
                       fontSize: 9.5,
                       fontWeight: '700',
-                      color: '#450010',
+                      color: 'rgba(255,255,255,0.35)',
                       textTransform: 'uppercase',
                       letterSpacing: 1,
-                      opacity: 0.5,
                     }}>
                     You owe
                   </Text>
@@ -643,7 +672,7 @@ export function HomeScreen({ onNewSession }: Props) {
                   style={{
                     fontSize: 22,
                     fontWeight: '600',
-                    color: '#450010',
+                    color: '#fff',
                     letterSpacing: -1,
                     marginBottom: 8,
                   }}>
@@ -659,7 +688,7 @@ export function HomeScreen({ onNewSession }: Props) {
                           initials={f.initials}
                           color={f.color}
                           size={22}
-                          borderColor="rgba(255,0,72,0.35)"
+                          borderColor="rgba(255,255,255,0.12)"
                           borderWidth={1.5}
                         />
                       </View>
@@ -672,7 +701,7 @@ export function HomeScreen({ onNewSession }: Props) {
             <View
               style={{
                 height: 1,
-                backgroundColor: 'rgba(69,0,16,0.15)',
+                backgroundColor: 'rgba(255,255,255,0.07)',
                 marginBottom: 16,
               }}
             />
@@ -687,15 +716,15 @@ export function HomeScreen({ onNewSession }: Props) {
                   justifyContent: 'center',
                   gap: 6,
                   paddingVertical: 13,
-                  backgroundColor: 'rgba(69,0,16,0.13)',
+                  backgroundColor: '#FF0048',
                   borderRadius: 14,
                 }}>
-                <RefreshCw size={13} color="#450010" strokeWidth={2.2} />
+                <RefreshCw size={13} color="#fff" strokeWidth={2.2} />
                 <Text
                   style={{
                     fontSize: 13,
                     fontWeight: '700',
-                    color: '#450010',
+                    color: '#fff',
                     letterSpacing: -0.1,
                   }}>
                   Settle Up
@@ -709,15 +738,15 @@ export function HomeScreen({ onNewSession }: Props) {
                   justifyContent: 'center',
                   gap: 6,
                   paddingVertical: 13,
-                  backgroundColor: 'rgba(69,0,16,0.08)',
+                  backgroundColor: 'rgba(255,255,255,0.07)',
                   borderRadius: 14,
                 }}>
-                <Bell size={13} color="#450010" strokeWidth={2.2} />
+                <Bell size={13} color="rgba(255,255,255,0.6)" strokeWidth={2.2} />
                 <Text
                   style={{
                     fontSize: 13,
                     fontWeight: '700',
-                    color: '#450010',
+                    color: 'rgba(255,255,255,0.6)',
                     letterSpacing: -0.1,
                   }}>
                   Remind
