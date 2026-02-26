@@ -326,10 +326,25 @@ function NavDock({
   );
 }
 
+function getDynamicGreetingLabel() {
+  const now = new Date();
+  const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  const day = dayNames[now.getDay()];
+  const hour = now.getHours();
+
+  let partOfDay = 'Night';
+  if (hour >= 5 && hour < 12) partOfDay = 'Morning';
+  else if (hour >= 12 && hour < 17) partOfDay = 'Afternoon';
+  else if (hour >= 17 && hour < 22) partOfDay = 'Evening';
+
+  return `${day} · ${partOfDay}`;
+}
+
 // ─── Main screen ──────────────────────────────────────────────────────────────
 export function HomeScreen({ onNewSession }: Props) {
   const insets = useSafeAreaInsets();
   const net = BALANCE.owedToYou - BALANCE.youOwe;
+  const greetingLabel = getDynamicGreetingLabel();
   const [activeTab, setActiveTab] = useState('home');
 
   return (
@@ -359,14 +374,14 @@ export function HomeScreen({ onNewSession }: Props) {
                 width: 38,
                 height: 38,
                 borderRadius: 12,
-                backgroundColor: '#111111',
+                backgroundColor: '#FF0048',
                 alignItems: 'center',
                 justifyContent: 'center',
-                shadowColor: '#000',
-                shadowOffset: { width: 0, height: 3 },
-                shadowOpacity: 0.18,
-                shadowRadius: 6,
-                elevation: 3,
+                shadowColor: '#FF0048',
+                shadowOffset: { width: 0, height: 6 },
+                shadowOpacity: 0.35,
+                shadowRadius: 12,
+                elevation: 7,
               }}>
               <Rabbit size={17} color="#fff" strokeWidth={1.75} />
             </View>
@@ -379,7 +394,7 @@ export function HomeScreen({ onNewSession }: Props) {
                   letterSpacing: 1.6,
                   textTransform: 'uppercase',
                 }}>
-                Personal ledger
+                {greetingLabel}
               </Text>
               <Text
                 style={{
