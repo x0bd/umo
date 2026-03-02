@@ -35,8 +35,8 @@ type SplitMode = 'auto' | 'custom' | 'cash';
 interface Item {
   id: string;
   name: string;
-  qty: number;       // multiplier — default 1
-  amount: string;    // unit price
+  qty: number; // multiplier — default 1
+  amount: string; // unit price
 }
 
 interface Friend {
@@ -46,7 +46,7 @@ interface Friend {
 }
 
 interface SplitAssignment {
-  key: string;         // friend key or 'YOU'
+  key: string; // friend key or 'YOU'
   mode: SplitMode;
   customAmount: string;
 }
@@ -103,9 +103,9 @@ function formatCurrency(amount: number, currency: Currency) {
 }
 
 const MODE_COLORS: Record<SplitMode, { bg: string; text: string; label: string }> = {
-  auto:   { bg: '#1C1C1E', text: 'rgba(255,255,255,0.7)', label: 'Auto' },
-  custom: { bg: '#FFF3E0', text: '#E65100',               label: 'Custom' },
-  cash:   { bg: '#E8F5E9', text: '#2E7D32',               label: 'Cash ✓' },
+  auto: { bg: '#1C1C1E', text: 'rgba(255,255,255,0.7)', label: 'Auto' },
+  custom: { bg: '#FFF3E0', text: '#E65100', label: 'Custom' },
+  cash: { bg: '#E8F5E9', text: '#2E7D32', label: 'Cash ✓' },
 };
 
 // ─── Sub-components ────────────────────────────────────────────────────────────
@@ -217,19 +217,22 @@ export function AddSplitScreen({ onBack }: { onBack: () => void }) {
     const hideEvent = Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide';
     const onShow = Keyboard.addListener(showEvent, () => setIsKeyboardVisible(true));
     const onHide = Keyboard.addListener(hideEvent, () => setIsKeyboardVisible(false));
-    return () => { onShow.remove(); onHide.remove(); };
+    return () => {
+      onShow.remove();
+      onHide.remove();
+    };
   }, []);
 
   // ── Computed ──────────────────────────────────────────────────
   const total = items.reduce((sum, it) => sum + (parseFloat(it.amount) || 0) * it.qty, 0);
-  const rate  = parseFloat(zigRate) || ZIG_RATE;
+  const rate = parseFloat(zigRate) || ZIG_RATE;
 
   // per-person share math
   const customSum = assignments
-    .filter(a => a.mode === 'custom' || a.mode === 'cash')
+    .filter((a) => a.mode === 'custom' || a.mode === 'cash')
     .reduce((s, a) => s + (parseFloat(a.customAmount) || 0), 0);
-  const autoCount = assignments.filter(a => a.mode === 'auto').length;
-  const autoPool  = Math.max(0, total - customSum);
+  const autoCount = assignments.filter((a) => a.mode === 'auto').length;
+  const autoPool = Math.max(0, total - customSum);
   const autoShare = autoCount > 0 ? autoPool / autoCount : 0;
 
   function shareFor(a: SplitAssignment): number {
@@ -237,11 +240,11 @@ export function AddSplitScreen({ onBack }: { onBack: () => void }) {
     return parseFloat(a.customAmount) || 0;
   }
 
-  const myAssignment = assignments.find(a => a.key === 'YOU') ?? assignments[0];
+  const myAssignment = assignments.find((a) => a.key === 'YOU') ?? assignments[0];
   const myShare = shareFor(myAssignment);
-  const friendKeys = assignments.filter(a => a.key !== 'YOU').map(a => a.key);
+  const friendKeys = assignments.filter((a) => a.key !== 'YOU').map((a) => a.key);
 
-  const hasItems  = items.some(it => it.name.trim() && parseFloat(it.amount) > 0);
+  const hasItems = items.some((it) => it.name.trim() && parseFloat(it.amount) > 0);
   const canCreate = venue.trim().length > 0 && hasItems && friendKeys.length > 0;
 
   const selectedCategory = CATEGORIES.find((c) => c.key === category) ?? CATEGORIES[0];
@@ -249,45 +252,47 @@ export function AddSplitScreen({ onBack }: { onBack: () => void }) {
 
   // ── Item handlers ─────────────────────────────────────────────
   function addItem() {
-    setItems(prev => [...prev, newItem()]);
+    setItems((prev) => [...prev, newItem()]);
   }
   function removeItem(id: string) {
-    setItems(prev => prev.length > 1 ? prev.filter(it => it.id !== id) : prev);
+    setItems((prev) => (prev.length > 1 ? prev.filter((it) => it.id !== id) : prev));
   }
   function updateItem(id: string, field: 'name' | 'amount', value: string) {
-    setItems(prev => prev.map(it => it.id === id ? { ...it, [field]: value } : it));
+    setItems((prev) => prev.map((it) => (it.id === id ? { ...it, [field]: value } : it)));
   }
   // Called on name blur — parse "Drinks x3" → name="Drinks" qty=3
   function applySmartName(id: string, raw: string) {
     const { name, qty } = parseSmartQty(raw);
-    setItems(prev => prev.map(it => it.id === id ? { ...it, name, qty } : it));
+    setItems((prev) => prev.map((it) => (it.id === id ? { ...it, name, qty } : it)));
   }
   function stepQty(id: string, delta: number) {
-    setItems(prev => prev.map(it =>
-      it.id === id ? { ...it, qty: Math.max(1, it.qty + delta) } : it
-    ));
+    setItems((prev) =>
+      prev.map((it) => (it.id === id ? { ...it, qty: Math.max(1, it.qty + delta) } : it))
+    );
   }
 
   // ── Assignment handlers ───────────────────────────────────────
   function toggleFriend(key: string) {
-    setAssignments(prev => {
-      const has = prev.some(a => a.key === key);
-      if (has) return prev.filter(a => a.key !== key);
+    setAssignments((prev) => {
+      const has = prev.some((a) => a.key === key);
+      if (has) return prev.filter((a) => a.key !== key);
       return [...prev, { key, mode: 'auto', customAmount: '' }];
     });
   }
   const MODES: SplitMode[] = ['auto', 'custom', 'cash'];
   function cycleMode(key: string) {
-    setAssignments(prev => prev.map(a => {
-      if (a.key !== key) return a;
-      const next = MODES[(MODES.indexOf(a.mode) + 1) % MODES.length];
-      // pre-fill custom amount with auto share when switching to custom
-      const customAmount = next === 'custom' ? autoShare.toFixed(2) : a.customAmount;
-      return { ...a, mode: next, customAmount };
-    }));
+    setAssignments((prev) =>
+      prev.map((a) => {
+        if (a.key !== key) return a;
+        const next = MODES[(MODES.indexOf(a.mode) + 1) % MODES.length];
+        // pre-fill custom amount with auto share when switching to custom
+        const customAmount = next === 'custom' ? autoShare.toFixed(2) : a.customAmount;
+        return { ...a, mode: next, customAmount };
+      })
+    );
   }
   function setCustomAmount(key: string, val: string) {
-    setAssignments(prev => prev.map(a => a.key === key ? { ...a, customAmount: val } : a));
+    setAssignments((prev) => prev.map((a) => (a.key === key ? { ...a, customAmount: val } : a)));
   }
 
   return (
@@ -632,7 +637,7 @@ export function AddSplitScreen({ onBack }: { onBack: () => void }) {
                         <TextInput
                           ref={idx === 0 ? firstItemNameRef : undefined}
                           value={item.name}
-                          onChangeText={v => updateItem(item.id, 'name', v)}
+                          onChangeText={(v) => updateItem(item.id, 'name', v)}
                           onBlur={() => applySmartName(item.id, item.name)}
                           placeholder={idx === 0 ? 'Item name  (or "Coffee x3")' : 'Item name'}
                           placeholderTextColor="rgba(0,0,0,0.22)"
@@ -650,30 +655,59 @@ export function AddSplitScreen({ onBack }: { onBack: () => void }) {
                           }}
                         />
                         {/* UNIT PRICE */}
-                        <View style={{
-                          flexDirection: 'row', alignItems: 'center',
-                          backgroundColor: 'rgba(0,0,0,0.07)', borderRadius: 10,
-                          paddingHorizontal: 10, paddingVertical: 6, minWidth: 72,
-                        }}>
-                          <Text style={{ fontSize: 12, fontWeight: '700', color: 'rgba(0,0,0,0.4)', marginRight: 2 }}>
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            backgroundColor: 'rgba(0,0,0,0.07)',
+                            borderRadius: 10,
+                            paddingHorizontal: 10,
+                            paddingVertical: 6,
+                            minWidth: 72,
+                          }}>
+                          <Text
+                            style={{
+                              fontSize: 12,
+                              fontWeight: '700',
+                              color: 'rgba(0,0,0,0.4)',
+                              marginRight: 2,
+                            }}>
                             {currency === 'USD' ? '$' : 'Z'}
                           </Text>
                           <TextInput
                             value={item.amount}
-                            onChangeText={v => updateItem(item.id, 'amount', v)}
+                            onChangeText={(v) => updateItem(item.id, 'amount', v)}
                             placeholder="0.00"
                             placeholderTextColor="rgba(0,0,0,0.25)"
                             keyboardType="decimal-pad"
                             returnKeyType={idx < items.length - 1 ? 'next' : 'done'}
                             blurOnSubmit={idx === items.length - 1}
-                            onSubmitEditing={() => { if (idx < items.length - 1) addItem(); else Keyboard.dismiss(); }}
-                            style={{ fontSize: 14, fontWeight: '700', color: '#0E0E0E', letterSpacing: -0.3, padding: 0, minWidth: 40 }}
+                            onSubmitEditing={() => {
+                              if (idx < items.length - 1) addItem();
+                              else Keyboard.dismiss();
+                            }}
+                            style={{
+                              fontSize: 14,
+                              fontWeight: '700',
+                              color: '#0E0E0E',
+                              letterSpacing: -0.3,
+                              padding: 0,
+                              minWidth: 40,
+                            }}
                           />
                         </View>
                         {/* REMOVE */}
                         {items.length > 1 && (
                           <Pressable onPress={() => removeItem(item.id)}>
-                            <View style={{ width: 26, height: 26, borderRadius: 8, backgroundColor: 'rgba(255,0,72,0.1)', alignItems: 'center', justifyContent: 'center' }}>
+                            <View
+                              style={{
+                                width: 26,
+                                height: 26,
+                                borderRadius: 8,
+                                backgroundColor: 'rgba(255,0,72,0.1)',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                              }}>
                               <X size={11} color="#FF0048" strokeWidth={2.5} />
                             </View>
                           </Pressable>
@@ -681,21 +715,67 @@ export function AddSplitScreen({ onBack }: { onBack: () => void }) {
                       </View>
 
                       {/* ROW 2: qty stepper + line total */}
-                      <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: 8, paddingLeft: 2 }}>
+                      <View
+                        style={{
+                          flexDirection: 'row',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                          marginTop: 8,
+                          paddingLeft: 2,
+                        }}>
                         {/* STEPPER */}
-                        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 0, backgroundColor: 'rgba(0,0,0,0.06)', borderRadius: 10, overflow: 'hidden' }}>
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            gap: 0,
+                            backgroundColor: 'rgba(0,0,0,0.06)',
+                            borderRadius: 10,
+                            overflow: 'hidden',
+                          }}>
                           <Pressable
                             onPress={() => stepQty(item.id, -1)}
                             style={{ paddingHorizontal: 12, paddingVertical: 6 }}>
-                            <Text style={{ fontSize: 16, fontWeight: '500', color: item.qty <= 1 ? 'rgba(0,0,0,0.2)' : '#0E0E0E', lineHeight: 18 }}>−</Text>
+                            <Text
+                              style={{
+                                fontSize: 16,
+                                fontWeight: '500',
+                                color: item.qty <= 1 ? 'rgba(0,0,0,0.2)' : '#0E0E0E',
+                                lineHeight: 18,
+                              }}>
+                              −
+                            </Text>
                           </Pressable>
-                          <View style={{ paddingHorizontal: 8, paddingVertical: 6, backgroundColor: 'rgba(0,0,0,0.05)', minWidth: 32, alignItems: 'center' }}>
-                            <Text style={{ fontSize: 13, fontWeight: '700', color: '#0E0E0E', letterSpacing: -0.3 }}>{item.qty}</Text>
+                          <View
+                            style={{
+                              paddingHorizontal: 8,
+                              paddingVertical: 6,
+                              backgroundColor: 'rgba(0,0,0,0.05)',
+                              minWidth: 32,
+                              alignItems: 'center',
+                            }}>
+                            <Text
+                              style={{
+                                fontSize: 13,
+                                fontWeight: '700',
+                                color: '#0E0E0E',
+                                letterSpacing: -0.3,
+                              }}>
+                              {item.qty}
+                            </Text>
                           </View>
                           <Pressable
                             onPress={() => stepQty(item.id, 1)}
                             style={{ paddingHorizontal: 12, paddingVertical: 6 }}>
-                            <Text style={{ fontSize: 16, fontWeight: '500', color: '#0E0E0E', lineHeight: 18 }}>+</Text>
+                            <Text
+                              style={{
+                                fontSize: 16,
+                                fontWeight: '500',
+                                color: '#0E0E0E',
+                                lineHeight: 18,
+                              }}>
+                              +
+                            </Text>
                           </Pressable>
                         </View>
 
@@ -706,15 +786,31 @@ export function AddSplitScreen({ onBack }: { onBack: () => void }) {
                             animate={{ opacity: 1, scale: 1 }}
                             transition={{ type: 'spring', stiffness: 400, damping: 22 }}
                             style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
-                            <Text style={{ fontSize: 10.5, color: 'rgba(0,0,0,0.3)', fontWeight: '500' }}>
+                            <Text
+                              style={{
+                                fontSize: 10.5,
+                                color: 'rgba(0,0,0,0.3)',
+                                fontWeight: '500',
+                              }}>
                               {item.qty} × {formatCurrency(unitPrice, currency)} =
                             </Text>
-                            <Text style={{ fontSize: 13, fontWeight: '700', color: '#0E0E0E', letterSpacing: -0.3 }}>
+                            <Text
+                              style={{
+                                fontSize: 13,
+                                fontWeight: '700',
+                                color: '#0E0E0E',
+                                letterSpacing: -0.3,
+                              }}>
                               {formatCurrency(lineTotal, currency)}
                             </Text>
                           </MotiView>
                         ) : (
-                          <Text style={{ fontSize: 10.5, color: 'rgba(0,0,0,0.28)', fontWeight: '500' }}>
+                          <Text
+                            style={{
+                              fontSize: 10.5,
+                              color: 'rgba(0,0,0,0.28)',
+                              fontWeight: '500',
+                            }}>
                             tap name to set qty (e.g. x3)
                           </Text>
                         )}
@@ -819,7 +915,9 @@ export function AddSplitScreen({ onBack }: { onBack: () => void }) {
                 marginHorizontal: 20,
                 backgroundColor: '#fff',
                 borderRadius: 28,
-                paddingTop: 24, paddingBottom: 20, paddingHorizontal: 24,
+                paddingTop: 24,
+                paddingBottom: 20,
+                paddingHorizontal: 24,
                 borderWidth: 1,
                 borderColor: 'rgba(0,0,0,0.05)',
                 shadowColor: '#000',
@@ -828,24 +926,45 @@ export function AddSplitScreen({ onBack }: { onBack: () => void }) {
                 shadowRadius: 8,
                 elevation: 2,
               }}>
-
               {/* ── PHASE 1: Avatar picker ─────────────────────── */}
-              <Text style={{ fontSize: 9, fontWeight: '700', color: 'rgba(0,0,0,0.3)', letterSpacing: 1.4, textTransform: 'uppercase', marginBottom: 14 }}>
+              <Text
+                style={{
+                  fontSize: 9,
+                  fontWeight: '700',
+                  color: 'rgba(0,0,0,0.3)',
+                  letterSpacing: 1.4,
+                  textTransform: 'uppercase',
+                  marginBottom: 14,
+                }}>
                 Tap to include
               </Text>
               <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 16, marginBottom: 4 }}>
                 {/* YOU — always in */}
                 <View style={{ alignItems: 'center', gap: 6, width: 56 }}>
-                  <View style={{ width: 48, height: 48, borderRadius: 24, overflow: 'hidden', borderWidth: 2.5, borderColor: '#141414', backgroundColor: '#E0E0E0' }}>
-                    <Image source={{ uri: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&h=200&fit=crop&crop=faces' }} style={{ width: '100%', height: '100%' }} />
+                  <View
+                    style={{
+                      width: 48,
+                      height: 48,
+                      borderRadius: 24,
+                      overflow: 'hidden',
+                      borderWidth: 2.5,
+                      borderColor: '#141414',
+                      backgroundColor: '#E0E0E0',
+                    }}>
+                    <Image
+                      source={{
+                        uri: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&h=200&fit=crop&crop=faces',
+                      }}
+                      style={{ width: '100%', height: '100%' }}
+                    />
                   </View>
                   <Text style={{ fontSize: 10, fontWeight: '700', color: '#0E0E0E' }}>You</Text>
                 </View>
-                {FRIENDS.map(f => (
+                {FRIENDS.map((f) => (
                   <FriendChip
                     key={f.key}
                     friend={f}
-                    selected={assignments.some(a => a.key === f.key)}
+                    selected={assignments.some((a) => a.key === f.key)}
                     onToggle={() => toggleFriend(f.key)}
                   />
                 ))}
@@ -858,17 +977,29 @@ export function AddSplitScreen({ onBack }: { onBack: () => void }) {
                   animate={{ opacity: 1, translateY: 0 }}
                   transition={{ type: 'timing', duration: 240 }}
                   style={{ marginTop: 20 }}>
-                  <View style={{ height: 1, backgroundColor: 'rgba(0,0,0,0.06)', marginBottom: 16 }} />
-                  <Text style={{ fontSize: 9, fontWeight: '700', color: 'rgba(0,0,0,0.3)', letterSpacing: 1.4, textTransform: 'uppercase', marginBottom: 12 }}>
+                  <View
+                    style={{ height: 1, backgroundColor: 'rgba(0,0,0,0.06)', marginBottom: 16 }}
+                  />
+                  <Text
+                    style={{
+                      fontSize: 9,
+                      fontWeight: '700',
+                      color: 'rgba(0,0,0,0.3)',
+                      letterSpacing: 1.4,
+                      textTransform: 'uppercase',
+                      marginBottom: 12,
+                    }}>
                     How they pay — tap badge to change
                   </Text>
                   {assignments.map((a, idx) => {
                     const isYou = a.key === 'YOU';
-                    const friend = FRIENDS.find(f => f.key === a.key);
+                    const friend = FRIENDS.find((f) => f.key === a.key);
                     const name = isYou ? 'You' : (friend?.name ?? a.key);
                     const photo = isYou
                       ? 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&h=200&fit=crop&crop=faces'
-                      : (friend ? PHOTOS[a.key] : '');
+                      : friend
+                        ? PHOTOS[a.key]
+                        : '';
                     const modeStyle = MODE_COLORS[a.mode];
                     const share = shareFor(a);
                     return (
@@ -876,7 +1007,12 @@ export function AddSplitScreen({ onBack }: { onBack: () => void }) {
                         key={a.key}
                         from={{ opacity: 0, translateX: -10 }}
                         animate={{ opacity: 1, translateX: 0 }}
-                        transition={{ type: 'spring', stiffness: 380, damping: 26, delay: idx * 40 }}
+                        transition={{
+                          type: 'spring',
+                          stiffness: 380,
+                          damping: 26,
+                          delay: idx * 40,
+                        }}
                         style={{
                           flexDirection: 'row',
                           alignItems: 'center',
@@ -886,20 +1022,47 @@ export function AddSplitScreen({ onBack }: { onBack: () => void }) {
                           gap: 12,
                         }}>
                         {/* Avatar */}
-                        <View style={{ width: 34, height: 34, borderRadius: 17, overflow: 'hidden', backgroundColor: '#E6E6E6', flexShrink: 0 }}>
-                          <Image source={{ uri: photo }} style={{ width: '100%', height: '100%' }} />
+                        <View
+                          style={{
+                            width: 34,
+                            height: 34,
+                            borderRadius: 17,
+                            overflow: 'hidden',
+                            backgroundColor: '#E6E6E6',
+                            flexShrink: 0,
+                          }}>
+                          <Image
+                            source={{ uri: photo }}
+                            style={{ width: '100%', height: '100%' }}
+                          />
                         </View>
 
                         {/* Name + share amount */}
                         <View style={{ flex: 1 }}>
-                          <Text style={{ fontSize: 13.5, fontWeight: '600', color: '#0E0E0E', letterSpacing: -0.2 }}>{name}</Text>
+                          <Text
+                            style={{
+                              fontSize: 13.5,
+                              fontWeight: '600',
+                              color: '#0E0E0E',
+                              letterSpacing: -0.2,
+                            }}>
+                            {name}
+                          </Text>
                           {a.mode !== 'auto' || total > 0 ? (
-                            <Text style={{ fontSize: 11, color: '#AAAAAA', fontWeight: '500', marginTop: 1 }}>
+                            <Text
+                              style={{
+                                fontSize: 11,
+                                color: '#AAAAAA',
+                                fontWeight: '500',
+                                marginTop: 1,
+                              }}>
                               {a.mode === 'auto'
-                                ? (total > 0 ? `≈ ${formatCurrency(share, currency)}` : 'Waiting for items...')
+                                ? total > 0
+                                  ? `≈ ${formatCurrency(share, currency)}`
+                                  : 'Waiting for items...'
                                 : a.mode === 'cash'
-                                ? `${formatCurrency(share, currency)} — already paid`
-                                : `${formatCurrency(share, currency)} fixed`}
+                                  ? `${formatCurrency(share, currency)} — already paid`
+                                  : `${formatCurrency(share, currency)} fixed`}
                             </Text>
                           ) : null}
                         </View>
@@ -909,8 +1072,20 @@ export function AddSplitScreen({ onBack }: { onBack: () => void }) {
                           <MotiView
                             animate={{ backgroundColor: modeStyle.bg }}
                             transition={{ type: 'timing', duration: 160 }}
-                            style={{ borderRadius: 10, paddingHorizontal: 11, paddingVertical: 6, minWidth: 62, alignItems: 'center' }}>
-                            <Text style={{ fontSize: 11.5, fontWeight: '700', color: modeStyle.text, letterSpacing: -0.1 }}>
+                            style={{
+                              borderRadius: 10,
+                              paddingHorizontal: 11,
+                              paddingVertical: 6,
+                              minWidth: 62,
+                              alignItems: 'center',
+                            }}>
+                            <Text
+                              style={{
+                                fontSize: 11.5,
+                                fontWeight: '700',
+                                color: modeStyle.text,
+                                letterSpacing: -0.1,
+                              }}>
                               {modeStyle.label}
                             </Text>
                           </MotiView>
@@ -922,17 +1097,39 @@ export function AddSplitScreen({ onBack }: { onBack: () => void }) {
                             from={{ opacity: 0, scaleX: 0.7 }}
                             animate={{ opacity: 1, scaleX: 1 }}
                             transition={{ type: 'spring', stiffness: 420, damping: 26 }}
-                            style={{ flexDirection: 'row', alignItems: 'center', backgroundColor: a.mode === 'cash' ? '#E8F5E9' : '#FFF3E0', borderRadius: 10, paddingHorizontal: 8, paddingVertical: 6, minWidth: 64 }}>
-                            <Text style={{ fontSize: 11, fontWeight: '700', color: a.mode === 'cash' ? '#2E7D32' : '#E65100', marginRight: 2 }}>
+                            style={{
+                              flexDirection: 'row',
+                              alignItems: 'center',
+                              backgroundColor: a.mode === 'cash' ? '#E8F5E9' : '#FFF3E0',
+                              borderRadius: 10,
+                              paddingHorizontal: 8,
+                              paddingVertical: 6,
+                              minWidth: 64,
+                            }}>
+                            <Text
+                              style={{
+                                fontSize: 11,
+                                fontWeight: '700',
+                                color: a.mode === 'cash' ? '#2E7D32' : '#E65100',
+                                marginRight: 2,
+                              }}>
                               {currency === 'USD' ? '$' : 'Z'}
                             </Text>
                             <TextInput
                               value={a.customAmount}
-                              onChangeText={v => setCustomAmount(a.key, v)}
+                              onChangeText={(v) => setCustomAmount(a.key, v)}
                               placeholder="0.00"
-                              placeholderTextColor={a.mode === 'cash' ? 'rgba(46,125,50,0.4)' : 'rgba(230,81,0,0.4)'}
+                              placeholderTextColor={
+                                a.mode === 'cash' ? 'rgba(46,125,50,0.4)' : 'rgba(230,81,0,0.4)'
+                              }
                               keyboardType="decimal-pad"
-                              style={{ fontSize: 13, fontWeight: '700', color: a.mode === 'cash' ? '#2E7D32' : '#E65100', padding: 0, minWidth: 40 }}
+                              style={{
+                                fontSize: 13,
+                                fontWeight: '700',
+                                color: a.mode === 'cash' ? '#2E7D32' : '#E65100',
+                                padding: 0,
+                                minWidth: 40,
+                              }}
                             />
                           </MotiView>
                         )}
@@ -941,28 +1138,64 @@ export function AddSplitScreen({ onBack }: { onBack: () => void }) {
                   })}
 
                   {/* Remainder check */}
-                  {total > 0 && (() => {
-                    const assigned = assignments.reduce((s, a) => s + shareFor(a), 0);
-                    const diff = Math.abs(total - assigned);
-                    const over = assigned > total + 0.005;
-                    const under = assigned < total - 0.005;
-                    if (!over && !under) return (
-                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 14, backgroundColor: '#E8F5E9', borderRadius: 12, padding: 10 }}>
-                        <Text style={{ fontSize: 12, fontWeight: '700', color: '#2E7D32' }}>✓ Balanced</Text>
-                        <Text style={{ fontSize: 11, color: '#2E7D32', opacity: 0.7 }}>{formatCurrency(total, currency)} covered</Text>
-                      </View>
-                    );
-                    return (
-                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: 14, backgroundColor: over ? '#FFF3E0' : '#FFF8E1', borderRadius: 12, padding: 10 }}>
-                        <Text style={{ fontSize: 12, fontWeight: '700', color: over ? '#E65100' : '#F57F17' }}>
-                          {over ? `↑ ${formatCurrency(diff, currency)} over` : `↓ ${formatCurrency(diff, currency)} unassigned`}
-                        </Text>
-                        <Text style={{ fontSize: 10.5, color: over ? '#E65100' : '#F57F17', opacity: 0.7 }}>
-                          Auto members absorb remainder
-                        </Text>
-                      </View>
-                    );
-                  })()}
+                  {total > 0 &&
+                    (() => {
+                      const assigned = assignments.reduce((s, a) => s + shareFor(a), 0);
+                      const diff = Math.abs(total - assigned);
+                      const over = assigned > total + 0.005;
+                      const under = assigned < total - 0.005;
+                      if (!over && !under)
+                        return (
+                          <View
+                            style={{
+                              flexDirection: 'row',
+                              alignItems: 'center',
+                              gap: 6,
+                              marginTop: 14,
+                              backgroundColor: '#E8F5E9',
+                              borderRadius: 12,
+                              padding: 10,
+                            }}>
+                            <Text style={{ fontSize: 12, fontWeight: '700', color: '#2E7D32' }}>
+                              ✓ Balanced
+                            </Text>
+                            <Text style={{ fontSize: 11, color: '#2E7D32', opacity: 0.7 }}>
+                              {formatCurrency(total, currency)} covered
+                            </Text>
+                          </View>
+                        );
+                      return (
+                        <View
+                          style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            gap: 6,
+                            marginTop: 14,
+                            backgroundColor: over ? '#FFF3E0' : '#FFF8E1',
+                            borderRadius: 12,
+                            padding: 10,
+                          }}>
+                          <Text
+                            style={{
+                              fontSize: 12,
+                              fontWeight: '700',
+                              color: over ? '#E65100' : '#F57F17',
+                            }}>
+                            {over
+                              ? `↑ ${formatCurrency(diff, currency)} over`
+                              : `↓ ${formatCurrency(diff, currency)} unassigned`}
+                          </Text>
+                          <Text
+                            style={{
+                              fontSize: 10.5,
+                              color: over ? '#E65100' : '#F57F17',
+                              opacity: 0.7,
+                            }}>
+                            Auto members absorb remainder
+                          </Text>
+                        </View>
+                      );
+                    })()}
                 </MotiView>
               )}
             </View>
@@ -1113,11 +1346,13 @@ export function AddSplitScreen({ onBack }: { onBack: () => void }) {
                 </View>
                 {total > 0 && assignments.length > 1 && (
                   <View style={{ alignItems: 'flex-end', gap: 3, marginBottom: 4 }}>
-                    <Text style={{ fontSize: 11.5, color: 'rgba(255,255,255,0.3)', fontWeight: '500' }}>
+                    <Text
+                      style={{ fontSize: 11.5, color: 'rgba(255,255,255,0.3)', fontWeight: '500' }}>
                       {formatCurrency(total, currency)} · {assignments.length} people
                     </Text>
                     {autoCount > 0 && (
-                      <Text style={{ fontSize: 10, color: 'rgba(255,255,255,0.2)', fontWeight: '500' }}>
+                      <Text
+                        style={{ fontSize: 10, color: 'rgba(255,255,255,0.2)', fontWeight: '500' }}>
                         {autoCount} auto · {assignments.length - autoCount} fixed
                       </Text>
                     )}
