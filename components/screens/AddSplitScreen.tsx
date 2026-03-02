@@ -14,9 +14,10 @@ import {
   Zap,
 } from 'lucide-react-native';
 import { MotiView, AnimatePresence } from 'moti';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   Image,
+  Keyboard,
   KeyboardAvoidingView,
   Platform,
   Pressable,
@@ -185,6 +186,19 @@ export function AddSplitScreen({ onBack }: { onBack: () => void }) {
   const [rateEditing, setRateEditing] = useState(false);
 
   const venueRef = useRef<TextInput>(null);
+  const firstItemNameRef = useRef<TextInput>(null);
+  const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
+
+  useEffect(() => {
+    const showEvent = Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow';
+    const hideEvent = Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide';
+    const onShow = Keyboard.addListener(showEvent, () => setIsKeyboardVisible(true));
+    const onHide = Keyboard.addListener(hideEvent, () => setIsKeyboardVisible(false));
+    return () => {
+      onShow.remove();
+      onHide.remove();
+    };
+  }, []);
 
   // ── Computed ─────────────────────────────────────────────────
   const total = items.reduce((sum, it) => {
@@ -323,7 +337,8 @@ export function AddSplitScreen({ onBack }: { onBack: () => void }) {
         <ScrollView
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
-          contentContainerStyle={{ paddingBottom: 180 }}>
+          keyboardDismissMode="on-drag"
+          contentContainerStyle={{ paddingBottom: isKeyboardVisible ? 24 : 200 }}>
           {/* ── VENUE CARD ──────────────────────────────────────── */}
           <MotiView
             from={{ opacity: 0, translateY: 20 }}
@@ -380,6 +395,11 @@ export function AddSplitScreen({ onBack }: { onBack: () => void }) {
                   onChangeText={setVenue}
                   placeholder="e.g. Grill & Chill"
                   placeholderTextColor="rgba(255,255,255,0.2)"
+                  autoCapitalize="words"
+                  autoCorrect={false}
+                  returnKeyType="next"
+                  onSubmitEditing={() => firstItemNameRef.current?.focus()}
+                  blurOnSubmit={false}
                   style={{
                     flex: 1,
                     fontSize: 26,
@@ -573,10 +593,15 @@ export function AddSplitScreen({ onBack }: { onBack: () => void }) {
 
                     {/* NAME */}
                     <TextInput
+                      ref={idx === 0 ? firstItemNameRef : undefined}
                       value={item.name}
                       onChangeText={(v) => updateItem(item.id, 'name', v)}
                       placeholder="Item name"
                       placeholderTextColor="rgba(0,0,0,0.25)"
+                      autoCapitalize="words"
+                      autoCorrect={false}
+                      returnKeyType="next"
+                      blurOnSubmit={false}
                       style={{
                         flex: 1,
                         fontSize: 14,
@@ -613,6 +638,12 @@ export function AddSplitScreen({ onBack }: { onBack: () => void }) {
                         placeholder="0.00"
                         placeholderTextColor="rgba(0,0,0,0.25)"
                         keyboardType="decimal-pad"
+                        returnKeyType={idx < items.length - 1 ? 'next' : 'done'}
+                        blurOnSubmit={idx === items.length - 1}
+                        onSubmitEditing={() => {
+                          if (idx < items.length - 1) addItem();
+                          else Keyboard.dismiss();
+                        }}
                         style={{
                           fontSize: 14,
                           fontWeight: '700',
@@ -834,116 +865,199 @@ export function AddSplitScreen({ onBack }: { onBack: () => void }) {
             </View>
           </MotiView>
         </ScrollView>
-      </KeyboardAvoidingView>
 
-      {/* ── STICKY BOTTOM — MY SHARE + CTA ──────────────────────── */}
-      <MotiView
-        from={{ opacity: 0, translateY: 40 }}
-        animate={{ opacity: 1, translateY: 0 }}
-        transition={{ type: 'spring', stiffness: 200, damping: 24, delay: 220 }}
-        style={{
-          position: 'absolute',
-          bottom: 0,
-          left: 0,
-          right: 0,
-          paddingBottom: insets.bottom + 16,
-          paddingHorizontal: 20,
-          paddingTop: 16,
-          backgroundColor: '#F4F4F4',
-          borderTopWidth: 1,
-          borderTopColor: 'rgba(0,0,0,0.06)',
-        }}>
-        <View
+        {/* ── STICKY BOTTOM ── inside KAV, keyboard-aware ──────── */}
+        <MotiView
+          from={{ opacity: 0, translateY: 40 }}
+          animate={{ opacity: 1, translateY: 0 }}
+          transition={{ type: 'spring', stiffness: 200, damping: 24, delay: 220 }}
           style={{
-            backgroundColor: '#141414',
-            borderRadius: 24,
-            padding: 20,
-            shadowColor: '#000',
-            shadowOffset: { width: 0, height: -4 },
-            shadowOpacity: 0.18,
-            shadowRadius: 16,
-            elevation: 10,
+            paddingHorizontal: 20,
+            paddingTop: 12,
+            paddingBottom: insets.bottom > 0 ? insets.bottom + 8 : 20,
+            backgroundColor: '#F4F4F4',
+            borderTopWidth: 1,
+            borderTopColor: 'rgba(0,0,0,0.06)',
           }}>
-          {/* SHARE ROW */}
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'flex-end',
-              justifyContent: 'space-between',
-              marginBottom: 16,
-            }}>
-            <View>
-              <Text
-                style={{
-                  fontSize: 9.5,
-                  fontWeight: '700',
-                  color: '#FF0048',
-                  letterSpacing: 1.6,
-                  textTransform: 'uppercase',
-                  marginBottom: 3,
-                }}>
-                Your share
-              </Text>
-              <Text
-                style={{
-                  fontSize: 42,
-                  fontWeight: '300',
-                  color: total > 0 ? '#fff' : 'rgba(255,255,255,0.2)',
-                  letterSpacing: -2.5,
-                  lineHeight: 42,
-                }}>
-                {total > 0 ? formatCurrency(myShare, currency) : '—'}
-              </Text>
-            </View>
-            {total > 0 && headcount > 1 && (
-              <Text
-                style={{
-                  fontSize: 11.5,
-                  color: 'rgba(255,255,255,0.3)',
-                  fontWeight: '500',
-                  marginBottom: 4,
-                }}>
-                {formatCurrency(total, currency)} ÷ {headcount}
-              </Text>
-            )}
-          </View>
-
-          {/* CREATE BUTTON */}
-          <MotiView
-            animate={{ opacity: canCreate ? 1 : 0.4 }}
-            transition={{ type: 'timing', duration: 180 }}>
-            <Pressable
-              disabled={!canCreate}
+          {isKeyboardVisible ? (
+            /* ── COMPACT STRIP when keyboard is up ── */
+            <MotiView
+              from={{ opacity: 0, scale: 0.97 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ type: 'spring', stiffness: 380, damping: 26 }}
               style={{
-                backgroundColor: '#FF0048',
-                borderRadius: 16,
-                paddingVertical: 16,
                 flexDirection: 'row',
                 alignItems: 'center',
-                justifyContent: 'space-between',
-                paddingHorizontal: 20,
-                shadowColor: '#FF0048',
-                shadowOffset: { width: 0, height: 6 },
-                shadowOpacity: canCreate ? 0.45 : 0,
-                shadowRadius: 14,
-                elevation: canCreate ? 8 : 0,
+                backgroundColor: '#141414',
+                borderRadius: 18,
+                paddingHorizontal: 18,
+                paddingVertical: 12,
+                gap: 12,
               }}>
-              <Text
+              {/* SHARE AMOUNT */}
+              <View style={{ flex: 1 }}>
+                <Text
+                  style={{
+                    fontSize: 9,
+                    fontWeight: '700',
+                    color: '#FF0048',
+                    letterSpacing: 1.4,
+                    textTransform: 'uppercase',
+                    marginBottom: 1,
+                  }}>
+                  Your share
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 22,
+                    fontWeight: '500',
+                    color: total > 0 ? '#fff' : 'rgba(255,255,255,0.2)',
+                    letterSpacing: -1,
+                  }}>
+                  {total > 0 ? formatCurrency(myShare, currency) : '—'}
+                </Text>
+              </View>
+              {/* DONE / CREATE */}
+              <Pressable
+                onPress={() => Keyboard.dismiss()}
                 style={{
-                  fontSize: 15,
-                  fontWeight: '700',
-                  color: '#fff',
-                  letterSpacing: -0.3,
+                  backgroundColor: 'rgba(255,255,255,0.1)',
+                  borderRadius: 12,
+                  paddingHorizontal: 16,
+                  paddingVertical: 10,
                 }}>
-                Create Split
-              </Text>
-              <Text style={{ fontSize: 17, color: 'rgba(255,255,255,0.7)', fontWeight: '600' }}>
-                →
-              </Text>
-            </Pressable>
-          </MotiView>
-        </View>
-      </MotiView>
+                <Text
+                  style={{
+                    fontSize: 13,
+                    fontWeight: '700',
+                    color: 'rgba(255,255,255,0.7)',
+                    letterSpacing: -0.2,
+                  }}>
+                  Done
+                </Text>
+              </Pressable>
+              {canCreate && (
+                <Pressable
+                  style={{
+                    backgroundColor: '#FF0048',
+                    borderRadius: 12,
+                    paddingHorizontal: 18,
+                    paddingVertical: 10,
+                    shadowColor: '#FF0048',
+                    shadowOffset: { width: 0, height: 4 },
+                    shadowOpacity: 0.5,
+                    shadowRadius: 8,
+                    elevation: 5,
+                  }}>
+                  <Text
+                    style={{
+                      fontSize: 13,
+                      fontWeight: '700',
+                      color: '#fff',
+                      letterSpacing: -0.2,
+                    }}>
+                    Create →
+                  </Text>
+                </Pressable>
+              )}
+            </MotiView>
+          ) : (
+            /* ── FULL CARD when keyboard is hidden ── */
+            <MotiView
+              from={{ opacity: 0, scale: 0.97 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ type: 'spring', stiffness: 340, damping: 28 }}
+              style={{
+                backgroundColor: '#141414',
+                borderRadius: 24,
+                padding: 20,
+                shadowColor: '#000',
+                shadowOffset: { width: 0, height: -4 },
+                shadowOpacity: 0.15,
+                shadowRadius: 16,
+                elevation: 10,
+              }}>
+              {/* SHARE ROW */}
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'flex-end',
+                  justifyContent: 'space-between',
+                  marginBottom: 16,
+                }}>
+                <View>
+                  <Text
+                    style={{
+                      fontSize: 9.5,
+                      fontWeight: '700',
+                      color: '#FF0048',
+                      letterSpacing: 1.6,
+                      textTransform: 'uppercase',
+                      marginBottom: 3,
+                    }}>
+                    Your share
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: 42,
+                      fontWeight: '300',
+                      color: total > 0 ? '#fff' : 'rgba(255,255,255,0.2)',
+                      letterSpacing: -2.5,
+                      lineHeight: 44,
+                    }}>
+                    {total > 0 ? formatCurrency(myShare, currency) : '—'}
+                  </Text>
+                </View>
+                {total > 0 && headcount > 1 && (
+                  <Text
+                    style={{
+                      fontSize: 11.5,
+                      color: 'rgba(255,255,255,0.3)',
+                      fontWeight: '500',
+                      marginBottom: 4,
+                    }}>
+                    {formatCurrency(total, currency)} ÷ {headcount}
+                  </Text>
+                )}
+              </View>
+              {/* CREATE BUTTON */}
+              <MotiView
+                animate={{ opacity: canCreate ? 1 : 0.4 }}
+                transition={{ type: 'timing', duration: 180 }}>
+                <Pressable
+                  disabled={!canCreate}
+                  style={{
+                    backgroundColor: '#FF0048',
+                    borderRadius: 16,
+                    paddingVertical: 16,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    paddingHorizontal: 20,
+                    shadowColor: '#FF0048',
+                    shadowOffset: { width: 0, height: 6 },
+                    shadowOpacity: canCreate ? 0.45 : 0,
+                    shadowRadius: 14,
+                    elevation: canCreate ? 8 : 0,
+                  }}>
+                  <Text
+                    style={{
+                      fontSize: 15,
+                      fontWeight: '700',
+                      color: '#fff',
+                      letterSpacing: -0.3,
+                    }}>
+                    Create Split
+                  </Text>
+                  <Text style={{ fontSize: 17, color: 'rgba(255,255,255,0.7)', fontWeight: '600' }}>
+                    →
+                  </Text>
+                </Pressable>
+              </MotiView>
+            </MotiView>
+          )}
+        </MotiView>
+      </KeyboardAvoidingView>
     </View>
   );
 }
