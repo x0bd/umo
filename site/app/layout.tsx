@@ -1,23 +1,20 @@
 import type { Metadata } from 'next';
-import { Syne, DM_Sans } from 'next/font/google';
+import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 
-const syne = Syne({
-  variable: '--font-syne',
+const geist = Geist({
+  variable: '--font-geist',
   subsets: ['latin'],
-  weight: ['400', '600', '700', '800'],
 });
 
-const dmSans = DM_Sans({
-  variable: '--font-dm-sans',
+const geistMono = Geist_Mono({
+  variable: '--font-geist-mono',
   subsets: ['latin'],
-  weight: ['400', '500', '600'],
 });
 
 export const metadata: Metadata = {
   title: 'umo — Split smarter',
-  description:
-    'Itemize every order. Convert between USD and ZiG. Settle in seconds. Join the waitlist.',
+  description: 'Itemize every order. Convert between USD and ZiG on the fly. Settle in seconds.',
 };
 
 export default function RootLayout({
@@ -27,7 +24,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${syne.variable} ${dmSans.variable} antialiased`}>{children}</body>
+      <body className={`${geist.variable} ${geistMono.variable} antialiased`}>{children}</body>
     </html>
   );
 }

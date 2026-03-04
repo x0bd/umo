@@ -2,26 +2,22 @@
 
 * {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 html,
-body,
-#__next {
+body {
   height: 100%;
   overflow: hidden;
+  background: #111110;
+  color: #f5f5f3;
 }
 
 @theme inline {
-  --font-sans: var(--font-dm-sans);
-  --font-display: var(--font-syne);
+  --font-sans: var(--font-geist);
+  --font-mono: var(--font-geist-mono);
   --color-brand: #ff0048;
-  --color-dark: #0e0e0e;
-  --color-surface: #f4f4f4;
-  --color-muted: #aaaaaa;
-}
-
-body {
-  background: #f4f4f4;
-  color: #0e0e0e;
-  font-family: var(--font-dm-sans), system-ui, sans-serif;
+  --color-dark: #111110;
+  --color-muted: #888885;
 }

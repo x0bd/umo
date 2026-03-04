@@ -1,363 +1,125 @@
-"use client";
+'use client';
 
-import Image from "next/image";
-import { FormEvent, useState } from "react";
+import { Rabbit } from 'lucide-react';
+import { FormEvent, useState } from 'react';
 
 export default function Home() {
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState('');
   const [joined, setJoined] = useState(false);
+  'use client';
 
-  function handleSubmit(e: FormEvent) {
-    e.preventDefault();
-    if (email.trim()) setJoined(true);
-  }
+  import Image from 'next/image';
+  import { Rabbit } from 'lucide-react';
+  import { FormEvent, useState } from 'react';
 
-  return (
-    <main
-      style={{
-        height: "100dvh",
-        overflow: "hidden",
-        background: "#F4F4F4",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: "20px",
-      }}
-    >
-      {/* ── CARD ─────────────────────────────────────────────────────── */}
-      <div
-        style={{
-          display: "flex",
-          width: "100%",
-          height: "100%",
-          borderRadius: 24,
-          overflow: "hidden",
-          boxShadow:
-            "0 24px 80px rgba(0,0,0,0.09), 0 2px 8px rgba(0,0,0,0.05)",
-        }}
-      >
-        {/* ── LEFT PANEL ───────────────────────────────────────────────── */}
-        <section
-          style={{
-            flex: "0 0 54%",
-            background: "#FFFFFF",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "space-between",
-            padding: "44px 48px",
-          }}
-        >
-          {/* Logo */}
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              gap: 8,
-            }}
-          >
-            <div
-              style={{
-                width: 46,
-                height: 46,
-                borderRadius: 14,
-                background: "#FF0048",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                boxShadow: "0 8px 24px rgba(255,0,72,0.32)",
-              }}
-            >
-              <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
-                <path
-                  d="M12 3C9.5 3 8 5 8 7.5V9C6.5 9 5 10.5 5 12.5C5 14.5 6.5 16 8 16V18C8 19.1 8.9 20 10 20H14C15.1 20 16 19.1 16 18V16C17.5 16 19 14.5 19 12.5C19 10.5 17.5 9 16 9V7.5C16 5 14.5 3 12 3Z"
-                  fill="white"
-                />
-                <circle cx="10" cy="12.5" r="1" fill="#FF0048" />
-                <circle cx="14" cy="12.5" r="1" fill="#FF0048" />
-                <path
-                  d="M8 6.5C8 6.5 7 3.5 5.5 3.5C4 3.5 3.5 5 4 6.5C4.5 8 6 8.8 8 9.5"
-                  stroke="white"
-                  strokeWidth="1.3"
-                  strokeLinecap="round"
-                  fill="none"
-                />
-                <path
-                  d="M16 6.5C16 6.5 17 3.5 18.5 3.5C20 3.5 20.5 5 20 6.5C19.5 8 18 8.8 16 9.5"
-                  stroke="white"
-                  strokeWidth="1.3"
-                  strokeLinecap="round"
-                  fill="none"
-                />
-              </svg>
+  export default function Home() {
+    const [email, setEmail] = useState('');
+    const [joined, setJoined] = useState(false);
+
+    function handleSubmit(e: FormEvent<HTMLFormElement>) {
+      e.preventDefault();
+      if (email.trim()) setJoined(true);
+    }
+
+    return (
+      <main className="h-dvh overflow-hidden bg-[#111111] px-4 py-4 text-[#F4F4F4] sm:px-6 sm:py-6">
+        <div className="mx-auto flex h-full w-full max-w-4xl flex-col rounded-[28px] border border-white/10 bg-[#141414] shadow-[0_28px_90px_rgba(0,0,0,0.48)]">
+          <header className="flex h-14 items-center justify-between border-b border-white/10 px-5 sm:px-6">
+            <div className="flex items-center gap-2.5">
+              <div className="grid h-7 w-7 place-items-center rounded-[9px] bg-[#FF0048] shadow-[0_8px_20px_rgba(255,0,72,0.36)]">
+                <Rabbit size={15} color="#fff" strokeWidth={2} />
+              </div>
+              <span className="font-sans text-[15px] font-semibold tracking-[-0.02em] text-white">umo</span>
             </div>
-            <span
-              style={{
-                fontFamily: "var(--font-syne)",
-                fontWeight: 800,
-                fontSize: 13,
-                letterSpacing: -0.2,
-                color: "#0E0E0E",
-              }}
-            >
-              umo
-            </span>
-          </div>
+            <a
+              href="#"
+              className="text-[13px] font-medium tracking-[-0.01em] text-white/55 transition-colors hover:text-white">
+              Updates
+            </a>
+          </header>
 
-          {/* Center hero content */}
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              gap: 20,
-              maxWidth: 360,
-            }}
-          >
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                gap: 12,
-                textAlign: "center",
-              }}
-            >
-              <span
-                style={{
-                  fontFamily: "var(--font-dm-sans)",
-                  fontWeight: 600,
-                  fontSize: 10,
-                  letterSpacing: "0.16em",
-                  textTransform: "uppercase",
-                  color: "#BBBBBB",
-                }}
-              >
-                Private Beta
-              </span>
+          <section className="relative grid flex-1 items-center gap-0 overflow-hidden md:grid-cols-[1.06fr_0.94fr]">
+            <div className="pointer-events-none absolute left-1/2 top-1/2 h-[460px] w-[460px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(255,0,72,0.14)_0%,rgba(255,0,72,0.02)_40%,transparent_72%)]" />
 
-              <h1
-                style={{
-                  fontFamily: "var(--font-syne)",
-                  fontWeight: 800,
-                  fontSize: "clamp(2rem, 3.2vw, 2.65rem)",
-                  lineHeight: 1.08,
-                  letterSpacing: -1.5,
-                  color: "#0E0E0E",
-                }}
-              >
-                Split the bill.
-                <br />
-                Not the mood.
-              </h1>
+            <div className="relative z-10 flex items-center justify-center px-6 py-9 sm:px-8 md:px-10">
+              <div className="w-full max-w-[440px] text-center md:text-left">
+                <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 font-mono text-[10px] font-semibold uppercase tracking-[0.08em] text-white/58">
+                  <span className="inline-block h-2 w-2 rounded-full bg-[#FF0048]" />
+                  Private Beta
+                </div>
 
-              <p
-                style={{
-                  fontFamily: "var(--font-dm-sans)",
-                  fontWeight: 400,
-                  fontSize: "clamp(0.85rem, 1.1vw, 0.95rem)",
-                  lineHeight: 1.65,
-                  color: "#888888",
-                  maxWidth: 290,
-                }}
-              >
-                Claim exactly what you ordered. Convert between USD and ZiG on
-                the fly. Settle with one tap.
-              </p>
-            </div>
+                <h1 className="font-sans text-[clamp(2.1rem,4.5vw,3.35rem)] font-semibold leading-[0.98] tracking-[-0.045em] text-white">
+                  Split the bill.
+                  <br />
+                  Keep the vibe.
+                </h1>
 
-            {joined ? (
-              <div
-                style={{
-                  background: "#F4F4F4",
-                  borderRadius: 16,
-                  padding: "18px 32px",
-                  textAlign: "center",
-                }}
-              >
-                <p
-                  style={{
-                    fontFamily: "var(--font-syne)",
-                    fontWeight: 700,
-                    fontSize: 15,
-                    color: "#0E0E0E",
-                    letterSpacing: -0.3,
-                  }}
-                >
-                  You&apos;re on the list 🎉
+                <p className="mt-4 max-w-[390px] text-[15px] leading-[1.6] tracking-[-0.01em] text-[#AAAAAA] md:max-w-[380px]">
+                  Itemize every order, convert between USD and ZiG instantly, and settle faster after
+                  every meal.
                 </p>
-                <p
-                  style={{
-                    fontFamily: "var(--font-dm-sans)",
-                    fontSize: 13,
-                    color: "#AAAAAA",
-                    marginTop: 5,
-                    lineHeight: 1.5,
-                  }}
-                >
-                  We&apos;ll reach out when your spot opens up.
+
+                <div className="mt-7">
+                  {joined ? (
+                    <div className="inline-flex flex-col rounded-2xl border border-white/12 bg-white/5 px-6 py-4 text-left">
+                      <p className="font-sans text-[15px] font-semibold tracking-[-0.02em] text-white">
+                        You&apos;re on the waitlist.
+                      </p>
+                      <p className="mt-1.5 text-[13px] leading-5 text-white/55">
+                        We&apos;ll send your invite as soon as your spot opens.
+                      </p>
+                    </div>
+                  ) : (
+                    <form onSubmit={handleSubmit} className="flex w-full max-w-[420px] flex-col gap-2.5">
+                      <input
+                        type="email"
+                        required
+                        placeholder="you@email.com"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        className="h-11 rounded-xl border border-white/12 bg-white/[0.06] px-4 text-[14px] tracking-[-0.01em] text-white outline-none transition-colors focus:border-[#FF0048]/70"
+                      />
+                      <button
+                        type="submit"
+                        className="h-11 rounded-xl bg-[#FF0048] px-5 text-[14px] font-semibold tracking-[-0.01em] text-white shadow-[0_10px_26px_rgba(255,0,72,0.30)] transition-all hover:translate-y-[-1px] hover:shadow-[0_14px_30px_rgba(255,0,72,0.40)] active:translate-y-0">
+                        Join Waitlist
+                      </button>
+                    </form>
+                  )}
+                </div>
+
+                <p className="mt-4 text-[12px] tracking-[-0.01em] text-white/36">
+                  Beta · Zimbabwe &amp; region · iOS &amp; Android
                 </p>
               </div>
-            ) : (
-              <form
-                onSubmit={handleSubmit}
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 10,
-                  width: "100%",
-                  maxWidth: 320,
-                }}
-              >
-                <input
-                  type="email"
-                  required
-                  placeholder="your@email.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  style={{
-                    fontFamily: "var(--font-dm-sans)",
-                    fontSize: 14,
-                    fontWeight: 500,
-                    background: "#F7F7F7",
-                    border: "1.5px solid rgba(0,0,0,0.08)",
-                    borderRadius: 12,
-                    padding: "13px 18px",
-                    color: "#0E0E0E",
-                    outline: "none",
-                    width: "100%",
-                    transition: "border-color 0.2s, background 0.2s",
-                  }}
-                  onFocus={(e) => {
-                    e.target.style.borderColor = "#FF0048";
-                    e.target.style.background = "#FFFFFF";
-                  }}
-                  onBlur={(e) => {
-                    e.target.style.borderColor = "rgba(0,0,0,0.08)";
-                    e.target.style.background = "#F7F7F7";
-                  }}
-                />
-                <button
-                  type="submit"
-                  style={{
-                    fontFamily: "var(--font-syne)",
-                    fontWeight: 700,
-                    fontSize: 14,
-                    letterSpacing: -0.2,
-                    background: "#FF0048",
-                    color: "#FFFFFF",
-                    border: "none",
-                    borderRadius: 12,
-                    padding: "14px 28px",
-                    cursor: "pointer",
-                    width: "100%",
-                    boxShadow: "0 8px 24px rgba(255,0,72,0.28)",
-                    transition: "transform 0.15s, box-shadow 0.15s",
-                  }}
-                  onMouseEnter={(e) => {
-                    const el = e.currentTarget;
-                    el.style.transform = "translateY(-1px)";
-                    el.style.boxShadow = "0 12px 32px rgba(255,0,72,0.40)";
-                  }}
-                  onMouseLeave={(e) => {
-                    const el = e.currentTarget;
-                    el.style.transform = "translateY(0)";
-                    el.style.boxShadow = "0 8px 24px rgba(255,0,72,0.28)";
-                  }}
-                >
-                  Join the Waitlist
-                </button>
-              </form>
-            )}
-          </div>
+            </div>
 
-          {/* Footer legal */}
-          <p
-            style={{
-              fontFamily: "var(--font-dm-sans)",
-              fontSize: 11,
-              color: "#C8C8C8",
-              textAlign: "center",
-              lineHeight: 1.7,
-            }}
-          >
-            By joining you agree to our{" "}
-            <a
-              href="#"
-              style={{
-                color: "#888",
-                textDecoration: "underline",
-                textUnderlineOffset: 2,
-              }}
-            >
-              Terms of Service
-            </a>{" "}
-            and{" "}
-            <a
-              href="#"
-              style={{
-                color: "#888",
-                textDecoration: "underline",
-                textUnderlineOffset: 2,
-              }}
-            >
-              Privacy Policy
-            </a>
-          </p>
-        </section>
+            <div className="relative hidden h-full border-l border-white/8 bg-[#0E0E0E] md:block">
+              <Image
+                src="/screenshot.png"
+                alt="umo app preview"
+                fill
+                priority
+                className="object-contain px-6 py-8"
+              />
+              <div className="pointer-events-none absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-[#0E0E0E] to-transparent" />
+              <div className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-[#0E0E0E] to-transparent" />
+            </div>
+          </section>
 
-        {/* ── RIGHT PANEL ──────────────────────────────────────────────── */}
-        <section
-          style={{
-            flex: "0 0 46%",
-            background: "#0E0E0E",
-            position: "relative",
-            overflow: "hidden",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-          }}
-        >
-          <Image
-            src="/screenshot.png"
-            alt="umo app screenshot"
-            fill
-            style={{
-              objectFit: "contain",
-              objectPosition: "center",
-              padding: "24px 20px",
-            }}
-            priority
-          />
-          {/* top vignette */}
-          <div
-            style={{
-              position: "absolute",
-              top: 0,
-              left: 0,
-              right: 0,
-              height: 100,
-              background: "linear-gradient(to bottom, #0E0E0E 0%, transparent 100%)",
-              pointerEvents: "none",
-              zIndex: 2,
-            }}
-          />
-          {/* bottom vignette */}
-          <div
-            style={{
-              position: "absolute",
-              bottom: 0,
-              left: 0,
-              right: 0,
-              height: 100,
-              background: "linear-gradient(to top, #0E0E0E 0%, transparent 100%)",
-              pointerEvents: "none",
-              zIndex: 2,
-            }}
-          />
-        </section>
-      </div>
-    </main>
-  );
-}
+          <footer className="flex h-12 items-center justify-between border-t border-white/10 px-5 sm:px-6">
+            <span className="text-[12px] tracking-[-0.01em] text-white/30">© 2026 umo</span>
+            <div className="flex items-center gap-4">
+              <a href="#" className="text-[12px] tracking-[-0.01em] text-white/36 transition-colors hover:text-white/70">
+                Privacy
+              </a>
+              <a href="#" className="text-[12px] tracking-[-0.01em] text-white/36 transition-colors hover:text-white/70">
+                Terms
+              </a>
+            </div>
+          </footer>
+        </div>
+      </main>
+    );
+  }
+            lineHeight: 1.6,
