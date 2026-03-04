@@ -6,13 +6,10 @@ import {
   ChevronDown,
   Clock,
   Flame,
-  Home,
   Plus,
   Search,
   ShoppingBag,
   UtensilsCrossed,
-  Users,
-  Wallet,
   X,
 } from 'lucide-react-native';
 import { AnimatePresence, MotiView } from 'moti';
@@ -28,116 +25,7 @@ import {
   View,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-
-// ─── Nav Dock (shared pattern) ───────────────────────────────────────────────
-
-function DockTab({
-  icon: Icon,
-  active,
-  onPress,
-}: {
-  icon: typeof Home;
-  active: boolean;
-  onPress: () => void;
-}) {
-  const [pressed, setPressed] = useState(false);
-  return (
-    <Pressable
-      onPress={onPress}
-      onPressIn={() => setPressed(true)}
-      onPressOut={() => setPressed(false)}>
-      <MotiView
-        animate={{ scale: pressed ? 0.82 : 1 }}
-        transition={{ type: 'spring', stiffness: 500, damping: 25 }}
-        style={{
-          paddingHorizontal: 22,
-          paddingVertical: 14,
-          borderRadius: 100,
-          backgroundColor: active ? '#2C2C2C' : 'transparent',
-          alignItems: 'center',
-          justifyContent: 'center',
-          gap: 4,
-        }}>
-        <Icon size={23} color={active ? '#fff' : '#5A5A5A'} strokeWidth={active ? 2 : 1.75} />
-        {active && (
-          <MotiView
-            from={{ opacity: 0, scaleX: 0 }}
-            animate={{ opacity: 1, scaleX: 1 }}
-            transition={{ type: 'spring', stiffness: 400, damping: 20 }}>
-            <View style={{ width: 4, height: 4, borderRadius: 2, backgroundColor: '#FF0048' }} />
-          </MotiView>
-        )}
-      </MotiView>
-    </Pressable>
-  );
-}
-
-function NavDock({ onHome, onNewSession }: { onHome: () => void; onNewSession?: () => void }) {
-  const insets = useSafeAreaInsets();
-  const [fabPressed, setFabPressed] = useState(false);
-
-  return (
-    <View
-      style={{
-        position: 'absolute',
-        bottom: 0,
-        left: 0,
-        right: 0,
-        paddingBottom: insets.bottom + 16,
-        alignItems: 'center',
-      }}>
-      <MotiView
-        from={{ opacity: 0, translateY: 40 }}
-        animate={{ opacity: 1, translateY: 0 }}
-        transition={{ type: 'spring', stiffness: 190, damping: 22, delay: 220 }}
-        style={{
-          flexDirection: 'row',
-          alignItems: 'center',
-          backgroundColor: '#111111',
-          borderRadius: 100,
-          paddingHorizontal: 8,
-          paddingVertical: 8,
-          shadowColor: '#000',
-          shadowOffset: { width: 0, height: 14 },
-          shadowOpacity: 0.4,
-          shadowRadius: 32,
-          elevation: 20,
-        }}>
-        <DockTab icon={Home} active={false} onPress={onHome} />
-        <DockTab icon={Clock} active={false} onPress={onHome} />
-
-        {/* Centre FAB */}
-        <Pressable
-          onPress={onNewSession}
-          onPressIn={() => setFabPressed(true)}
-          onPressOut={() => setFabPressed(false)}
-          style={{ marginHorizontal: 6 }}>
-          <MotiView
-            animate={{ scale: fabPressed ? 0.85 : 1 }}
-            transition={{ type: 'spring', stiffness: 400, damping: 18 }}
-            style={{
-              width: 60,
-              height: 60,
-              borderRadius: 30,
-              backgroundColor: '#FF0048',
-              alignItems: 'center',
-              justifyContent: 'center',
-              shadowColor: '#FF0048',
-              shadowOffset: { width: 0, height: 8 },
-              shadowOpacity: 0.6,
-              shadowRadius: 18,
-              elevation: 12,
-            }}>
-            <Plus size={27} color="#fff" strokeWidth={2.5} />
-          </MotiView>
-        </Pressable>
-
-        <DockTab icon={Users} active={true} onPress={() => {}} />
-        <DockTab icon={Wallet} active={false} onPress={() => {}} />
-      </MotiView>
-    </View>
-  );
-}
+import { NavDock } from '../NavDock';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -1388,7 +1276,13 @@ export function PeopleScreen({
       <AddFriendSheet visible={showAdd} onClose={() => setShowAdd(false)} onAdd={handleAdd} />
 
       {/* ── NAV DOCK ─────────────────────────────────────────────────────── */}
-      <NavDock onHome={onBack} onNewSession={onNewSession} />
+      <NavDock
+        activeTab="people"
+        onTabChange={(t) => {
+          if (t !== 'people') onBack();
+        }}
+        onNewSession={onNewSession}
+      />
     </View>
   );
 }
