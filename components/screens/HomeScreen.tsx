@@ -1075,7 +1075,17 @@ export function HomeScreen({ onNewSession, onManagePeople }: Props) {
       )}
 
       {/* ── NAV DOCK ─────────────────────────────────────────────────── */}
-      <NavDock activeTab={activeTab} onTabChange={setActiveTab} onNewSession={onNewSession} />
+      <NavDock
+        activeTab={activeTab}
+        onTabChange={(t) => {
+          if (t === 'people') {
+            onManagePeople?.();
+            return;
+          }
+          setActiveTab(t);
+        }}
+        onNewSession={onNewSession}
+      />
     </View>
   );
 }

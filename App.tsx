@@ -408,7 +408,12 @@ export default function App() {
         />
       )}
       {screen === 'new-split' && <AddSplitScreen onBack={() => setScreen('home')} />}
-      {screen === 'people' && <PeopleScreen onBack={() => setScreen('home')} />}
+      {screen === 'people' && (
+        <PeopleScreen
+          onBack={() => setScreen('home')}
+          onNewSession={() => setScreen('new-split')}
+        />
+      )}
     </SafeAreaProvider>
   );
 }
