@@ -6,120 +6,297 @@ import { FormEvent, useState } from 'react';
 export default function Home() {
   const [email, setEmail] = useState('');
   const [joined, setJoined] = useState(false);
-  'use client';
+  const [focused, setFocused] = useState(false);
 
-  import Image from 'next/image';
-  import { Rabbit } from 'lucide-react';
-  import { FormEvent, useState } from 'react';
-
-  export default function Home() {
-    const [email, setEmail] = useState('');
-    const [joined, setJoined] = useState(false);
-
-    function handleSubmit(e: FormEvent<HTMLFormElement>) {
-      e.preventDefault();
-      if (email.trim()) setJoined(true);
-    }
-
-    return (
-      <main className="h-dvh overflow-hidden bg-[#111111] px-4 py-4 text-[#F4F4F4] sm:px-6 sm:py-6">
-        <div className="mx-auto flex h-full w-full max-w-4xl flex-col rounded-[28px] border border-white/10 bg-[#141414] shadow-[0_28px_90px_rgba(0,0,0,0.48)]">
-          <header className="flex h-14 items-center justify-between border-b border-white/10 px-5 sm:px-6">
-            <div className="flex items-center gap-2.5">
-              <div className="grid h-7 w-7 place-items-center rounded-[9px] bg-[#FF0048] shadow-[0_8px_20px_rgba(255,0,72,0.36)]">
-                <Rabbit size={15} color="#fff" strokeWidth={2} />
-              </div>
-              <span className="font-sans text-[15px] font-semibold tracking-[-0.02em] text-white">umo</span>
-            </div>
-            <a
-              href="#"
-              className="text-[13px] font-medium tracking-[-0.01em] text-white/55 transition-colors hover:text-white">
-              Updates
-            </a>
-          </header>
-
-          <section className="relative grid flex-1 items-center gap-0 overflow-hidden md:grid-cols-[1.06fr_0.94fr]">
-            <div className="pointer-events-none absolute left-1/2 top-1/2 h-[460px] w-[460px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle,rgba(255,0,72,0.14)_0%,rgba(255,0,72,0.02)_40%,transparent_72%)]" />
-
-            <div className="relative z-10 flex items-center justify-center px-6 py-9 sm:px-8 md:px-10">
-              <div className="w-full max-w-[440px] text-center md:text-left">
-                <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 font-mono text-[10px] font-semibold uppercase tracking-[0.08em] text-white/58">
-                  <span className="inline-block h-2 w-2 rounded-full bg-[#FF0048]" />
-                  Private Beta
-                </div>
-
-                <h1 className="font-sans text-[clamp(2.1rem,4.5vw,3.35rem)] font-semibold leading-[0.98] tracking-[-0.045em] text-white">
-                  Split the bill.
-                  <br />
-                  Keep the vibe.
-                </h1>
-
-                <p className="mt-4 max-w-[390px] text-[15px] leading-[1.6] tracking-[-0.01em] text-[#AAAAAA] md:max-w-[380px]">
-                  Itemize every order, convert between USD and ZiG instantly, and settle faster after
-                  every meal.
-                </p>
-
-                <div className="mt-7">
-                  {joined ? (
-                    <div className="inline-flex flex-col rounded-2xl border border-white/12 bg-white/5 px-6 py-4 text-left">
-                      <p className="font-sans text-[15px] font-semibold tracking-[-0.02em] text-white">
-                        You&apos;re on the waitlist.
-                      </p>
-                      <p className="mt-1.5 text-[13px] leading-5 text-white/55">
-                        We&apos;ll send your invite as soon as your spot opens.
-                      </p>
-                    </div>
-                  ) : (
-                    <form onSubmit={handleSubmit} className="flex w-full max-w-[420px] flex-col gap-2.5">
-                      <input
-                        type="email"
-                        required
-                        placeholder="you@email.com"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        className="h-11 rounded-xl border border-white/12 bg-white/[0.06] px-4 text-[14px] tracking-[-0.01em] text-white outline-none transition-colors focus:border-[#FF0048]/70"
-                      />
-                      <button
-                        type="submit"
-                        className="h-11 rounded-xl bg-[#FF0048] px-5 text-[14px] font-semibold tracking-[-0.01em] text-white shadow-[0_10px_26px_rgba(255,0,72,0.30)] transition-all hover:translate-y-[-1px] hover:shadow-[0_14px_30px_rgba(255,0,72,0.40)] active:translate-y-0">
-                        Join Waitlist
-                      </button>
-                    </form>
-                  )}
-                </div>
-
-                <p className="mt-4 text-[12px] tracking-[-0.01em] text-white/36">
-                  Beta · Zimbabwe &amp; region · iOS &amp; Android
-                </p>
-              </div>
-            </div>
-
-            <div className="relative hidden h-full border-l border-white/8 bg-[#0E0E0E] md:block">
-              <Image
-                src="/screenshot.png"
-                alt="umo app preview"
-                fill
-                priority
-                className="object-contain px-6 py-8"
-              />
-              <div className="pointer-events-none absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-[#0E0E0E] to-transparent" />
-              <div className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-[#0E0E0E] to-transparent" />
-            </div>
-          </section>
-
-          <footer className="flex h-12 items-center justify-between border-t border-white/10 px-5 sm:px-6">
-            <span className="text-[12px] tracking-[-0.01em] text-white/30">© 2026 umo</span>
-            <div className="flex items-center gap-4">
-              <a href="#" className="text-[12px] tracking-[-0.01em] text-white/36 transition-colors hover:text-white/70">
-                Privacy
-              </a>
-              <a href="#" className="text-[12px] tracking-[-0.01em] text-white/36 transition-colors hover:text-white/70">
-                Terms
-              </a>
-            </div>
-          </footer>
-        </div>
-      </main>
-    );
+  function handleSubmit(e: FormEvent) {
+    e.preventDefault();
+    if (email.trim()) setJoined(true);
   }
+
+  return (
+    <div
+      style={{
+        height: '100dvh',
+        overflow: 'hidden',
+        background: '#111110',
+        color: '#f5f5f3',
+        fontFamily: 'var(--font-geist), system-ui, sans-serif',
+        display: 'flex',
+        flexDirection: 'column',
+      }}>
+      {/* NAV */}
+      <nav
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          padding: '0 28px',
+          height: 52,
+          borderBottom: '1px solid rgba(255,255,255,0.07)',
+          flexShrink: 0,
+        }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 9 }}>
+          <div
+            style={{
+              width: 28,
+              height: 28,
+              borderRadius: 8,
+              background: '#FF0048',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: '0 4px 12px rgba(255,0,72,0.4)',
+            }}>
+            <Rabbit size={15} color="#fff" strokeWidth={2} />
+          </div>
+          <span
+            style={{
+              fontFamily: 'var(--font-geist)',
+              fontWeight: 600,
+              fontSize: 15,
+              letterSpacing: -0.4,
+              color: '#f5f5f3',
+            }}>
+            umo
+          </span>
+        </div>
+        <a
+          href="#"
+          style={{
+            fontFamily: 'var(--font-geist)',
+            fontSize: 13.5,
+            fontWeight: 500,
+            color: 'rgba(245,245,243,0.55)',
+            textDecoration: 'none',
+            letterSpacing: -0.2,
+            transition: 'color 0.15s',
+          }}
+          onMouseEnter={(e) => (e.currentTarget.style.color = '#f5f5f3')}
+          onMouseLeave={(e) => (e.currentTarget.style.color = 'rgba(245,245,243,0.55)')}>
+          Updates
+        </a>
+      </nav>
+
+      {/* MAIN */}
+      <main
+        style={{
+          flex: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '0 24px',
+        }}>
+        <div
+          style={{
+            width: 110,
+            height: 110,
+            borderRadius: 26,
+            background: 'linear-gradient(145deg, #FF0048 0%, #cc0039 100%)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginBottom: 28,
+            boxShadow:
+              '0 0 0 1px rgba(255,255,255,0.08), 0 20px 60px rgba(255,0,72,0.28), 0 4px 16px rgba(0,0,0,0.5)',
+          }}>
+          <Rabbit size={54} color="#fff" strokeWidth={1.5} />
+        </div>
+
+        <h1
+          style={{
+            fontFamily: 'var(--font-geist)',
+            fontWeight: 700,
+            fontSize: 'clamp(3rem, 6vw, 4.5rem)',
+            letterSpacing: '-0.04em',
+            color: '#f5f5f3',
+            lineHeight: 1,
+            marginBottom: 18,
+          }}>
+          umo
+        </h1>
+
+        <p
+          style={{
+            fontFamily: 'var(--font-geist)',
+            fontSize: 'clamp(0.9rem, 1.5vw, 1.05rem)',
+            fontWeight: 400,
+            color: 'rgba(245,245,243,0.50)',
             lineHeight: 1.6,
+            textAlign: 'center',
+            maxWidth: 380,
+            marginBottom: 36,
+            letterSpacing: -0.15,
+          }}>
+          Itemize every order. Convert between USD &amp; ZiG.
+          <br />
+          Settle with one tap.
+        </p>
+
+        {joined ? (
+          <div
+            style={{
+              background: 'rgba(255,255,255,0.06)',
+              border: '1px solid rgba(255,255,255,0.10)',
+              borderRadius: 14,
+              padding: '16px 36px',
+              textAlign: 'center',
+            }}>
+            <p
+              style={{
+                fontFamily: 'var(--font-geist)',
+                fontWeight: 600,
+                fontSize: 15,
+                color: '#f5f5f3',
+                letterSpacing: -0.3,
+                marginBottom: 4,
+              }}>
+              {"You're on the list."}
+            </p>
+            <p
+              style={{
+                fontFamily: 'var(--font-geist)',
+                fontSize: 12.5,
+                color: 'rgba(245,245,243,0.45)',
+                letterSpacing: -0.1,
+              }}>
+              {"We'll reach out when your spot opens up."}
+            </p>
+          </div>
+        ) : (
+          <form
+            onSubmit={handleSubmit}
+            style={{
+              display: 'flex',
+              gap: 8,
+              width: '100%',
+              maxWidth: 390,
+              marginBottom: 16,
+            }}>
+            <input
+              type="email"
+              required
+              placeholder="your@email.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              onFocus={() => setFocused(true)}
+              onBlur={() => setFocused(false)}
+              style={{
+                flex: 1,
+                fontFamily: 'var(--font-geist)',
+                fontSize: 14,
+                background: 'rgba(255,255,255,0.06)',
+                border: focused
+                  ? '1px solid rgba(255,0,72,0.55)'
+                  : '1px solid rgba(255,255,255,0.10)',
+                borderRadius: 10,
+                padding: '11px 16px',
+                color: '#f5f5f3',
+                outline: 'none',
+                transition: 'border-color 0.2s',
+                letterSpacing: -0.2,
+              }}
+            />
+            <button
+              type="submit"
+              style={{
+                fontFamily: 'var(--font-geist)',
+                fontWeight: 600,
+                fontSize: 14,
+                letterSpacing: -0.3,
+                background: '#FF0048',
+                color: '#fff',
+                border: 'none',
+                borderRadius: 10,
+                padding: '11px 22px',
+                cursor: 'pointer',
+                whiteSpace: 'nowrap',
+                boxShadow: '0 4px 20px rgba(255,0,72,0.35)',
+                transition: 'opacity 0.15s, transform 0.15s',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.opacity = '0.88';
+                e.currentTarget.style.transform = 'translateY(-1px)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.opacity = '1';
+                e.currentTarget.style.transform = 'translateY(0)';
+              }}>
+              Join Waitlist
+            </button>
+          </form>
+        )}
+
+        {!joined && (
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <span
+              style={{
+                fontFamily: 'var(--font-geist-mono)',
+                fontSize: 10,
+                fontWeight: 600,
+                letterSpacing: '0.08em',
+                background: 'rgba(255,255,255,0.08)',
+                color: 'rgba(245,245,243,0.55)',
+                border: '1px solid rgba(255,255,255,0.10)',
+                borderRadius: 5,
+                padding: '3px 7px',
+                textTransform: 'uppercase',
+              }}>
+              Beta
+            </span>
+            <span
+              style={{
+                fontFamily: 'var(--font-geist)',
+                fontSize: 12,
+                color: 'rgba(245,245,243,0.32)',
+                letterSpacing: -0.1,
+              }}>
+              Zimbabwe &amp; region &middot; iOS &amp; Android
+            </span>
+          </div>
+        )}
+      </main>
+
+      {/* FOOTER */}
+      <footer
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          padding: '0 28px',
+          height: 48,
+          borderTop: '1px solid rgba(255,255,255,0.07)',
+          flexShrink: 0,
+        }}>
+        <span
+          style={{
+            fontFamily: 'var(--font-geist)',
+            fontSize: 12,
+            color: 'rgba(245,245,243,0.28)',
+            letterSpacing: -0.1,
+          }}>
+          &copy; 2026 umo
+        </span>
+        <div style={{ display: 'flex', gap: 20 }}>
+          {['Privacy', 'Terms'].map((label) => (
+            <a
+              key={label}
+              href="#"
+              style={{
+                fontFamily: 'var(--font-geist)',
+                fontSize: 12,
+                color: 'rgba(245,245,243,0.32)',
+                textDecoration: 'none',
+                letterSpacing: -0.1,
+                transition: 'color 0.15s',
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.color = 'rgba(245,245,243,0.75)')}
+              onMouseLeave={(e) => (e.currentTarget.style.color = 'rgba(245,245,243,0.32)')}>
+              {label}
+            </a>
+          ))}
+        </div>
+      </footer>
+    </div>
+  );
+}
