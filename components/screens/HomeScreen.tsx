@@ -1,4 +1,5 @@
 ﻿import { HistoryScreen } from './HistoryScreen';
+import { PeopleScreen } from './PeopleScreen';
 import { NavDock } from '../NavDock';
 import {
   ArrowDownLeft,
@@ -20,7 +21,6 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 interface Props {
   onNewSession?: () => void;
-  onManagePeople?: () => void;
 }
 
 // ─── Unsplash portrait photos ────────────────────────────────────────────────
@@ -211,7 +211,7 @@ function getDynamicGreetingLabel() {
 }
 
 // ─── Main screen ──────────────────────────────────────────────────────────────
-export function HomeScreen({ onNewSession, onManagePeople }: Props) {
+export function HomeScreen({ onNewSession }: Props) {
   const insets = useSafeAreaInsets();
   const net = BALANCE.owedToYou - BALANCE.youOwe;
   const greetingLabel = getDynamicGreetingLabel();
@@ -221,6 +221,8 @@ export function HomeScreen({ onNewSession, onManagePeople }: Props) {
     <View style={{ flex: 1, backgroundColor: '#F4F4F4' }}>
       {activeTab === 'activity' ? (
         <HistoryScreen />
+      ) : activeTab === 'people' ? (
+        <PeopleScreen onBack={() => setActiveTab('home')} />
       ) : (
         <ScrollView
           showsVerticalScrollIndicator={false}
@@ -681,7 +683,7 @@ export function HomeScreen({ onNewSession, onManagePeople }: Props) {
                 </Text>
               </View>
               <Pressable
-                onPress={onManagePeople}
+                onPress={() => setActiveTab('people')}
                 style={{ flexDirection: 'row', alignItems: 'center', gap: 2 }}>
                 <Text style={{ fontSize: 12, fontWeight: '600', color: '#BBBBBB' }}>Manage</Text>
                 <ChevronRight size={13} color="#BBBBBB" strokeWidth={2.5} />
@@ -943,17 +945,7 @@ export function HomeScreen({ onNewSession, onManagePeople }: Props) {
       )}
 
       {/* ── NAV DOCK ─────────────────────────────────────────────────── */}
-      <NavDock
-        activeTab={activeTab}
-        onTabChange={(t) => {
-          if (t === 'people') {
-            onManagePeople?.();
-            return;
-          }
-          setActiveTab(t);
-        }}
-        onNewSession={onNewSession}
-      />
+      <NavDock activeTab={activeTab} onTabChange={setActiveTab} onNewSession={onNewSession} />
     </View>
   );
 }

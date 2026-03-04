@@ -25,7 +25,6 @@ import {
   View,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { NavDock } from '../NavDock';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -787,13 +786,7 @@ function AddFriendSheet({
 
 // ─── Main Screen ──────────────────────────────────────────────────────────────
 
-export function PeopleScreen({
-  onBack,
-  onNewSession,
-}: {
-  onBack: () => void;
-  onNewSession?: () => void;
-}) {
+export function PeopleScreen({ onBack }: { onBack?: () => void }) {
   const insets = useSafeAreaInsets();
   const [friends, setFriends] = useState<Friend[]>(FRIENDS);
   const [query, setQuery] = useState('');
@@ -1274,15 +1267,6 @@ export function PeopleScreen({
 
       {/* ── ADD FRIEND SHEET ─────────────────────────────────────────────── */}
       <AddFriendSheet visible={showAdd} onClose={() => setShowAdd(false)} onAdd={handleAdd} />
-
-      {/* ── NAV DOCK ─────────────────────────────────────────────────────── */}
-      <NavDock
-        activeTab="people"
-        onTabChange={(t) => {
-          if (t !== 'people') onBack();
-        }}
-        onNewSession={onNewSession}
-      />
     </View>
   );
 }

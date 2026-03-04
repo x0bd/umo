@@ -6,7 +6,7 @@ import { SignUpScreen } from './components/screens/SignUpScreen';
 import { ServicesScreen } from './components/screens/ServicesScreen';
 import { HomeScreen } from './components/screens/HomeScreen';
 import { AddSplitScreen } from './components/screens/AddSplitScreen';
-import { PeopleScreen } from './components/screens/PeopleScreen';
+
 import { Rabbit } from 'lucide-react-native';
 import { AnimatePresence, MotiView } from 'moti';
 import { useRef, useState } from 'react';
@@ -373,7 +373,7 @@ function OnboardingScreen({
   );
 }
 
-type Screen = 'onboarding' | 'signup' | 'signin' | 'services' | 'home' | 'new-split' | 'people';
+type Screen = 'onboarding' | 'signup' | 'signin' | 'services' | 'home' | 'new-split';
 
 export default function App() {
   const [screen, setScreen] = useState<Screen>('onboarding');
@@ -401,19 +401,8 @@ export default function App() {
         />
       )}
       {screen === 'services' && <ServicesScreen onDone={() => setScreen('home')} />}
-      {screen === 'home' && (
-        <HomeScreen
-          onNewSession={() => setScreen('new-split')}
-          onManagePeople={() => setScreen('people')}
-        />
-      )}
+      {screen === 'home' && <HomeScreen onNewSession={() => setScreen('new-split')} />}
       {screen === 'new-split' && <AddSplitScreen onBack={() => setScreen('home')} />}
-      {screen === 'people' && (
-        <PeopleScreen
-          onBack={() => setScreen('home')}
-          onNewSession={() => setScreen('new-split')}
-        />
-      )}
     </SafeAreaProvider>
   );
 }
