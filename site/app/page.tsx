@@ -208,7 +208,9 @@ export default function Home() {
                   </p>
                 </div>
               ) : (
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                <form
+                  onSubmit={handleSubmit}
+                  style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
                   <input
                     type="email"
                     required
@@ -232,8 +234,7 @@ export default function Home() {
                     }}
                   />
                   <button
-                    type="button"
-                    onClick={handleSubmit as unknown as React.MouseEventHandler}
+                    type="submit"
                     onMouseEnter={() => setHovering(true)}
                     onMouseLeave={() => setHovering(false)}
                     style={
@@ -242,7 +243,7 @@ export default function Home() {
                         fontWeight: 600,
                         fontSize: 13.5,
                         letterSpacing: '-0.3px',
-                        background: '#FF0048',
+                        background: hovering ? '#e0003f' : '#FF0048',
                         color: '#fff',
                         border: 'none',
                         borderRadius: 11,
@@ -251,12 +252,11 @@ export default function Home() {
                         width: '100%',
                         transition: 'background 0.18s, transform 0.18s',
                         transform: hovering ? 'translateY(-1px)' : 'translateY(0)',
-                        background: hovering ? '#e0003f' : '#FF0048',
                       } as React.CSSProperties
                     }>
                     Join the Waitlist
                   </button>
-                </div>
+                </form>
               )}
             </div>
 
