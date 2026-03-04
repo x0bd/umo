@@ -16,6 +16,7 @@ import {
 import { MotiView, AnimatePresence } from 'moti';
 import { useEffect, useRef, useState } from 'react';
 import {
+  ActivityIndicator,
   Image,
   Keyboard,
   KeyboardAvoidingView,
@@ -26,6 +27,7 @@ import {
   TextInput,
   View,
 } from 'react-native';
+import { useExchangeRate } from '../../lib/useExchangeRate';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 // ─── Types ─────────────────────────────────────────────────────────────────────
@@ -201,12 +203,14 @@ export function AddSplitScreen({ onBack }: { onBack: () => void }) {
   const [venue, setVenue] = useState('');
   const [category, setCategory] = useState('food');
   const [currency, setCurrency] = useState<Currency>('USD');
-  const [zigRate, setZigRate] = useState('33.5');
+  // rateOverride: set when user manually types their own rate (empty = use live)
+  const [rateOverride, setRateOverride] = useState('');
+  const [rateEditing, setRateEditing] = useState(false);
+  const { rate: liveRate, rateData, status: rateStatus, refresh: refreshRate } = useExchangeRate();
   const [items, setItems] = useState<Item[]>([newItem()]);
   const [assignments, setAssignments] = useState<SplitAssignment[]>([
     { key: 'YOU', mode: 'auto', customAmount: '' },
   ]);
-  const [rateEditing, setRateEditing] = useState(false);
 
   const venueRef = useRef<TextInput>(null);
   const firstItemNameRef = useRef<TextInput>(null);
@@ -225,7 +229,10 @@ export function AddSplitScreen({ onBack }: { onBack: () => void }) {
 
   // ── Computed ──────────────────────────────────────────────────
   const total = items.reduce((sum, it) => sum + (parseFloat(it.amount) || 0) * it.qty, 0);
-  const rate = parseFloat(zigRate) || ZIG_RATE;
+  // use manually overridden rate first, then live API rate, then hardcoded fallback
+  const rate = parseFloat(rateOverride) || liveRate || ZIG_RATE;
+  const zigRateDisplay =
+    rateOverride || (liveRate != null ? liveRate.toFixed(2) : ZIG_RATE.toString());
 
   // per-person share math
   const customSum = assignments
@@ -565,6 +572,94 @@ export function AddSplitScreen({ onBack }: { onBack: () => void }) {
                     }}>
                     Table rate
                   </Text>
+                  {/* Status badge */}
+                  {rateStatus === 'loading' && !rateData ? (
+                    <ActivityIndicator size="small" color="rgba(255,255,255,0.25)" />
+                  ) : rateOverride ? (
+                    <View
+                      style={{
+                        backgroundColor: '#FF0048' + '22',
+                        borderRadius: 6,
+                        paddingHorizontal: 6,
+                        paddingVertical: 2,
+                      }}>
+                      <Text
+                        style={{
+                          fontSize: 9,
+                          fontWeight: '700',
+                          color: '#FF0048',
+                          letterSpacing: 0.4,
+                        }}>
+                        OVERRIDE
+                      </Text>
+                    </View>
+                  ) : rateStatus === 'live' ? (
+                    <View
+                      style={{
+                        backgroundColor: '#00C85322',
+                        borderRadius: 6,
+                        paddingHorizontal: 6,
+                        paddingVertical: 2,
+                      }}>
+                      <Text
+                        style={{
+                          fontSize: 9,
+                          fontWeight: '700',
+                          color: '#00C853',
+                          letterSpacing: 0.4,
+                        }}>
+                        LIVE
+                      </Text>
+                    </View>
+                  ) : rateStatus === 'stale' ? (
+                    <View
+                      style={{
+                        backgroundColor: '#FF980022',
+                        borderRadius: 6,
+                        paddingHorizontal: 6,
+                        paddingVertical: 2,
+                      }}>
+                      <Pressable
+                        onPress={(e) => {
+                          e.stopPropagation();
+                          refreshRate();
+                        }}>
+                        <Text
+                          style={{
+                            fontSize: 9,
+                            fontWeight: '700',
+                            color: '#FF9800',
+                            letterSpacing: 0.4,
+                          }}>
+                          STALE ↻
+                        </Text>
+                      </Pressable>
+                    </View>
+                  ) : rateStatus === 'error' ? (
+                    <View
+                      style={{
+                        backgroundColor: '#FF000022',
+                        borderRadius: 6,
+                        paddingHorizontal: 6,
+                        paddingVertical: 2,
+                      }}>
+                      <Pressable
+                        onPress={(e) => {
+                          e.stopPropagation();
+                          refreshRate();
+                        }}>
+                        <Text
+                          style={{
+                            fontSize: 9,
+                            fontWeight: '700',
+                            color: '#FF4444',
+                            letterSpacing: 0.4,
+                          }}>
+                          OFFLINE ↻
+                        </Text>
+                      </Pressable>
+                    </View>
+                  ) : null}
                 </View>
                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6 }}>
                   <Text
@@ -573,8 +668,10 @@ export function AddSplitScreen({ onBack }: { onBack: () => void }) {
                   </Text>
                   {rateEditing ? (
                     <TextInput
-                      value={zigRate}
-                      onChangeText={setZigRate}
+                      value={rateOverride}
+                      onChangeText={setRateOverride}
+                      placeholder={zigRateDisplay}
+                      placeholderTextColor="rgba(255,0,72,0.4)"
                       keyboardType="decimal-pad"
                       autoFocus
                       onBlur={() => setRateEditing(false)}
@@ -588,8 +685,17 @@ export function AddSplitScreen({ onBack }: { onBack: () => void }) {
                       }}
                     />
                   ) : (
-                    <Text style={{ fontSize: 13, fontWeight: '700', color: '#FF0048' }}>
-                      {zigRate} ZiG
+                    <Text
+                      style={{
+                        fontSize: 13,
+                        fontWeight: '700',
+                        color: rateOverride
+                          ? '#FF0048'
+                          : rateStatus === 'live'
+                            ? '#FF0048'
+                            : 'rgba(255,0,72,0.55)',
+                      }}>
+                      {zigRateDisplay} ZiG
                     </Text>
                   )}
                   <ChevronRight size={12} color="rgba(255,255,255,0.2)" strokeWidth={2} />
