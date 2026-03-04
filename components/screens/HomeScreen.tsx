@@ -23,6 +23,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 interface Props {
   onNewSession?: () => void;
+  onManagePeople?: () => void;
 }
 
 // ─── Unsplash portrait photos ────────────────────────────────────────────────
@@ -342,7 +343,7 @@ function getDynamicGreetingLabel() {
 }
 
 // ─── Main screen ──────────────────────────────────────────────────────────────
-export function HomeScreen({ onNewSession }: Props) {
+export function HomeScreen({ onNewSession, onManagePeople }: Props) {
   const insets = useSafeAreaInsets();
   const net = BALANCE.owedToYou - BALANCE.youOwe;
   const greetingLabel = getDynamicGreetingLabel();
@@ -811,7 +812,9 @@ export function HomeScreen({ onNewSession }: Props) {
                   People
                 </Text>
               </View>
-              <Pressable style={{ flexDirection: 'row', alignItems: 'center', gap: 2 }}>
+              <Pressable
+                onPress={onManagePeople}
+                style={{ flexDirection: 'row', alignItems: 'center', gap: 2 }}>
                 <Text style={{ fontSize: 12, fontWeight: '600', color: '#BBBBBB' }}>Manage</Text>
                 <ChevronRight size={13} color="#BBBBBB" strokeWidth={2.5} />
               </Pressable>
