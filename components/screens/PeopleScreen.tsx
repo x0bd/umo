@@ -1,7 +1,9 @@
 import {
+  ArrowDownLeft,
   ArrowLeft,
+  ArrowUpRight,
   Check,
-  ChevronRight,
+  ChevronDown,
   Clock,
   Flame,
   Plus,
@@ -14,14 +16,12 @@ import { AnimatePresence, MotiView } from 'moti';
 import { useState } from 'react';
 import {
   Image,
-  Keyboard,
   KeyboardAvoidingView,
   Platform,
   Pressable,
   ScrollView,
   Text,
   TextInput,
-  TouchableWithoutFeedback,
   View,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -184,34 +184,82 @@ const FRIENDS: Friend[] = [
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
-function formatAmt(amount: number, currency: 'USD' | 'ZiG') {
+type Currency = 'USD' | 'ZiG';
+
+function formatAmt(amount: number, currency: Currency) {
   const abs = Math.abs(amount);
   if (currency === 'ZiG') return `ZiG ${abs.toLocaleString('en-US', { maximumFractionDigits: 0 })}`;
   return `$${abs.toFixed(2)}`;
 }
 
-// ─── Sub-components ───────────────────────────────────────────────────────────
+// ─── SectionLabel ─────────────────────────────────────────────────────────────
 
-function Avatar({ uri, size = 44, color }: { uri: string; size?: number; color: string }) {
+function SectionLabel({ label }: { label: string }) {
   return (
-    <View
-      style={{
-        width: size,
-        height: size,
-        borderRadius: size / 2,
-        overflow: 'hidden',
-        borderWidth: 2,
-        borderColor: color + '44',
-      }}>
-      <Image source={{ uri }} style={{ width: '100%', height: '100%' }} resizeMode="cover" />
+    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 7, marginBottom: 14 }}>
+      <View style={{ width: 3, height: 14, borderRadius: 2, backgroundColor: '#FF0048' }} />
+      <Text
+        style={{
+          fontSize: 11,
+          fontWeight: '700',
+          color: '#9A9A9A',
+          letterSpacing: 1.1,
+          textTransform: 'uppercase',
+        }}>
+        {label}
+      </Text>
     </View>
   );
 }
 
-function BalancePill({ owes, currency }: { owes: number; currency: 'USD' | 'ZiG' }) {
-  if (owes === 0)
+// ─── Mini avatar stack ────────────────────────────────────────────────────────
+
+function AvatarStack({ friends, max = 3 }: { friends: Friend[]; max?: number }) {
+  return (
+    <View style={{ flexDirection: 'row' }}>
+      {friends.slice(0, max).map((f, i) => (
+        <View
+          key={f.key}
+          style={{
+            marginLeft: i === 0 ? 0 : -7,
+            width: 22,
+            height: 22,
+            borderRadius: 11,
+            overflow: 'hidden',
+            borderWidth: 1.5,
+            borderColor: 'rgba(255,255,255,0.12)',
+          }}>
+          <Image source={{ uri: f.photo }} style={{ width: '100%', height: '100%' }} />
+        </View>
+      ))}
+      {friends.length > max && (
+        <View
+          style={{
+            marginLeft: -7,
+            width: 22,
+            height: 22,
+            borderRadius: 11,
+            backgroundColor: 'rgba(255,255,255,0.12)',
+            borderWidth: 1.5,
+            borderColor: 'rgba(255,255,255,0.12)',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+          <Text style={{ fontSize: 8, fontWeight: '700', color: 'rgba(255,255,255,0.6)' }}>
+            +{friends.length - max}
+          </Text>
+        </View>
+      )}
+    </View>
+  );
+}
+
+// ─── BalancePill ──────────────────────────────────────────────────────────────
+
+function BalancePill({ owes, currency }: { owes: number; currency: Currency }) {
+  if (owes === 0) {
     return (
-      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 5 }}>
         <View
           style={{
             width: 18,
@@ -223,24 +271,25 @@ function BalancePill({ owes, currency }: { owes: number; currency: 'USD' | 'ZiG'
           }}>
           <Check size={10} color="#2E7D32" strokeWidth={3} />
         </View>
-        <Text style={{ fontSize: 11.5, fontWeight: '600', color: '#9A9A9A' }}>Settled</Text>
+        <Text style={{ fontSize: 12, fontWeight: '600', color: '#9A9A9A' }}>Settled</Text>
       </View>
     );
+  }
   const positive = owes > 0;
   return (
     <View
       style={{
-        backgroundColor: positive ? '#E8F5E9' : '#FFF3F5',
-        borderRadius: 10,
-        paddingHorizontal: 8,
-        paddingVertical: 3,
+        backgroundColor: positive ? 'rgba(0,165,80,0.1)' : 'rgba(255,0,72,0.09)',
+        borderRadius: 100,
+        paddingHorizontal: 10,
+        paddingVertical: 4,
       }}>
       <Text
         style={{
-          fontSize: 12,
+          fontSize: 12.5,
           fontWeight: '700',
-          color: positive ? '#1B5E20' : '#FF0048',
-          letterSpacing: -0.2,
+          color: positive ? '#00A550' : '#FF0048',
+          letterSpacing: -0.3,
         }}>
         {positive ? '+' : '−'}
         {formatAmt(owes, currency)}
@@ -249,200 +298,248 @@ function BalancePill({ owes, currency }: { owes: number; currency: 'USD' | 'ZiG'
   );
 }
 
+// ─── FriendRow ────────────────────────────────────────────────────────────────
+
 function FriendRow({
   friend,
+  index,
   expanded,
   onPress,
   onSettle,
 }: {
   friend: Friend;
+  index: number;
   expanded: boolean;
   onPress: () => void;
   onSettle: () => void;
 }) {
   return (
-    <Pressable onPress={onPress}>
-      <MotiView
-        animate={{ backgroundColor: expanded ? '#FFFFFF' : '#FFFFFF' }}
-        style={{
-          borderRadius: 22,
-          marginBottom: 10,
-          overflow: 'hidden',
-          shadowColor: '#000',
-          shadowOffset: { width: 0, height: expanded ? 8 : 3 },
-          shadowOpacity: expanded ? 0.1 : 0.06,
-          shadowRadius: expanded ? 18 : 8,
-          elevation: expanded ? 4 : 2,
-          borderWidth: 1,
-          borderColor: expanded ? friend.color + '22' : 'rgba(0,0,0,0.06)',
-        }}>
-        {/* ── Main row ── */}
+    <MotiView
+      from={{ opacity: 0, translateY: 16 }}
+      animate={{ opacity: 1, translateY: 0 }}
+      transition={{ type: 'timing', duration: 280, delay: index * 50 }}
+      style={{ marginBottom: 10 }}>
+      <Pressable onPress={onPress}>
         <View
           style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            padding: 14,
-            gap: 12,
+            backgroundColor: '#FFFFFF',
+            borderRadius: 22,
+            overflow: 'hidden',
+            borderWidth: 1,
+            borderColor: expanded ? friend.color + '30' : 'rgba(0,0,0,0.06)',
+            shadowColor: expanded ? friend.color : '#000',
+            shadowOffset: { width: 0, height: expanded ? 10 : 4 },
+            shadowOpacity: expanded ? 0.14 : 0.07,
+            shadowRadius: expanded ? 20 : 10,
+            elevation: expanded ? 5 : 2,
           }}>
-          <Avatar uri={friend.photo} size={46} color={friend.color} />
-          <View style={{ flex: 1 }}>
-            <Text
+          {/* ── Main row ── */}
+          <View style={{ flexDirection: 'row', alignItems: 'center', padding: 14, gap: 13 }}>
+            <View
               style={{
-                fontSize: 14,
-                fontWeight: '700',
-                color: '#0E0E0E',
-                letterSpacing: -0.3,
-                marginBottom: 2,
+                width: 48,
+                height: 48,
+                borderRadius: 24,
+                overflow: 'hidden',
+                borderWidth: 2,
+                borderColor: friend.color + '55',
               }}>
-              {friend.name}
-            </Text>
-            <Text style={{ fontSize: 11.5, color: '#AAAAAA', fontWeight: '500' }}>
-              {friend.handle} · {friend.sessions.length} session
-              {friend.sessions.length !== 1 ? 's' : ''}
-            </Text>
-          </View>
-          <View style={{ alignItems: 'flex-end', gap: 4 }}>
-            <BalancePill owes={friend.owes} currency={friend.currency} />
-          </View>
-          <MotiView
-            animate={{ rotate: expanded ? '90deg' : '0deg' }}
-            transition={{ type: 'timing', duration: 200 }}>
-            <ChevronRight size={15} color="#CCCCCC" strokeWidth={2.5} />
-          </MotiView>
-        </View>
-
-        {/* ── Expanded detail ── */}
-        <AnimatePresence>
-          {expanded && (
-            <MotiView
-              from={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' as unknown as number }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ type: 'timing', duration: 200 }}>
-              {/* Hairline */}
-              <View
-                style={{
-                  height: 1,
-                  backgroundColor: 'rgba(0,0,0,0.06)',
-                  marginHorizontal: 14,
-                }}
+              <Image
+                source={{ uri: friend.photo }}
+                style={{ width: '100%', height: '100%' }}
+                resizeMode="cover"
               />
+            </View>
 
-              {/* Session rows */}
-              {friend.sessions.length > 0 ? (
-                <View style={{ paddingHorizontal: 14, paddingTop: 10, gap: 8 }}>
-                  {friend.sessions.map((s) => {
-                    const Icon = s.Icon;
-                    return (
-                      <View
-                        key={s.id}
-                        style={{
-                          flexDirection: 'row',
-                          alignItems: 'center',
-                          gap: 10,
-                        }}>
-                        <View
-                          style={{
-                            width: 30,
-                            height: 30,
-                            borderRadius: 10,
-                            backgroundColor: s.color + '18',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                          }}>
-                          <Icon size={13} color={s.color} strokeWidth={2} />
-                        </View>
-                        <Text
-                          style={{
-                            flex: 1,
-                            fontSize: 12.5,
-                            fontWeight: '600',
-                            color: '#1A1A1A',
-                            letterSpacing: -0.2,
-                          }}>
-                          {s.venue}
-                        </Text>
-                        <Text style={{ fontSize: 11, color: '#AAAAAA', fontWeight: '500' }}>
-                          {s.date}
-                        </Text>
-                        <Text
-                          style={{
-                            fontSize: 12.5,
-                            fontWeight: '700',
-                            color: '#1A1A1A',
-                            letterSpacing: -0.3,
-                            minWidth: 52,
-                            textAlign: 'right',
-                          }}>
-                          {formatAmt(s.amount, s.currency)}
-                        </Text>
-                      </View>
-                    );
-                  })}
-                </View>
-              ) : (
-                <View style={{ padding: 14, alignItems: 'center' }}>
-                  <Text style={{ fontSize: 12, color: '#BBBBBB' }}>No sessions yet</Text>
-                </View>
-              )}
+            <View style={{ flex: 1, gap: 2 }}>
+              <Text
+                style={{
+                  fontSize: 14.5,
+                  fontWeight: '700',
+                  color: '#0E0E0E',
+                  letterSpacing: -0.35,
+                }}>
+                {friend.name}
+              </Text>
+              <Text style={{ fontSize: 11.5, color: '#AAAAAA', fontWeight: '500' }}>
+                {friend.handle}
+                {friend.sessions.length > 0
+                  ? `  ·  ${friend.sessions.length} session${friend.sessions.length !== 1 ? 's' : ''}`
+                  : ''}
+              </Text>
+            </View>
 
-              {/* Action buttons */}
-              {friend.owes !== 0 && (
+            <BalancePill owes={friend.owes} currency={friend.currency} />
+
+            <MotiView
+              animate={{ rotate: expanded ? '180deg' : '0deg' }}
+              transition={{ type: 'spring', stiffness: 380, damping: 22 }}>
+              <ChevronDown size={16} color="#CCCCCC" strokeWidth={2.5} />
+            </MotiView>
+          </View>
+
+          {/* ── Expanded panel ── */}
+          <AnimatePresence>
+            {expanded && (
+              <MotiView
+                from={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ type: 'timing', duration: 180 }}>
                 <View
                   style={{
-                    flexDirection: 'row',
-                    gap: 8,
-                    padding: 14,
-                    paddingTop: 12,
-                  }}>
-                  <Pressable
-                    onPress={(e) => {
-                      e.stopPropagation();
-                      onSettle();
-                    }}
+                    height: 1,
+                    backgroundColor: 'rgba(0,0,0,0.05)',
+                    marginHorizontal: 14,
+                  }}
+                />
+
+                {/* Session rows */}
+                {friend.sessions.length > 0 ? (
+                  <View
                     style={{
-                      flex: 1,
-                      backgroundColor: '#FF0048',
-                      borderRadius: 14,
-                      paddingVertical: 11,
-                      alignItems: 'center',
+                      margin: 12,
+                      backgroundColor: '#F5F5F5',
+                      borderRadius: 16,
+                      overflow: 'hidden',
                     }}>
-                    <Text
-                      style={{
-                        fontSize: 12.5,
-                        fontWeight: '700',
-                        color: '#FFF',
-                        letterSpacing: -0.2,
-                      }}>
-                      Settle up →
+                    {friend.sessions.map((s, si) => {
+                      const Icon = s.Icon;
+                      return (
+                        <View
+                          key={s.id}
+                          style={{
+                            flexDirection: 'row',
+                            alignItems: 'center',
+                            gap: 10,
+                            paddingHorizontal: 12,
+                            paddingVertical: 11,
+                            borderBottomWidth: si < friend.sessions.length - 1 ? 1 : 0,
+                            borderBottomColor: 'rgba(0,0,0,0.05)',
+                          }}>
+                          <View
+                            style={{
+                              width: 32,
+                              height: 32,
+                              borderRadius: 10,
+                              backgroundColor: s.color + '18',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                            }}>
+                            <Icon size={14} color={s.color} strokeWidth={1.9} />
+                          </View>
+                          <Text
+                            style={{
+                              flex: 1,
+                              fontSize: 13,
+                              fontWeight: '600',
+                              color: '#1A1A1A',
+                              letterSpacing: -0.25,
+                            }}
+                            numberOfLines={1}>
+                            {s.venue}
+                          </Text>
+                          <Text
+                            style={{
+                              fontSize: 11,
+                              color: '#AAAAAA',
+                              fontWeight: '500',
+                              marginRight: 6,
+                            }}>
+                            {s.date}
+                          </Text>
+                          <Text
+                            style={{
+                              fontSize: 13.5,
+                              fontWeight: '700',
+                              color: '#1A1A1A',
+                              letterSpacing: -0.35,
+                              minWidth: 52,
+                              textAlign: 'right',
+                            }}>
+                            {formatAmt(s.amount, s.currency)}
+                          </Text>
+                        </View>
+                      );
+                    })}
+                  </View>
+                ) : (
+                  <View style={{ padding: 18, alignItems: 'center' }}>
+                    <Text style={{ fontSize: 12.5, color: '#BBBBBB', fontWeight: '500' }}>
+                      No sessions yet
                     </Text>
-                  </Pressable>
-                  <Pressable
-                    onPress={(e) => e.stopPropagation()}
+                  </View>
+                )}
+
+                {/* Action buttons */}
+                {friend.owes !== 0 && (
+                  <View
                     style={{
-                      paddingHorizontal: 16,
-                      backgroundColor: '#F4F4F4',
-                      borderRadius: 14,
-                      paddingVertical: 11,
-                      alignItems: 'center',
+                      flexDirection: 'row',
+                      gap: 8,
+                      paddingHorizontal: 12,
+                      paddingBottom: 12,
+                      paddingTop: 2,
                     }}>
-                    <Text
+                    <Pressable
+                      onPress={(e) => {
+                        e.stopPropagation();
+                        onSettle();
+                      }}
                       style={{
-                        fontSize: 12.5,
-                        fontWeight: '700',
-                        color: '#888',
-                        letterSpacing: -0.2,
+                        flex: 1,
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: 6,
+                        backgroundColor: '#FF0048',
+                        borderRadius: 14,
+                        paddingVertical: 12,
+                        shadowColor: '#FF0048',
+                        shadowOffset: { width: 0, height: 5 },
+                        shadowOpacity: 0.3,
+                        shadowRadius: 10,
+                        elevation: 4,
                       }}>
-                      Remind
-                    </Text>
-                  </Pressable>
-                </View>
-              )}
-            </MotiView>
-          )}
-        </AnimatePresence>
-      </MotiView>
-    </Pressable>
+                      <Check size={13} color="#fff" strokeWidth={2.8} />
+                      <Text
+                        style={{
+                          fontSize: 13,
+                          fontWeight: '700',
+                          color: '#FFF',
+                          letterSpacing: -0.2,
+                        }}>
+                        Settle up
+                      </Text>
+                    </Pressable>
+                    <Pressable
+                      onPress={(e) => e.stopPropagation()}
+                      style={{
+                        paddingHorizontal: 18,
+                        backgroundColor: 'rgba(0,0,0,0.05)',
+                        borderRadius: 14,
+                        paddingVertical: 12,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}>
+                      <Text
+                        style={{
+                          fontSize: 13,
+                          fontWeight: '700',
+                          color: '#888',
+                          letterSpacing: -0.2,
+                        }}>
+                        Remind
+                      </Text>
+                    </Pressable>
+                  </View>
+                )}
+              </MotiView>
+            )}
+          </AnimatePresence>
+        </View>
+      </Pressable>
+    </MotiView>
   );
 }
 
@@ -484,12 +581,8 @@ function AddFriendSheet({
             from={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ type: 'timing', duration: 200 }}
-            style={{
-              position: 'absolute',
-              inset: 0,
-              backgroundColor: 'rgba(0,0,0,0.45)',
-            }}>
+            transition={{ type: 'timing', duration: 220 }}
+            style={{ position: 'absolute', inset: 0, backgroundColor: 'rgba(0,0,0,0.5)' }}>
             <Pressable style={{ flex: 1 }} onPress={onClose} />
           </MotiView>
 
@@ -498,17 +591,17 @@ function AddFriendSheet({
             behavior={Platform.OS === 'ios' ? 'position' : undefined}
             style={{ position: 'absolute', bottom: 0, left: 0, right: 0 }}>
             <MotiView
-              from={{ translateY: 340 }}
+              from={{ translateY: 360 }}
               animate={{ translateY: 0 }}
-              exit={{ translateY: 340 }}
-              transition={{ type: 'spring', stiffness: 340, damping: 32 }}
+              exit={{ translateY: 360 }}
+              transition={{ type: 'spring', stiffness: 360, damping: 34 }}
               style={{
                 backgroundColor: '#141414',
-                borderTopLeftRadius: 30,
-                borderTopRightRadius: 30,
+                borderTopLeftRadius: 32,
+                borderTopRightRadius: 32,
                 paddingHorizontal: 24,
                 paddingTop: 16,
-                paddingBottom: insets.bottom + 24,
+                paddingBottom: insets.bottom + 28,
               }}>
               {/* Handle */}
               <View
@@ -518,7 +611,7 @@ function AddFriendSheet({
                   borderRadius: 2,
                   backgroundColor: 'rgba(255,255,255,0.15)',
                   alignSelf: 'center',
-                  marginBottom: 24,
+                  marginBottom: 26,
                 }}
               />
 
@@ -528,28 +621,39 @@ function AddFriendSheet({
                   flexDirection: 'row',
                   alignItems: 'center',
                   justifyContent: 'space-between',
-                  marginBottom: 24,
+                  marginBottom: 26,
                 }}>
-                <Text
-                  style={{
-                    fontSize: 20,
-                    fontWeight: '700',
-                    color: '#FFFFFF',
-                    letterSpacing: -0.8,
-                  }}>
-                  Add Friend
-                </Text>
+                <View>
+                  <Text
+                    style={{
+                      fontSize: 24,
+                      fontWeight: '600',
+                      color: '#FFFFFF',
+                      letterSpacing: -0.9,
+                    }}>
+                    Add Friend
+                  </Text>
+                  <Text
+                    style={{
+                      fontSize: 12,
+                      color: 'rgba(255,255,255,0.3)',
+                      marginTop: 2,
+                      fontWeight: '500',
+                    }}>
+                    Invite them to split with you
+                  </Text>
+                </View>
                 <Pressable onPress={onClose}>
                   <View
                     style={{
-                      width: 30,
-                      height: 30,
-                      borderRadius: 15,
+                      width: 32,
+                      height: 32,
+                      borderRadius: 16,
                       backgroundColor: 'rgba(255,255,255,0.08)',
                       alignItems: 'center',
                       justifyContent: 'center',
                     }}>
-                    <X size={14} color="rgba(255,255,255,0.6)" strokeWidth={2.5} />
+                    <X size={14} color="rgba(255,255,255,0.55)" strokeWidth={2.5} />
                   </View>
                 </Pressable>
               </View>
@@ -559,14 +663,14 @@ function AddFriendSheet({
                 <View
                   style={{
                     backgroundColor: 'rgba(255,255,255,0.07)',
-                    borderRadius: 16,
+                    borderRadius: 18,
                     paddingHorizontal: 16,
-                    paddingVertical: 14,
+                    paddingVertical: 15,
                     flexDirection: 'row',
                     alignItems: 'center',
-                    gap: 10,
+                    gap: 11,
                   }}>
-                  <Text style={{ fontSize: 14, color: 'rgba(255,255,255,0.2)' }}>👤</Text>
+                  <Text style={{ fontSize: 16, color: 'rgba(255,255,255,0.18)' }}>👤</Text>
                   <TextInput
                     value={name}
                     onChangeText={setName}
@@ -586,14 +690,14 @@ function AddFriendSheet({
                 <View
                   style={{
                     backgroundColor: 'rgba(255,255,255,0.07)',
-                    borderRadius: 16,
+                    borderRadius: 18,
                     paddingHorizontal: 16,
-                    paddingVertical: 14,
+                    paddingVertical: 15,
                     flexDirection: 'row',
                     alignItems: 'center',
-                    gap: 10,
+                    gap: 11,
                   }}>
-                  <Text style={{ fontSize: 13, color: 'rgba(255,255,255,0.2)', fontWeight: '700' }}>
+                  <Text style={{ fontSize: 14, fontWeight: '800', color: 'rgba(255,255,255,0.2)' }}>
                     @
                   </Text>
                   <TextInput
@@ -616,14 +720,14 @@ function AddFriendSheet({
                 <View
                   style={{
                     backgroundColor: 'rgba(255,255,255,0.07)',
-                    borderRadius: 16,
+                    borderRadius: 18,
                     paddingHorizontal: 16,
-                    paddingVertical: 14,
+                    paddingVertical: 15,
                     flexDirection: 'row',
                     alignItems: 'center',
-                    gap: 10,
+                    gap: 11,
                   }}>
-                  <Text style={{ fontSize: 13, color: 'rgba(255,255,255,0.2)' }}>🔗</Text>
+                  <Text style={{ fontSize: 14, color: 'rgba(255,255,255,0.2)' }}>🔗</Text>
                   <TextInput
                     value={photo}
                     onChangeText={setPhoto}
@@ -648,20 +752,25 @@ function AddFriendSheet({
               <Pressable
                 onPress={submit}
                 style={{
-                  marginTop: 16,
-                  backgroundColor: name.trim() ? '#FF0048' : 'rgba(255,0,72,0.25)',
-                  borderRadius: 18,
-                  paddingVertical: 16,
+                  marginTop: 18,
+                  backgroundColor: name.trim() ? '#FF0048' : 'rgba(255,0,72,0.2)',
+                  borderRadius: 20,
+                  paddingVertical: 17,
                   alignItems: 'center',
                   flexDirection: 'row',
                   justifyContent: 'center',
                   gap: 8,
+                  shadowColor: '#FF0048',
+                  shadowOffset: { width: 0, height: 8 },
+                  shadowOpacity: name.trim() ? 0.4 : 0,
+                  shadowRadius: 16,
+                  elevation: name.trim() ? 6 : 0,
                 }}>
                 <Text
                   style={{
-                    fontSize: 15,
+                    fontSize: 15.5,
                     fontWeight: '700',
-                    color: name.trim() ? '#FFF' : 'rgba(255,255,255,0.3)',
+                    color: name.trim() ? '#FFF' : 'rgba(255,255,255,0.25)',
                     letterSpacing: -0.3,
                   }}>
                   Add Friend →
@@ -690,12 +799,11 @@ export function PeopleScreen({ onBack }: { onBack: () => void }) {
       f.handle.toLowerCase().includes(query.toLowerCase())
   );
 
-  const totalOwedToYou = friends
-    .filter((f) => f.currency === 'USD' && f.owes > 0)
-    .reduce((s, f) => s + f.owes, 0);
-  const totalYouOwe = friends
-    .filter((f) => f.currency === 'USD' && f.owes < 0)
-    .reduce((s, f) => s + Math.abs(f.owes), 0);
+  const owedFriends = friends.filter((f) => f.currency === 'USD' && f.owes > 0);
+  const oweFriends = friends.filter((f) => f.currency === 'USD' && f.owes < 0);
+  const totalOwedToYou = owedFriends.reduce((s, f) => s + f.owes, 0);
+  const totalYouOwe = oweFriends.reduce((s, f) => s + Math.abs(f.owes), 0);
+  const net = totalOwedToYou - totalYouOwe;
 
   function handleSettle(key: string) {
     setFriends((prev) => prev.map((f) => (f.key === key ? { ...f, owes: 0 } : f)));
@@ -721,42 +829,65 @@ export function PeopleScreen({ onBack }: { onBack: () => void }) {
 
   return (
     <View style={{ flex: 1, backgroundColor: '#F4F4F4' }}>
-      {/* ── STATUS BAR SPACER ── */}
       <View style={{ height: insets.top }} />
 
-      {/* ── HEADER ── */}
-      <View
+      {/* ── HEADER ─────────────────────────────────────────────────────── */}
+      <MotiView
+        from={{ opacity: 0, translateY: -8 }}
+        animate={{ opacity: 1, translateY: 0 }}
+        transition={{ type: 'timing', duration: 240 }}
         style={{
           flexDirection: 'row',
           alignItems: 'center',
           paddingHorizontal: 20,
-          paddingVertical: 14,
-          gap: 12,
+          paddingTop: 6,
+          paddingBottom: 18,
+          gap: 13,
         }}>
         <Pressable
           onPress={onBack}
-          hitSlop={12}
+          hitSlop={10}
           style={{
-            width: 36,
-            height: 36,
-            borderRadius: 12,
-            backgroundColor: '#EBEBEB',
+            width: 40,
+            height: 40,
+            borderRadius: 14,
+            backgroundColor: '#FFFFFF',
+            borderWidth: 1,
+            borderColor: 'rgba(0,0,0,0.08)',
             alignItems: 'center',
             justifyContent: 'center',
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 3 },
+            shadowOpacity: 0.07,
+            shadowRadius: 8,
+            elevation: 2,
           }}>
-          <ArrowLeft size={17} color="#1A1A1A" strokeWidth={2.5} />
+          <ArrowLeft size={17} color="#1A1A1A" strokeWidth={2.25} />
         </Pressable>
 
-        <Text
-          style={{
-            flex: 1,
-            fontSize: 22,
-            fontWeight: '700',
-            color: '#0E0E0E',
-            letterSpacing: -0.9,
-          }}>
-          People
-        </Text>
+        <View style={{ flex: 1 }}>
+          <Text
+            style={{
+              fontSize: 9.5,
+              fontWeight: '700',
+              color: '#AAAAAA',
+              letterSpacing: 1.5,
+              textTransform: 'uppercase',
+              marginBottom: 1,
+            }}>
+            Friends
+          </Text>
+          <Text
+            style={{
+              fontSize: 23,
+              fontWeight: '600',
+              color: '#0E0E0E',
+              letterSpacing: -0.9,
+              lineHeight: 25,
+            }}>
+            People
+          </Text>
+        </View>
 
         <Pressable
           onPress={() => setShowAdd(true)}
@@ -766,178 +897,375 @@ export function PeopleScreen({ onBack }: { onBack: () => void }) {
             gap: 5,
             backgroundColor: '#FF0048',
             borderRadius: 14,
-            paddingHorizontal: 13,
-            paddingVertical: 8,
+            paddingHorizontal: 14,
+            paddingVertical: 9,
             shadowColor: '#FF0048',
-            shadowOffset: { width: 0, height: 4 },
-            shadowOpacity: 0.3,
-            shadowRadius: 8,
-            elevation: 4,
+            shadowOffset: { width: 0, height: 5 },
+            shadowOpacity: 0.35,
+            shadowRadius: 10,
+            elevation: 5,
           }}>
-          <Plus size={13} color="#FFF" strokeWidth={2.75} />
-          <Text style={{ fontSize: 12.5, fontWeight: '700', color: '#FFF', letterSpacing: -0.2 }}>
+          <Plus size={13} color="#FFF" strokeWidth={2.8} />
+          <Text style={{ fontSize: 13, fontWeight: '700', color: '#FFF', letterSpacing: -0.2 }}>
             Add
           </Text>
         </Pressable>
-      </View>
-
-      {/* ── BALANCE SUMMARY ── */}
-      <MotiView
-        from={{ opacity: 0, translateY: 10 }}
-        animate={{ opacity: 1, translateY: 0 }}
-        transition={{ type: 'timing', duration: 260 }}>
-        <View
-          style={{
-            flexDirection: 'row',
-            marginHorizontal: 20,
-            marginBottom: 16,
-            gap: 10,
-          }}>
-          <View
-            style={{
-              flex: 1,
-              backgroundColor: '#E8F5E9',
-              borderRadius: 18,
-              padding: 14,
-            }}>
-            <Text
-              style={{
-                fontSize: 10.5,
-                fontWeight: '700',
-                color: '#388E3C',
-                letterSpacing: 0.5,
-                marginBottom: 4,
-              }}>
-              OWED TO YOU
-            </Text>
-            <Text
-              style={{ fontSize: 20, fontWeight: '700', color: '#1B5E20', letterSpacing: -0.8 }}>
-              ${totalOwedToYou.toFixed(2)}
-            </Text>
-          </View>
-          <View
-            style={{
-              flex: 1,
-              backgroundColor: '#FFF3F5',
-              borderRadius: 18,
-              padding: 14,
-            }}>
-            <Text
-              style={{
-                fontSize: 10.5,
-                fontWeight: '700',
-                color: '#C62828',
-                letterSpacing: 0.5,
-                marginBottom: 4,
-              }}>
-              YOU OWE
-            </Text>
-            <Text
-              style={{ fontSize: 20, fontWeight: '700', color: '#FF0048', letterSpacing: -0.8 }}>
-              ${totalYouOwe.toFixed(2)}
-            </Text>
-          </View>
-        </View>
       </MotiView>
 
-      {/* ── SEARCH ── */}
-      <View
-        style={{
-          marginHorizontal: 20,
-          marginBottom: 16,
-          backgroundColor: '#EBEBEB',
-          borderRadius: 16,
-          flexDirection: 'row',
-          alignItems: 'center',
-          paddingHorizontal: 14,
-          paddingVertical: 11,
-          gap: 9,
-        }}>
-        <Search size={15} color="#AAAAAA" strokeWidth={2.5} />
-        <TextInput
-          value={query}
-          onChangeText={setQuery}
-          placeholder="Search people…"
-          placeholderTextColor="#BBBBBB"
-          returnKeyType="search"
-          style={{
-            flex: 1,
-            fontSize: 14,
-            fontWeight: '500',
-            color: '#0E0E0E',
-            padding: 0,
-          }}
-        />
-        <AnimatePresence>
-          {query.length > 0 && (
-            <MotiView
-              from={{ opacity: 0, scale: 0.7 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.7 }}
-              transition={{ type: 'spring', stiffness: 400, damping: 22 }}>
-              <Pressable onPress={() => setQuery('')}>
-                <X size={14} color="#AAAAAA" strokeWidth={2.5} />
-              </Pressable>
-            </MotiView>
-          )}
-        </AnimatePresence>
-      </View>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+        contentContainerStyle={{ paddingBottom: insets.bottom + 40 }}>
+        {/* ── BALANCE HERO CARD ───────────────────────────────────────── */}
+        <MotiView
+          from={{ opacity: 0, translateY: 20 }}
+          animate={{ opacity: 1, translateY: 0 }}
+          transition={{ type: 'timing', duration: 300, delay: 50 }}
+          style={{ marginHorizontal: 20, marginBottom: 14 }}>
+          <View
+            style={{
+              backgroundColor: '#141414',
+              borderRadius: 28,
+              padding: 26,
+              overflow: 'hidden',
+              shadowColor: '#000',
+              shadowOffset: { width: 0, height: 14 },
+              shadowOpacity: 0.38,
+              shadowRadius: 30,
+              elevation: 15,
+            }}>
+            {/* Title row */}
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                alignItems: 'flex-start',
+                marginBottom: 18,
+              }}>
+              <Text
+                style={{
+                  fontSize: 30,
+                  fontWeight: '300',
+                  letterSpacing: -1.5,
+                  color: '#fff',
+                  lineHeight: 32,
+                }}>
+                Your{'\n'}People
+              </Text>
+              <View
+                style={{
+                  backgroundColor: 'rgba(255,0,72,0.15)',
+                  borderRadius: 100,
+                  paddingHorizontal: 13,
+                  paddingVertical: 6,
+                }}>
+                <Text
+                  style={{
+                    fontSize: 10,
+                    fontWeight: '700',
+                    color: '#FF0048',
+                    letterSpacing: 1.2,
+                    textTransform: 'uppercase',
+                  }}>
+                  {friends.length} friends
+                </Text>
+              </View>
+            </View>
 
-      {/* ── FRIENDS LIST ── */}
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <ScrollView
-          contentContainerStyle={{
-            paddingHorizontal: 20,
-            paddingBottom: insets.bottom + 32,
-          }}
-          showsVerticalScrollIndicator={false}
-          keyboardShouldPersistTaps="handled">
-          {/* Section label */}
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 7, marginBottom: 12 }}>
-            <View style={{ width: 3, height: 14, borderRadius: 2, backgroundColor: '#FF0048' }} />
-            <Text
-              style={{ fontSize: 11.5, fontWeight: '700', color: '#AAAAAA', letterSpacing: 0.6 }}>
-              {filtered.length} {filtered.length === 1 ? 'PERSON' : 'PEOPLE'}
-            </Text>
+            {/* Net amount */}
+            <View style={{ marginBottom: 20 }}>
+              <Text
+                style={{
+                  fontSize: 11,
+                  fontWeight: '700',
+                  color: net >= 0 ? '#00A550' : '#FF0048',
+                  letterSpacing: 1.6,
+                  textTransform: 'uppercase',
+                  marginBottom: 6,
+                }}>
+                {net >= 0 ? 'Net ahead' : 'Net owed'}
+              </Text>
+              <Text
+                style={{
+                  fontSize: 58,
+                  fontWeight: '300',
+                  color: '#fff',
+                  letterSpacing: -3.5,
+                  lineHeight: 58,
+                }}>
+                ${Math.abs(net).toFixed(2)}
+              </Text>
+            </View>
+
+            {/* Hairline */}
+            <View
+              style={{
+                height: 1,
+                backgroundColor: 'rgba(255,255,255,0.07)',
+                marginBottom: 18,
+              }}
+            />
+
+            {/* Stats row */}
+            <View style={{ flexDirection: 'row', marginBottom: 22 }}>
+              <View style={{ flex: 1 }}>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    gap: 4,
+                    marginBottom: 5,
+                  }}>
+                  <ArrowDownLeft size={11} color="rgba(255,255,255,0.35)" strokeWidth={2.5} />
+                  <Text
+                    style={{
+                      fontSize: 9.5,
+                      fontWeight: '700',
+                      color: 'rgba(255,255,255,0.35)',
+                      textTransform: 'uppercase',
+                      letterSpacing: 1,
+                    }}>
+                    Owed to you
+                  </Text>
+                </View>
+                <Text
+                  style={{
+                    fontSize: 22,
+                    fontWeight: '600',
+                    color: '#fff',
+                    letterSpacing: -1,
+                    marginBottom: 8,
+                  }}>
+                  ${totalOwedToYou.toFixed(2)}
+                </Text>
+                <AvatarStack friends={owedFriends} max={3} />
+              </View>
+
+              <View
+                style={{
+                  width: 1,
+                  backgroundColor: 'rgba(255,255,255,0.07)',
+                  marginHorizontal: 18,
+                  alignSelf: 'stretch',
+                }}
+              />
+
+              <View style={{ flex: 1 }}>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    gap: 4,
+                    marginBottom: 5,
+                  }}>
+                  <ArrowUpRight size={11} color="rgba(255,255,255,0.35)" strokeWidth={2.5} />
+                  <Text
+                    style={{
+                      fontSize: 9.5,
+                      fontWeight: '700',
+                      color: 'rgba(255,255,255,0.35)',
+                      textTransform: 'uppercase',
+                      letterSpacing: 1,
+                    }}>
+                    You owe
+                  </Text>
+                </View>
+                <Text
+                  style={{
+                    fontSize: 22,
+                    fontWeight: '600',
+                    color: '#fff',
+                    letterSpacing: -1,
+                    marginBottom: 8,
+                  }}>
+                  ${totalYouOwe.toFixed(2)}
+                </Text>
+                <AvatarStack friends={oweFriends} max={3} />
+              </View>
+            </View>
+
+            {/* Hairline */}
+            <View
+              style={{
+                height: 1,
+                backgroundColor: 'rgba(255,255,255,0.07)',
+                marginBottom: 16,
+              }}
+            />
+
+            {/* Settle + Remind */}
+            <View style={{ flexDirection: 'row', gap: 10 }}>
+              <Pressable
+                style={{
+                  flex: 1,
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: 6,
+                  paddingVertical: 13,
+                  backgroundColor: '#FF0048',
+                  borderRadius: 14,
+                }}>
+                <Check size={13} color="#fff" strokeWidth={2.5} />
+                <Text
+                  style={{
+                    fontSize: 13,
+                    fontWeight: '700',
+                    color: '#fff',
+                    letterSpacing: -0.1,
+                  }}>
+                  Settle All
+                </Text>
+              </Pressable>
+              <Pressable
+                style={{
+                  flex: 1,
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: 6,
+                  paddingVertical: 13,
+                  backgroundColor: 'rgba(255,255,255,0.07)',
+                  borderRadius: 14,
+                }}>
+                <Text
+                  style={{
+                    fontSize: 13,
+                    fontWeight: '700',
+                    color: 'rgba(255,255,255,0.55)',
+                    letterSpacing: -0.1,
+                  }}>
+                  Remind All
+                </Text>
+              </Pressable>
+            </View>
           </View>
+        </MotiView>
+
+        {/* ── SEARCH ─────────────────────────────────────────────────────── */}
+        <MotiView
+          from={{ opacity: 0, translateY: 10 }}
+          animate={{ opacity: 1, translateY: 0 }}
+          transition={{ type: 'timing', duration: 260, delay: 100 }}
+          style={{
+            marginHorizontal: 20,
+            marginBottom: 20,
+            backgroundColor: '#FFFFFF',
+            borderRadius: 18,
+            flexDirection: 'row',
+            alignItems: 'center',
+            paddingHorizontal: 15,
+            paddingVertical: 12,
+            gap: 10,
+            borderWidth: 1,
+            borderColor: 'rgba(0,0,0,0.06)',
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 3 },
+            shadowOpacity: 0.05,
+            shadowRadius: 8,
+            elevation: 1,
+          }}>
+          <Search size={16} color="#BBBBBB" strokeWidth={2.3} />
+          <TextInput
+            value={query}
+            onChangeText={setQuery}
+            placeholder="Search people…"
+            placeholderTextColor="#C0C0C0"
+            returnKeyType="search"
+            style={{
+              flex: 1,
+              fontSize: 14.5,
+              fontWeight: '500',
+              color: '#0E0E0E',
+              padding: 0,
+            }}
+          />
+          <AnimatePresence>
+            {query.length > 0 && (
+              <MotiView
+                from={{ opacity: 0, scale: 0.6 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.6 }}
+                transition={{ type: 'spring', stiffness: 420, damping: 22 }}>
+                <Pressable
+                  onPress={() => setQuery('')}
+                  style={{
+                    width: 22,
+                    height: 22,
+                    borderRadius: 11,
+                    backgroundColor: '#EBEBEB',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}>
+                  <X size={11} color="#888" strokeWidth={2.5} />
+                </Pressable>
+              </MotiView>
+            )}
+          </AnimatePresence>
+        </MotiView>
+
+        {/* ── FRIENDS LIST ───────────────────────────────────────────────── */}
+        <View style={{ paddingHorizontal: 20 }}>
+          <SectionLabel
+            label={`${filtered.length} ${filtered.length === 1 ? 'person' : 'people'}`}
+          />
 
           {filtered.length === 0 ? (
             <MotiView
-              from={{ opacity: 0, scale: 0.95 }}
+              from={{ opacity: 0, scale: 0.94 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ type: 'timing', duration: 220 }}
-              style={{ alignItems: 'center', paddingTop: 48, gap: 10 }}>
-              <Text style={{ fontSize: 32 }}>🤷</Text>
+              style={{ alignItems: 'center', paddingTop: 50, gap: 12 }}>
+              <View
+                style={{
+                  width: 64,
+                  height: 64,
+                  borderRadius: 22,
+                  backgroundColor: '#EBEBEB',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}>
+                <Search size={26} color="#CCCCCC" strokeWidth={1.5} />
+              </View>
               <Text
-                style={{ fontSize: 15, fontWeight: '600', color: '#AAAAAA', letterSpacing: -0.3 }}>
+                style={{
+                  fontSize: 16,
+                  fontWeight: '700',
+                  color: '#1A1A1A',
+                  letterSpacing: -0.4,
+                }}>
                 {query ? 'No results' : 'No friends yet'}
               </Text>
-              <Text style={{ fontSize: 13, color: '#CCCCCC', textAlign: 'center', maxWidth: 220 }}>
-                {query ? `Nothing matches "${query}"` : 'Tap Add to invite someone to split with.'}
+              <Text
+                style={{
+                  fontSize: 13,
+                  color: '#AAAAAA',
+                  textAlign: 'center',
+                  maxWidth: 220,
+                  lineHeight: 19,
+                  fontWeight: '500',
+                }}>
+                {query
+                  ? `Nothing matches "${query}"`
+                  : 'Tap Add at the top to invite someone to split with.'}
               </Text>
             </MotiView>
           ) : (
-            filtered.map((friend) => (
-              <MotiView
+            filtered.map((friend, i) => (
+              <FriendRow
                 key={friend.key}
-                from={{ opacity: 0, translateY: 12 }}
-                animate={{ opacity: 1, translateY: 0 }}
-                transition={{ type: 'timing', duration: 240 }}>
-                <FriendRow
-                  friend={friend}
-                  expanded={expandedKey === friend.key}
-                  onPress={() =>
-                    setExpandedKey((prev) => (prev === friend.key ? null : friend.key))
-                  }
-                  onSettle={() => handleSettle(friend.key)}
-                />
-              </MotiView>
+                friend={friend}
+                index={i}
+                expanded={expandedKey === friend.key}
+                onPress={() => setExpandedKey((prev) => (prev === friend.key ? null : friend.key))}
+                onSettle={() => handleSettle(friend.key)}
+              />
             ))
           )}
-        </ScrollView>
-      </TouchableWithoutFeedback>
+        </View>
+      </ScrollView>
 
-      {/* ── ADD FRIEND SHEET ── */}
+      {/* ── ADD FRIEND SHEET ─────────────────────────────────────────────── */}
       <AddFriendSheet visible={showAdd} onClose={() => setShowAdd(false)} onAdd={handleAdd} />
     </View>
   );
