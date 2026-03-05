@@ -921,102 +921,180 @@ export function BillDetailScreen({ session, onBack }: Props) {
           left: 0,
           right: 0,
           paddingHorizontal: 20,
-          paddingTop: 16,
-          paddingBottom: insets.bottom > 0 ? insets.bottom + 8 : 24,
-          backgroundColor: '#FFFFFF',
+          paddingTop: 12,
+          paddingBottom: insets.bottom > 0 ? insets.bottom + 8 : 20,
+          backgroundColor: '#F4F4F4',
           borderTopWidth: 1,
-          borderTopColor: '#EBEBEB',
-          shadowColor: '#000',
-          shadowOffset: { width: 0, height: -8 },
-          shadowOpacity: 0.06,
-          shadowRadius: 20,
-          elevation: 16,
+          borderTopColor: 'rgba(0,0,0,0.06)',
         }}>
-        <View style={{ flexDirection: 'row', gap: 10 }}>
-          {/* SETTLE UP — primary CTA */}
-          {session.status !== 'settled' && (
+        {/* ── UNSETTLED: dark card with share + actions ── */}
+        {session.status !== 'settled' && (
+          <View
+            style={{
+              backgroundColor: '#141414',
+              borderRadius: 24,
+              padding: 20,
+              shadowColor: '#000',
+              shadowOffset: { width: 0, height: -4 },
+              shadowOpacity: 0.15,
+              shadowRadius: 16,
+              elevation: 10,
+            }}>
+            {/* TOP ROW: Your split + Remind All */}
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'flex-end',
+                justifyContent: 'space-between',
+                marginBottom: 16,
+              }}>
+              <View>
+                <Text
+                  style={{
+                    fontSize: 9.5,
+                    fontWeight: '700',
+                    color: '#FF0048',
+                    letterSpacing: 1.6,
+                    textTransform: 'uppercase',
+                    marginBottom: 3,
+                  }}>
+                  Your split
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 42,
+                    fontWeight: '300',
+                    color: '#fff',
+                    letterSpacing: -2.5,
+                    lineHeight: 44,
+                  }}>
+                  {fmt(session.myShare, session.currency)}
+                </Text>
+              </View>
+              {pendingCount > 0 && (
+                <Pressable
+                  style={({ pressed }) => ({
+                    backgroundColor: pressed ? 'rgba(255,255,255,0.14)' : 'rgba(255,255,255,0.09)',
+                    borderRadius: 12,
+                    paddingHorizontal: 16,
+                    paddingVertical: 10,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    gap: 7,
+                    marginBottom: 4,
+                  })}>
+                  <Bell size={14} color="rgba(255,255,255,0.7)" strokeWidth={1.75} />
+                  <Text
+                    style={{
+                      fontSize: 13,
+                      fontWeight: '700',
+                      color: 'rgba(255,255,255,0.7)',
+                      letterSpacing: -0.2,
+                    }}>
+                    Remind All
+                  </Text>
+                </Pressable>
+              )}
+            </View>
+
+            {/* SETTLE UP BUTTON */}
             <Pressable
               style={({ pressed }) => ({
-                flex: 1,
-                height: 56,
                 backgroundColor: pressed ? '#CC003A' : '#FF0048',
-                borderRadius: 18,
-                alignItems: 'center',
-                justifyContent: 'center',
+                borderRadius: 16,
+                paddingVertical: 16,
                 flexDirection: 'row',
-                gap: 8,
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                paddingHorizontal: 20,
                 shadowColor: '#FF0048',
                 shadowOffset: { width: 0, height: 6 },
-                shadowOpacity: 0.4,
-                shadowRadius: 16,
-                elevation: 10,
+                shadowOpacity: 0.45,
+                shadowRadius: 14,
+                elevation: 8,
               })}>
-              <CheckCircle2 size={18} color="#fff" strokeWidth={2.5} />
-              <Text
-                style={{
-                  fontSize: 16,
-                  fontWeight: '700',
-                  color: '#fff',
-                  letterSpacing: -0.4,
-                }}>
-                Settle Up
-              </Text>
-            </Pressable>
-          )}
-
-          {/* REMIND ALL — secondary */}
-          {session.status !== 'settled' && pendingCount > 0 && (
-            <Pressable
-              style={({ pressed }) => ({
-                flex: 1,
-                height: 56,
-                backgroundColor: pressed ? '#F5F5F5' : '#F0F0F0',
-                borderRadius: 18,
-                borderWidth: 0,
-                alignItems: 'center',
-                justifyContent: 'center',
-                flexDirection: 'row',
-                gap: 8,
-              })}>
-              <Bell size={17} color="#0E0E0E" strokeWidth={1.75} />
               <Text
                 style={{
                   fontSize: 15,
-                  fontWeight: '600',
-                  color: '#0E0E0E',
-                  letterSpacing: -0.3,
-                }}>
-                Remind All
-              </Text>
-            </Pressable>
-          )}
-
-          {/* If fully settled — show a "View Receipt" full-width button */}
-          {session.status === 'settled' && (
-            <Pressable
-              style={({ pressed }) => ({
-                flex: 1,
-                height: 56,
-                backgroundColor: pressed ? '#1A1A1A' : '#0E0E0E',
-                borderRadius: 18,
-                alignItems: 'center',
-                justifyContent: 'center',
-                flexDirection: 'row',
-                gap: 8,
-              })}>
-              <Receipt size={17} color="#fff" strokeWidth={1.75} />
-              <Text
-                style={{
-                  fontSize: 16,
                   fontWeight: '700',
                   color: '#fff',
-                  letterSpacing: -0.4,
+                  letterSpacing: -0.3,
+                }}>
+                Settle Up
+              </Text>
+              <CheckCircle2 size={18} color="rgba(255,255,255,0.8)" strokeWidth={2.5} />
+            </Pressable>
+          </View>
+        )}
+
+        {/* ── SETTLED: dark card with receipt button ── */}
+        {session.status === 'settled' && (
+          <View
+            style={{
+              backgroundColor: '#141414',
+              borderRadius: 24,
+              padding: 20,
+              shadowColor: '#000',
+              shadowOffset: { width: 0, height: -4 },
+              shadowOpacity: 0.15,
+              shadowRadius: 16,
+              elevation: 10,
+            }}>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'flex-end',
+                justifyContent: 'space-between',
+                marginBottom: 16,
+              }}>
+              <View>
+                <Text
+                  style={{
+                    fontSize: 9.5,
+                    fontWeight: '700',
+                    color: '#00A550',
+                    letterSpacing: 1.6,
+                    textTransform: 'uppercase',
+                    marginBottom: 3,
+                  }}>
+                  All settled
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 42,
+                    fontWeight: '300',
+                    color: '#fff',
+                    letterSpacing: -2.5,
+                    lineHeight: 44,
+                  }}>
+                  {fmt(session.myShare, session.currency)}
+                </Text>
+              </View>
+            </View>
+
+            <Pressable
+              style={({ pressed }) => ({
+                backgroundColor: pressed ? 'rgba(255,255,255,0.14)' : 'rgba(255,255,255,0.09)',
+                borderRadius: 16,
+                paddingVertical: 16,
+                flexDirection: 'row',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                paddingHorizontal: 20,
+              })}>
+              <Text
+                style={{
+                  fontSize: 15,
+                  fontWeight: '700',
+                  color: 'rgba(255,255,255,0.85)',
+                  letterSpacing: -0.3,
                 }}>
                 View Receipt
               </Text>
+              <Receipt size={17} color="rgba(255,255,255,0.6)" strokeWidth={1.75} />
             </Pressable>
-          )}
-        </View>
+          </View>
+        )}
       </MotiView>
     </View>
   );
