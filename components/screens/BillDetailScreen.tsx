@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import {
   ArrowDownLeft,
   ArrowLeft,
@@ -229,6 +230,26 @@ function PersonAvatar({ personKey, size = 40 }: { personKey: string; size?: numb
 export function BillDetailScreen({ session, onBack }: Props) {
   const insets = useSafeAreaInsets();
 
+  // ── local interactive state ──
+  const [localStatus, setLocalStatus] = useState<'pending' | 'partial' | 'settled'>(session.status);
+  const [settling, setSettling] = useState(false);
+  const [remindSent, setRemindSent] = useState(false);
+
+  const handleSettleUp = () => {
+    if (settling) return;
+    setSettling(true);
+    setTimeout(() => {
+      setLocalStatus('settled');
+      setSettling(false);
+    }, 900);
+  };
+
+  const handleRemindAll = () => {
+    if (remindSent) return;
+    setRemindSent(true);
+    setTimeout(() => setRemindSent(false), 2200);
+  };
+
   const lineItems = BILL_ITEMS[session.id] ?? [];
   const pShareMap = PARTICIPANT_SHARES[session.id] ?? {};
 
@@ -239,8 +260,8 @@ export function BillDetailScreen({ session, onBack }: Props) {
       : session.myShare * session.participants.length;
 
   const isOwed = session.direction === 'owed';
-  const statusColor = STATUS_COLORS[session.status];
-  const statusBg = STATUS_BG[session.status];
+  const statusColor = STATUS_COLORS[localStatus];
+  const statusBg = STATUS_BG[localStatus];
 
   const pendingCount = session.participants.filter((p) => {
     const ps = pShareMap[p.key];
@@ -362,7 +383,7 @@ export function BillDetailScreen({ session, onBack }: Props) {
                       letterSpacing: 0.8,
                       textTransform: 'uppercase',
                     }}>
-                    {STATUS_LABELS[session.status]}
+                    {STATUS_LABELS[localStatus]}
                   </Text>
                 </View>
                 {session.direction && (
@@ -928,7 +949,7 @@ export function BillDetailScreen({ session, onBack }: Props) {
           borderTopColor: 'rgba(0,0,0,0.06)',
         }}>
         {/* ── UNSETTLED: dark card with share + actions ── */}
-        {session.status !== 'settled' && (
+        {localStatus !== 'settled' && (
           <View
             style={{
               backgroundColor: '#141414',
@@ -973,8 +994,13 @@ export function BillDetailScreen({ session, onBack }: Props) {
               </View>
               {pendingCount > 0 && (
                 <Pressable
+                  onPress={handleRemindAll}
                   style={({ pressed }) => ({
-                    backgroundColor: pressed ? 'rgba(255,255,255,0.14)' : 'rgba(255,255,255,0.09)',
+                    backgroundColor: remindSent
+                      ? 'rgba(0,165,80,0.18)'
+                      : pressed
+                        ? 'rgba(255,255,255,0.14)'
+                        : 'rgba(255,255,255,0.09)',
                     borderRadius: 12,
                     paddingHorizontal: 16,
                     paddingVertical: 10,
@@ -983,52 +1009,70 @@ export function BillDetailScreen({ session, onBack }: Props) {
                     gap: 7,
                     marginBottom: 4,
                   })}>
-                  <Bell size={14} color="rgba(255,255,255,0.7)" strokeWidth={1.75} />
+                  {remindSent ? (
+                    <CheckCircle2 size={14} color="#00A550" strokeWidth={2.5} />
+                  ) : (
+                    <Bell size={14} color="rgba(255,255,255,0.7)" strokeWidth={1.75} />
+                  )}
                   <Text
                     style={{
                       fontSize: 13,
                       fontWeight: '700',
-                      color: 'rgba(255,255,255,0.7)',
+                      color: remindSent ? '#00A550' : 'rgba(255,255,255,0.7)',
                       letterSpacing: -0.2,
                     }}>
-                    Remind All
+                    {remindSent ? 'Sent ✓' : 'Remind All'}
                   </Text>
                 </Pressable>
               )}
             </View>
 
             {/* SETTLE UP BUTTON */}
-            <Pressable
-              style={({ pressed }) => ({
-                backgroundColor: pressed ? '#CC003A' : '#FF0048',
-                borderRadius: 16,
-                paddingVertical: 16,
-                flexDirection: 'row',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                paddingHorizontal: 20,
-                shadowColor: '#FF0048',
-                shadowOffset: { width: 0, height: 6 },
-                shadowOpacity: 0.45,
-                shadowRadius: 14,
-                elevation: 8,
-              })}>
-              <Text
-                style={{
-                  fontSize: 15,
-                  fontWeight: '700',
-                  color: '#fff',
-                  letterSpacing: -0.3,
-                }}>
-                Settle Up
-              </Text>
-              <CheckCircle2 size={18} color="rgba(255,255,255,0.8)" strokeWidth={2.5} />
-            </Pressable>
+            <MotiView
+              animate={{ opacity: settling ? 0.7 : 1, scale: settling ? 0.98 : 1 }}
+              transition={{ type: 'timing', duration: 150 }}>
+              <Pressable
+                onPress={handleSettleUp}
+                disabled={settling}
+                style={({ pressed }) => ({
+                  backgroundColor: settling ? '#CC003A' : pressed ? '#CC003A' : '#FF0048',
+                  borderRadius: 16,
+                  paddingVertical: 16,
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  paddingHorizontal: 20,
+                  shadowColor: '#FF0048',
+                  shadowOffset: { width: 0, height: 6 },
+                  shadowOpacity: settling ? 0.2 : 0.45,
+                  shadowRadius: 14,
+                  elevation: 8,
+                })}>
+                <Text
+                  style={{
+                    fontSize: 15,
+                    fontWeight: '700',
+                    color: '#fff',
+                    letterSpacing: -0.3,
+                  }}>
+                  {settling ? 'Settling…' : 'Settle Up'}
+                </Text>
+                <MotiView
+                  animate={{ rotate: settling ? '360deg' : '0deg' }}
+                  transition={
+                    settling
+                      ? { type: 'timing', duration: 700, loop: true }
+                      : { type: 'timing', duration: 200 }
+                  }>
+                  <CheckCircle2 size={18} color="rgba(255,255,255,0.8)" strokeWidth={2.5} />
+                </MotiView>
+              </Pressable>
+            </MotiView>
           </View>
         )}
 
         {/* ── SETTLED: dark card with receipt button ── */}
-        {session.status === 'settled' && (
+        {localStatus === 'settled' && (
           <View
             style={{
               backgroundColor: '#141414',
