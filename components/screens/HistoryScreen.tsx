@@ -1,3 +1,4 @@
+import { BillDetailSession } from './BillDetailScreen';
 import {
   ArrowDownLeft,
   ArrowUpRight,
@@ -193,7 +194,15 @@ function ParticipantStack({ participants }: { participants: { key: string }[] })
 }
 
 // ─── SessionRow ───────────────────────────────────────────────────────────────
-function SessionRow({ item, isLast }: { item: (typeof HISTORY)[0]['items'][0]; isLast: boolean }) {
+function SessionRow({
+  item,
+  isLast,
+  onPress,
+}: {
+  item: (typeof HISTORY)[0]['items'][0];
+  isLast: boolean;
+  onPress?: () => void;
+}) {
   const Icon = item.venueIcon;
   const isOwed = item.direction === 'owed';
   const formattedAmount =
@@ -202,7 +211,7 @@ function SessionRow({ item, isLast }: { item: (typeof HISTORY)[0]['items'][0]; i
       : `$${(item.myShare as number).toFixed(2)}`;
 
   return (
-    <Pressable>
+    <Pressable onPress={onPress}>
       <View
         style={{
           paddingVertical: 14,
@@ -312,7 +321,11 @@ function SessionRow({ item, isLast }: { item: (typeof HISTORY)[0]['items'][0]; i
 }
 
 // ─── Main ─────────────────────────────────────────────────────────────────────
-export function HistoryScreen() {
+export function HistoryScreen({
+  onSessionPress,
+}: {
+  onSessionPress?: (item: BillDetailSession) => void;
+}) {
   const insets = useSafeAreaInsets();
   const [activeFilter, setActiveFilter] = useState<Filter>('all');
 
@@ -676,7 +689,12 @@ export function HistoryScreen() {
 
               {/* ROWS */}
               {group.items.map((item, ii) => (
-                <SessionRow key={item.id} item={item} isLast={ii === group.items.length - 1} />
+                <SessionRow
+                  key={item.id}
+                  item={item}
+                  isLast={ii === group.items.length - 1}
+                  onPress={() => onSessionPress?.(item as unknown as BillDetailSession)}
+                />
               ))}
 
               {/* SEE MORE FOOTER */}

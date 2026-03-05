@@ -1,4 +1,5 @@
-﻿import { HistoryScreen } from './HistoryScreen';
+﻿import { BillDetailScreen, BillDetailSession } from './BillDetailScreen';
+import { HistoryScreen } from './HistoryScreen';
 import { PeopleScreen } from './PeopleScreen';
 import { NavDock } from '../NavDock';
 import {
@@ -216,11 +217,14 @@ export function HomeScreen({ onNewSession }: Props) {
   const net = BALANCE.owedToYou - BALANCE.youOwe;
   const greetingLabel = getDynamicGreetingLabel();
   const [activeTab, setActiveTab] = useState('home');
+  const [selectedSession, setSelectedSession] = useState<BillDetailSession | null>(null);
 
   return (
     <View style={{ flex: 1, backgroundColor: '#F4F4F4' }}>
-      {activeTab === 'activity' ? (
-        <HistoryScreen />
+      {selectedSession ? (
+        <BillDetailScreen session={selectedSession} onBack={() => setSelectedSession(null)} />
+      ) : activeTab === 'activity' ? (
+        <HistoryScreen onSessionPress={(item) => setSelectedSession(item)} />
       ) : activeTab === 'people' ? (
         <PeopleScreen onBack={() => setActiveTab('home')} />
       ) : (
@@ -835,7 +839,7 @@ export function HomeScreen({ onNewSession }: Props) {
               <View>
                 {SESSIONS.map((session, i) => (
                   <View key={session.id}>
-                    <Pressable>
+                    <Pressable onPress={() => setSelectedSession(session as BillDetailSession)}>
                       <View
                         style={{
                           paddingVertical: 14,
@@ -945,7 +949,9 @@ export function HomeScreen({ onNewSession }: Props) {
       )}
 
       {/* ── NAV DOCK ─────────────────────────────────────────────────── */}
-      <NavDock activeTab={activeTab} onTabChange={setActiveTab} onNewSession={onNewSession} />
+      {!selectedSession && (
+        <NavDock activeTab={activeTab} onTabChange={setActiveTab} onNewSession={onNewSession} />
+      )}
     </View>
   );
 }
