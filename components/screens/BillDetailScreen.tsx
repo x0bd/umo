@@ -4,10 +4,10 @@ import {
   ArrowUpRight,
   Bell,
   CheckCircle2,
+  Clock,
+  FileText,
   Receipt,
-  ReceiptText,
   Share2,
-  Sparkles,
   Users,
   Wallet,
 } from 'lucide-react-native';
@@ -721,7 +721,7 @@ export function BillDetailScreen({ session, onBack }: Props) {
                         {settled ? (
                           <CheckCircle2 size={11} color="#00A550" strokeWidth={2.5} />
                         ) : (
-                          <Sparkles size={11} color="#FB8C00" strokeWidth={2.5} />
+                          <Clock size={11} color="#FB8C00" strokeWidth={2.5} />
                         )}
                         <Text
                           style={{
@@ -799,7 +799,7 @@ export function BillDetailScreen({ session, onBack }: Props) {
                     alignItems: 'center',
                     justifyContent: 'center',
                   }}>
-                  <ReceiptText size={16} color="#FF0048" strokeWidth={1.75} />
+                  <FileText size={16} color="#FF0048" strokeWidth={1.75} />
                 </View>
                 <Text
                   style={{
@@ -921,11 +921,16 @@ export function BillDetailScreen({ session, onBack }: Props) {
           left: 0,
           right: 0,
           paddingHorizontal: 20,
-          paddingTop: 14,
-          paddingBottom: insets.bottom + 16,
-          backgroundColor: 'rgba(244,244,244,0.92)',
+          paddingTop: 16,
+          paddingBottom: insets.bottom > 0 ? insets.bottom + 8 : 24,
+          backgroundColor: '#FFFFFF',
           borderTopWidth: 1,
-          borderTopColor: 'rgba(0,0,0,0.06)',
+          borderTopColor: '#EBEBEB',
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: -8 },
+          shadowOpacity: 0.06,
+          shadowRadius: 20,
+          elevation: 16,
         }}>
         <View style={{ flexDirection: 'row', gap: 10 }}>
           {/* SETTLE UP — primary CTA */}
@@ -933,26 +938,26 @@ export function BillDetailScreen({ session, onBack }: Props) {
             <Pressable
               style={({ pressed }) => ({
                 flex: 1,
-                height: 52,
+                height: 56,
                 backgroundColor: pressed ? '#CC003A' : '#FF0048',
-                borderRadius: 16,
+                borderRadius: 18,
                 alignItems: 'center',
                 justifyContent: 'center',
                 flexDirection: 'row',
                 gap: 8,
                 shadowColor: '#FF0048',
                 shadowOffset: { width: 0, height: 6 },
-                shadowOpacity: 0.35,
-                shadowRadius: 14,
-                elevation: 8,
+                shadowOpacity: 0.4,
+                shadowRadius: 16,
+                elevation: 10,
               })}>
-              <CheckCircle2 size={17} color="#fff" strokeWidth={2.5} />
+              <CheckCircle2 size={18} color="#fff" strokeWidth={2.5} />
               <Text
                 style={{
-                  fontSize: 15,
+                  fontSize: 16,
                   fontWeight: '700',
                   color: '#fff',
-                  letterSpacing: -0.3,
+                  letterSpacing: -0.4,
                 }}>
                 Settle Up
               </Text>
@@ -964,17 +969,16 @@ export function BillDetailScreen({ session, onBack }: Props) {
             <Pressable
               style={({ pressed }) => ({
                 flex: 1,
-                height: 52,
-                backgroundColor: pressed ? '#F0F0F0' : '#fff',
-                borderRadius: 16,
-                borderWidth: 1.5,
-                borderColor: '#EBEBEB',
+                height: 56,
+                backgroundColor: pressed ? '#F5F5F5' : '#F0F0F0',
+                borderRadius: 18,
+                borderWidth: 0,
                 alignItems: 'center',
                 justifyContent: 'center',
                 flexDirection: 'row',
                 gap: 8,
               })}>
-              <Bell size={16} color="#0E0E0E" strokeWidth={1.75} />
+              <Bell size={17} color="#0E0E0E" strokeWidth={1.75} />
               <Text
                 style={{
                   fontSize: 15,
@@ -992,23 +996,21 @@ export function BillDetailScreen({ session, onBack }: Props) {
             <Pressable
               style={({ pressed }) => ({
                 flex: 1,
-                height: 52,
-                backgroundColor: pressed ? '#F0F0F0' : '#fff',
-                borderRadius: 16,
-                borderWidth: 1.5,
-                borderColor: '#EBEBEB',
+                height: 56,
+                backgroundColor: pressed ? '#1A1A1A' : '#0E0E0E',
+                borderRadius: 18,
                 alignItems: 'center',
                 justifyContent: 'center',
                 flexDirection: 'row',
                 gap: 8,
               })}>
-              <Receipt size={16} color="#0E0E0E" strokeWidth={1.75} />
+              <Receipt size={17} color="#fff" strokeWidth={1.75} />
               <Text
                 style={{
-                  fontSize: 15,
-                  fontWeight: '600',
-                  color: '#0E0E0E',
-                  letterSpacing: -0.3,
+                  fontSize: 16,
+                  fontWeight: '700',
+                  color: '#fff',
+                  letterSpacing: -0.4,
                 }}>
                 View Receipt
               </Text>
