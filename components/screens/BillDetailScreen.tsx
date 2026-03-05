@@ -168,14 +168,14 @@ function fmt(amount: number, currency: 'USD' | 'ZiG') {
 // ─── Sub-component: Section label ─────────────────────────────────────────────
 function SectionLabel({ label }: { label: string }) {
   return (
-    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 16 }}>
-      <View style={{ width: 3, height: 14, borderRadius: 2, backgroundColor: '#FF0048' }} />
+    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 9, marginBottom: 18 }}>
+      <View style={{ width: 3, height: 16, borderRadius: 2, backgroundColor: '#FF0048' }} />
       <Text
         style={{
-          fontSize: 9.5,
-          fontWeight: '700',
-          color: '#AAAAAA',
-          letterSpacing: 1.6,
+          fontSize: 9,
+          fontWeight: '800',
+          color: '#999',
+          letterSpacing: 2,
           textTransform: 'uppercase',
         }}>
         {label}
@@ -337,9 +337,11 @@ export function BillDetailScreen({ session, onBack }: Props) {
               backgroundColor: '#141414',
               borderRadius: 28,
               padding: 24,
-              shadowColor: '#000',
+              borderTopWidth: 2.5,
+              borderTopColor: session.venueColor,
+              shadowColor: session.venueColor,
               shadowOffset: { width: 0, height: 12 },
-              shadowOpacity: 0.35,
+              shadowOpacity: 0.28,
               shadowRadius: 28,
               elevation: 14,
             }}>
@@ -374,7 +376,22 @@ export function BillDetailScreen({ session, onBack }: Props) {
                     borderRadius: 100,
                     paddingHorizontal: 12,
                     paddingVertical: 5,
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    gap: 5,
                   }}>
+                  {localStatus !== 'settled' ? (
+                    <View
+                      style={{
+                        width: 5,
+                        height: 5,
+                        borderRadius: 3,
+                        backgroundColor: statusColor,
+                      }}
+                    />
+                  ) : (
+                    <CheckCircle2 size={9} color={statusColor} strokeWidth={2.5} />
+                  )}
                   <Text
                     style={{
                       fontSize: 10,
@@ -415,11 +432,11 @@ export function BillDetailScreen({ session, onBack }: Props) {
             {/* VENUE NAME */}
             <Text
               style={{
-                fontSize: 26,
-                fontWeight: '600',
+                fontSize: 30,
+                fontWeight: '700',
                 color: '#fff',
-                letterSpacing: -1.0,
-                lineHeight: 28,
+                letterSpacing: -1.3,
+                lineHeight: 32,
                 marginBottom: 6,
               }}>
               {session.venue}
@@ -568,14 +585,18 @@ export function BillDetailScreen({ session, onBack }: Props) {
                       paddingVertical: 11,
                     }}>
                     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-                      <View
+                      <Text
                         style={{
-                          width: 6,
-                          height: 6,
-                          borderRadius: 3,
-                          backgroundColor: '#E0E0E0',
-                        }}
-                      />
+                          fontSize: 10,
+                          fontWeight: '700',
+                          color: '#D4D4D4',
+                          letterSpacing: 0.3,
+                          width: 18,
+                          textAlign: 'right',
+                          fontVariant: ['tabular-nums'],
+                        }}>
+                        {String(i + 1).padStart(2, '0')}
+                      </Text>
                       <Text
                         style={{
                           fontSize: 14,
@@ -602,37 +623,34 @@ export function BillDetailScreen({ session, onBack }: Props) {
                 </View>
               ))}
 
-              {/* TOTAL ROW */}
-              <View
-                style={{
-                  height: 1,
-                  backgroundColor: '#EBEBEB',
-                  marginTop: 6,
-                  marginBottom: 14,
-                }}
-              />
+              {/* TOTAL ROW — dark footer band */}
               <View
                 style={{
                   flexDirection: 'row',
                   alignItems: 'center',
                   justifyContent: 'space-between',
+                  backgroundColor: '#0E0E0E',
+                  borderRadius: 14,
+                  paddingHorizontal: 16,
+                  paddingVertical: 13,
+                  marginTop: 12,
                 }}>
                 <Text
                   style={{
-                    fontSize: 13,
-                    fontWeight: '700',
-                    color: '#AAAAAA',
-                    letterSpacing: 0.5,
+                    fontSize: 9,
+                    fontWeight: '800',
+                    color: 'rgba(255,255,255,0.35)',
+                    letterSpacing: 1.8,
                     textTransform: 'uppercase',
                   }}>
                   Total
                 </Text>
                 <Text
                   style={{
-                    fontSize: 18,
-                    fontWeight: '700',
-                    color: '#0E0E0E',
-                    letterSpacing: -0.8,
+                    fontSize: 20,
+                    fontWeight: '600',
+                    color: '#fff',
+                    letterSpacing: -1,
                   }}>
                   {fmt(billTotal, session.currency)}
                 </Text>
@@ -668,26 +686,46 @@ export function BillDetailScreen({ session, onBack }: Props) {
                 marginBottom: 16,
               }}>
               <SectionLabel label="Participants" />
-              {pendingCount > 0 && (
+              <View
+                style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 16 }}>
                 <View
                   style={{
-                    backgroundColor: '#FFF3E0',
+                    backgroundColor: 'rgba(0,165,80,0.12)',
                     borderRadius: 100,
-                    paddingHorizontal: 10,
-                    paddingVertical: 4,
-                    marginBottom: 16,
+                    paddingHorizontal: 9,
+                    paddingVertical: 3,
                   }}>
                   <Text
                     style={{
                       fontSize: 10,
                       fontWeight: '700',
-                      color: '#FB8C00',
-                      letterSpacing: 0.4,
+                      color: '#00A550',
+                      letterSpacing: 0.3,
                     }}>
-                    {pendingCount} pending
+                    {session.participants.length - pendingCount}/{session.participants.length}{' '}
+                    settled
                   </Text>
                 </View>
-              )}
+                {pendingCount > 0 && (
+                  <View
+                    style={{
+                      backgroundColor: '#FFF3E0',
+                      borderRadius: 100,
+                      paddingHorizontal: 9,
+                      paddingVertical: 3,
+                    }}>
+                    <Text
+                      style={{
+                        fontSize: 10,
+                        fontWeight: '700',
+                        color: '#FB8C00',
+                        letterSpacing: 0.3,
+                      }}>
+                      {pendingCount} pending
+                    </Text>
+                  </View>
+                )}
+              </View>
             </View>
 
             {session.participants.map((p, i) => {
@@ -706,8 +744,16 @@ export function BillDetailScreen({ session, onBack }: Props) {
                       paddingVertical: 12,
                       gap: 12,
                     }}>
-                    {/* AVATAR */}
-                    <PersonAvatar personKey={p.key} size={44} />
+                    {/* AVATAR with color ring */}
+                    <View
+                      style={{
+                        borderRadius: 15,
+                        padding: 2,
+                        borderWidth: 2,
+                        borderColor: settled ? '#E8E8E8' : (PEOPLE[p.key]?.color ?? '#666') + '80',
+                      }}>
+                      <PersonAvatar personKey={p.key} size={40} />
+                    </View>
 
                     {/* NAME + STATUS */}
                     <View style={{ flex: 1 }}>
@@ -810,34 +856,37 @@ export function BillDetailScreen({ session, onBack }: Props) {
                   padding: 14,
                   alignItems: 'center',
                   gap: 8,
+                  borderWidth: 1,
+                  borderColor: '#EFEFEF',
                 }}>
                 <View
                   style={{
-                    width: 36,
-                    height: 36,
-                    borderRadius: 10,
-                    backgroundColor: '#FF0048' + '16',
+                    width: 40,
+                    height: 40,
+                    borderRadius: 12,
+                    backgroundColor: '#FF0048' + '14',
                     alignItems: 'center',
                     justifyContent: 'center',
                   }}>
-                  <FileText size={16} color="#FF0048" strokeWidth={1.75} />
+                  <FileText size={17} color="#FF0048" strokeWidth={1.75} />
                 </View>
                 <Text
                   style={{
-                    fontSize: 9,
-                    fontWeight: '700',
+                    fontSize: 8.5,
+                    fontWeight: '800',
                     color: '#AAAAAA',
-                    letterSpacing: 1.2,
+                    letterSpacing: 1.6,
                     textTransform: 'uppercase',
                   }}>
                   Method
                 </Text>
                 <Text
                   style={{
-                    fontSize: 13,
-                    fontWeight: '600',
+                    fontSize: 12.5,
+                    fontWeight: '700',
                     color: '#0E0E0E',
                     letterSpacing: -0.3,
+                    textAlign: 'center',
                   }}>
                   Equal Split
                 </Text>
@@ -852,32 +901,34 @@ export function BillDetailScreen({ session, onBack }: Props) {
                   padding: 14,
                   alignItems: 'center',
                   gap: 8,
+                  borderWidth: 1,
+                  borderColor: '#EFEFEF',
                 }}>
                 <View
                   style={{
-                    width: 36,
-                    height: 36,
-                    borderRadius: 10,
-                    backgroundColor: '#1A73E8' + '16',
+                    width: 40,
+                    height: 40,
+                    borderRadius: 12,
+                    backgroundColor: '#1A73E8' + '14',
                     alignItems: 'center',
                     justifyContent: 'center',
                   }}>
-                  <Users size={16} color="#1A73E8" strokeWidth={1.75} />
+                  <Users size={17} color="#1A73E8" strokeWidth={1.75} />
                 </View>
                 <Text
                   style={{
-                    fontSize: 9,
-                    fontWeight: '700',
+                    fontSize: 8.5,
+                    fontWeight: '800',
                     color: '#AAAAAA',
-                    letterSpacing: 1.2,
+                    letterSpacing: 1.6,
                     textTransform: 'uppercase',
                   }}>
                   People
                 </Text>
                 <Text
                   style={{
-                    fontSize: 13,
-                    fontWeight: '600',
+                    fontSize: 12.5,
+                    fontWeight: '700',
                     color: '#0E0E0E',
                     letterSpacing: -0.3,
                   }}>
@@ -894,32 +945,34 @@ export function BillDetailScreen({ session, onBack }: Props) {
                   padding: 14,
                   alignItems: 'center',
                   gap: 8,
+                  borderWidth: 1,
+                  borderColor: '#EFEFEF',
                 }}>
                 <View
                   style={{
-                    width: 36,
-                    height: 36,
-                    borderRadius: 10,
-                    backgroundColor: '#00A550' + '16',
+                    width: 40,
+                    height: 40,
+                    borderRadius: 12,
+                    backgroundColor: '#00A550' + '14',
                     alignItems: 'center',
                     justifyContent: 'center',
                   }}>
-                  <Wallet size={16} color="#00A550" strokeWidth={1.75} />
+                  <Wallet size={17} color="#00A550" strokeWidth={1.75} />
                 </View>
                 <Text
                   style={{
-                    fontSize: 9,
-                    fontWeight: '700',
+                    fontSize: 8.5,
+                    fontWeight: '800',
                     color: '#AAAAAA',
-                    letterSpacing: 1.2,
+                    letterSpacing: 1.6,
                     textTransform: 'uppercase',
                   }}>
                   Currency
                 </Text>
                 <Text
                   style={{
-                    fontSize: 13,
-                    fontWeight: '600',
+                    fontSize: 12.5,
+                    fontWeight: '700',
                     color: '#0E0E0E',
                     letterSpacing: -0.3,
                   }}>
