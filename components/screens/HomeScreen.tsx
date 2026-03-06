@@ -1,6 +1,7 @@
 ﻿import { BillDetailScreen, BillDetailSession } from './BillDetailScreen';
 import { HistoryScreen } from './HistoryScreen';
 import { PeopleScreen } from './PeopleScreen';
+import { WalletScreen } from './WalletScreen';
 import { NavDock } from '../NavDock';
 import {
   ArrowDownLeft,
@@ -948,8 +949,17 @@ export function HomeScreen({ onNewSession }: Props) {
         </ScrollView>
       )}
 
+      {/* ── WALLET SCREEN ──────────────────────────────────────────────── */}
+      {activeTab === 'wallet' && (
+        <WalletScreen
+          onNewSession={onNewSession}
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+        />
+      )}
+
       {/* ── NAV DOCK ─────────────────────────────────────────────────── */}
-      {!selectedSession && (
+      {!selectedSession && activeTab !== 'people' && activeTab !== 'wallet' && (
         <NavDock activeTab={activeTab} onTabChange={setActiveTab} onNewSession={onNewSession} />
       )}
     </View>
