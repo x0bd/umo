@@ -39,7 +39,7 @@ function DockTab({
             from={{ opacity: 0, scaleX: 0 }}
             animate={{ opacity: 1, scaleX: 1 }}
             transition={{ type: 'spring', stiffness: 400, damping: 20 }}>
-            <View style={{ width: 4, height: 4, borderRadius: 2, backgroundColor: '#FF0048' }} />
+            <View style={{ width: 4, height: 4, borderRadius: 2, backgroundColor: '#FFFFFF' }} />
           </MotiView>
         )}
       </MotiView>
@@ -108,16 +108,16 @@ export function NavDock({
               width: 60,
               height: 60,
               borderRadius: 30,
-              backgroundColor: '#FF0048',
+              backgroundColor: '#FFFFFF',
               alignItems: 'center',
               justifyContent: 'center',
-              shadowColor: '#FF0048',
+              shadowColor: '#000',
               shadowOffset: { width: 0, height: 8 },
-              shadowOpacity: 0.6,
+              shadowOpacity: 0.15,
               shadowRadius: 18,
-              elevation: 12,
+              elevation: 4,
             }}>
-            <Plus size={27} color="#fff" strokeWidth={2.5} />
+            <Plus size={27} color="#111111" strokeWidth={2.5} />
           </MotiView>
         </Pressable>
 

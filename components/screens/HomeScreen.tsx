@@ -59,7 +59,7 @@ const SESSIONS = [
     myShare: 12.0,
     currency: 'USD',
     participants: [
-      { key: 'TM', initials: 'TM', color: '#FF0048' },
+      { key: 'TM', initials: 'TM', color: '#111111' },
       { key: 'SN', initials: 'SN', color: '#1A73E8' },
       { key: 'KC', initials: 'KC', color: '#00A550' },
       { key: 'AM', initials: 'AM', color: '#8B1CC8' },
@@ -75,7 +75,7 @@ const SESSIONS = [
     myShare: 8.0,
     currency: 'USD',
     participants: [
-      { key: 'TM', initials: 'TM', color: '#FF0048' },
+      { key: 'TM', initials: 'TM', color: '#111111' },
       { key: 'RM', initials: 'RM', color: '#F05A28' },
       { key: 'JK', initials: 'JK', color: '#1B3A6B' },
     ],
@@ -90,7 +90,7 @@ const SESSIONS = [
     myShare: 4200,
     currency: 'ZiG',
     participants: [
-      { key: 'TM', initials: 'TM', color: '#FF0048' },
+      { key: 'TM', initials: 'TM', color: '#111111' },
       { key: 'BN', initials: 'BN', color: '#9A6F00' },
     ],
   },
@@ -108,7 +108,7 @@ const STATUS_BG: Record<string, string> = {
 };
 
 const QUICK_ACTIONS = [
-  { icon: Plus, label: 'New Split', bg: '#FF0048', fg: '#fff', iconBg: 'rgba(255,255,255,0.22)' },
+  { icon: Plus, label: 'New Split', bg: '#111111', fg: '#fff', iconBg: 'rgba(255,255,255,0.22)' },
   { icon: QrCode, label: 'Scan QR', bg: '#fff', fg: '#0E0E0E', iconBg: '#F4F4F4' },
   { icon: ArrowUpRight, label: 'Request', bg: '#fff', fg: '#0E0E0E', iconBg: '#F4F4F4' },
   { icon: RefreshCw, label: 'Settle', bg: '#fff', fg: '#0E0E0E', iconBg: '#F4F4F4' },
@@ -253,14 +253,14 @@ export function HomeScreen({ onNewSession }: Props) {
                   width: 38,
                   height: 38,
                   borderRadius: 12,
-                  backgroundColor: '#FF0048',
+                  backgroundColor: '#111111',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  shadowColor: '#FF0048',
+                  shadowColor: '#000',
                   shadowOffset: { width: 0, height: 6 },
-                  shadowOpacity: 0.35,
-                  shadowRadius: 12,
-                  elevation: 7,
+                  shadowOpacity: 0.15,
+                  shadowRadius: 10,
+                  elevation: 4,
                 }}>
                 <Rabbit size={17} color="#fff" strokeWidth={1.75} />
               </View>
@@ -317,7 +317,7 @@ export function HomeScreen({ onNewSession }: Props) {
                     width: 7,
                     height: 7,
                     borderRadius: 4,
-                    backgroundColor: '#FF0048',
+                    backgroundColor: '#111111',
                     borderWidth: 1.5,
                     borderColor: '#fff',
                   }}
@@ -375,9 +375,9 @@ export function HomeScreen({ onNewSession }: Props) {
                   }}>
                   Your{'\n'}Balance
                 </Text>
-                <View
+                  <View
                   style={{
-                    backgroundColor: 'rgba(255,0,72,0.15)',
+                    backgroundColor: '#333333',
                     borderRadius: 100,
                     paddingHorizontal: 13,
                     paddingVertical: 6,
@@ -386,7 +386,7 @@ export function HomeScreen({ onNewSession }: Props) {
                     style={{
                       fontSize: 10,
                       fontWeight: '700',
-                      color: '#FF0048',
+                      color: '#FFFFFF',
                       letterSpacing: 1.2,
                       textTransform: 'uppercase',
                     }}>
@@ -401,7 +401,7 @@ export function HomeScreen({ onNewSession }: Props) {
                   style={{
                     fontSize: 11,
                     fontWeight: '700',
-                    color: '#FF0048',
+                    color: '#FFFFFF',
                     letterSpacing: 1.6,
                     textTransform: 'uppercase',
                     marginBottom: 6,
@@ -562,12 +562,12 @@ export function HomeScreen({ onNewSession }: Props) {
                     backgroundColor: '#FF0048',
                     borderRadius: 14,
                   }}>
-                  <RefreshCw size={13} color="#fff" strokeWidth={2.2} />
+                  <RefreshCw size={13} color="#111111" strokeWidth={2.2} />
                   <Text
                     style={{
                       fontSize: 13,
                       fontWeight: '700',
-                      color: '#fff',
+                      color: '#111111',
                       letterSpacing: -0.1,
                     }}>
                     Settle Up
@@ -625,11 +625,11 @@ export function HomeScreen({ onNewSession }: Props) {
                         gap: 9,
                         borderWidth: action.bg === '#fff' ? 1 : 0,
                         borderColor: '#E8E8E8',
-                        shadowColor: action.bg === '#FF0048' ? '#FF0048' : '#000',
-                        shadowOffset: { width: 0, height: action.bg === '#FF0048' ? 8 : 2 },
-                        shadowOpacity: action.bg === '#FF0048' ? 0.38 : 0.05,
-                        shadowRadius: action.bg === '#FF0048' ? 14 : 6,
-                        elevation: action.bg === '#FF0048' ? 7 : 1,
+                        shadowColor: '#000',
+                        shadowOffset: { width: 0, height: action.bg === '#111111' ? 8 : 2 },
+                        shadowOpacity: action.bg === '#111111' ? 0.25 : 0.05,
+                        shadowRadius: action.bg === '#111111' ? 14 : 6,
+                        elevation: action.bg === '#111111' ? 7 : 1,
                       }}>
                       <View
                         style={{
@@ -674,7 +674,7 @@ export function HomeScreen({ onNewSession }: Props) {
               }}>
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 7 }}>
                 <View
-                  style={{ width: 3, height: 16, borderRadius: 2, backgroundColor: '#FF0048' }}
+                  style={{ width: 3, height: 16, borderRadius: 2, backgroundColor: '#111111' }}
                 />
                 <Text
                   style={{
@@ -752,14 +752,14 @@ export function HomeScreen({ onNewSession }: Props) {
                           paddingHorizontal: 8,
                           paddingVertical: 3,
                           borderRadius: 100,
-                          backgroundColor: isPositive ? 'rgba(0,165,80,0.1)' : 'rgba(255,0,72,0.1)',
+                          backgroundColor: isPositive ? 'rgba(0,165,80,0.1)' : '#F2F2F2',
                           marginBottom: 8,
                         }}>
                         <Text
                           style={{
                             fontSize: 9,
                             fontWeight: '700',
-                            color: isPositive ? '#00A550' : '#FF0048',
+                            color: isPositive ? '#00A550' : '#111111',
                             letterSpacing: 0.45,
                             textTransform: 'uppercase',
                           }}>
@@ -771,7 +771,7 @@ export function HomeScreen({ onNewSession }: Props) {
                         style={{
                           fontSize: 15.5,
                           fontWeight: '700',
-                          color: isPositive ? '#00A550' : '#FF0048',
+                          color: isPositive ? '#00A550' : '#111111',
                           letterSpacing: -0.55,
                         }}>
                         {f.currency === 'ZiG'

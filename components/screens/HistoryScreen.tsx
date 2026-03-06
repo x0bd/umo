@@ -294,7 +294,7 @@ function SessionRow({
               {isOwed ? (
                 <ArrowDownLeft size={11} color="#00A550" strokeWidth={2.5} />
               ) : (
-                <ArrowUpRight size={11} color="#FF0048" strokeWidth={2.5} />
+                <ArrowUpRight size={11} color="#111111" strokeWidth={2.5} />
               )}
               <Text
                 style={{
@@ -307,7 +307,7 @@ function SessionRow({
                         ? '#555'
                         : isOwed
                           ? '#00A550'
-                          : '#000',
+                          : '#111111',
                   letterSpacing: -0.5,
                 }}>
                 {formattedAmount}
@@ -425,7 +425,7 @@ export function HistoryScreen({
               style={{
                 fontSize: 9.5,
                 fontWeight: '600',
-                color: '#FF0048',
+                color: '#111111',
                 letterSpacing: 1.6,
                 textTransform: 'uppercase',
                 marginBottom: 6,
@@ -535,7 +535,7 @@ export function HistoryScreen({
               <View style={{ flex: 1 }}>
                 <View
                   style={{ flexDirection: 'row', alignItems: 'center', gap: 4, marginBottom: 4 }}>
-                  <ArrowUpRight size={10} color="#FF0048" strokeWidth={2.5} />
+                  <ArrowUpRight size={10} color="#111111" strokeWidth={2.5} />
                   <Text
                     style={{
                       fontSize: 9,
@@ -551,7 +551,7 @@ export function HistoryScreen({
                   style={{
                     fontSize: 19,
                     fontWeight: '600',
-                    color: '#FF0048',
+                    color: '#111111',
                     letterSpacing: -0.8,
                   }}>
                   ${TOTAL_SUMMARY.youOwe.toFixed(2)}

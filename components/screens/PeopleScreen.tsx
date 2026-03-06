@@ -197,7 +197,7 @@ function formatAmt(amount: number, currency: Currency) {
 function SectionLabel({ label }: { label: string }) {
   return (
     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 7, marginBottom: 14 }}>
-      <View style={{ width: 3, height: 14, borderRadius: 2, backgroundColor: '#FF0048' }} />
+      <View style={{ width: 3, height: 14, borderRadius: 2, backgroundColor: '#111111' }} />
       <Text
         style={{
           fontSize: 11,
@@ -279,7 +279,7 @@ function BalancePill({ owes, currency }: { owes: number; currency: Currency }) {
   return (
     <View
       style={{
-        backgroundColor: positive ? 'rgba(0,165,80,0.1)' : 'rgba(255,0,72,0.09)',
+        backgroundColor: positive ? 'rgba(0,165,80,0.1)' : '#E0E0E0',
         borderRadius: 100,
         paddingHorizontal: 10,
         paddingVertical: 4,
@@ -288,7 +288,7 @@ function BalancePill({ owes, currency }: { owes: number; currency: Currency }) {
         style={{
           fontSize: 12.5,
           fontWeight: '700',
-          color: positive ? '#00A550' : '#FF0048',
+          color: positive ? '#00A550' : '#111111',
           letterSpacing: -0.3,
         }}>
         {positive ? '+' : '−'}
@@ -492,12 +492,12 @@ function FriendRow({
                         alignItems: 'center',
                         justifyContent: 'center',
                         gap: 6,
-                        backgroundColor: '#FF0048',
+                        backgroundColor: '#111111',
                         borderRadius: 14,
                         paddingVertical: 12,
-                        shadowColor: '#FF0048',
+                        shadowColor: '#000',
                         shadowOffset: { width: 0, height: 5 },
-                        shadowOpacity: 0.3,
+                        shadowOpacity: 0.15,
                         shadowRadius: 10,
                         elevation: 4,
                       }}>
@@ -753,14 +753,14 @@ function AddFriendSheet({
                 onPress={submit}
                 style={{
                   marginTop: 18,
-                  backgroundColor: name.trim() ? '#FF0048' : 'rgba(255,0,72,0.2)',
+                  backgroundColor: name.trim() ? '#111111' : 'rgba(255,255,255,0.05)',
                   borderRadius: 20,
                   paddingVertical: 17,
                   alignItems: 'center',
                   flexDirection: 'row',
                   justifyContent: 'center',
                   gap: 8,
-                  shadowColor: '#FF0048',
+                  shadowColor: '#000',
                   shadowOffset: { width: 0, height: 8 },
                   shadowOpacity: name.trim() ? 0.4 : 0,
                   shadowRadius: 16,

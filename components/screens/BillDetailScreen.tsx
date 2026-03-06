@@ -54,7 +54,7 @@ const PHOTOS: Record<string, string> = {
 
 // ─── Participant catalogue ──────────────────────────────────────────────────────
 const PEOPLE: Record<string, { name: string; initials: string; color: string; role?: 'you' }> = {
-  TM: { name: 'You', initials: 'TM', color: '#FF0048', role: 'you' },
+  TM: { name: 'You', initials: 'TM', color: '#111111', role: 'you' },
   SN: { name: 'Sasha N.', initials: 'SN', color: '#1A73E8' },
   KC: { name: 'Kuda C.', initials: 'KC', color: '#00A550' },
   AM: { name: 'Ash M.', initials: 'AM', color: '#8B1CC8' },
@@ -169,7 +169,7 @@ function fmt(amount: number, currency: 'USD' | 'ZiG') {
 function SectionLabel({ label }: { label: string }) {
   return (
     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 9, marginBottom: 18 }}>
-      <View style={{ width: 3, height: 16, borderRadius: 2, backgroundColor: '#FF0048' }} />
+      <View style={{ width: 3, height: 16, borderRadius: 2, backgroundColor: '#111111' }} />
       <Text
         style={{
           fontSize: 9,
@@ -413,13 +413,13 @@ export function BillDetailScreen({ session, onBack }: Props) {
                     {isOwed ? (
                       <ArrowDownLeft size={12} color="#00C853" strokeWidth={2.5} />
                     ) : (
-                      <ArrowUpRight size={12} color="#FF0048" strokeWidth={2.5} />
+                      <ArrowUpRight size={12} color="#111111" strokeWidth={2.5} />
                     )}
                     <Text
                       style={{
                         fontSize: 10,
                         fontWeight: '600',
-                        color: isOwed ? '#00C853' : '#FF0048',
+                        color: isOwed ? '#00C853' : '#111111',
                         letterSpacing: 0.3,
                       }}>
                       {isOwed ? 'They owe you' : 'You owe'}
