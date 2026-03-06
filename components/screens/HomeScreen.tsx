@@ -228,6 +228,12 @@ export function HomeScreen({ onNewSession }: Props) {
         <HistoryScreen onSessionPress={(item) => setSelectedSession(item)} />
       ) : activeTab === 'people' ? (
         <PeopleScreen onBack={() => setActiveTab('home')} />
+      ) : activeTab === 'wallet' ? (
+        <WalletScreen
+          onNewSession={onNewSession}
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+        />
       ) : (
         <ScrollView
           showsVerticalScrollIndicator={false}
@@ -949,17 +955,8 @@ export function HomeScreen({ onNewSession }: Props) {
         </ScrollView>
       )}
 
-      {/* ── WALLET SCREEN ──────────────────────────────────────────────── */}
-      {activeTab === 'wallet' && (
-        <WalletScreen
-          onNewSession={onNewSession}
-          activeTab={activeTab}
-          setActiveTab={setActiveTab}
-        />
-      )}
-
       {/* ── NAV DOCK ─────────────────────────────────────────────────── */}
-      {!selectedSession && activeTab !== 'people' && activeTab !== 'wallet' && (
+      {!selectedSession && (
         <NavDock activeTab={activeTab} onTabChange={setActiveTab} onNewSession={onNewSession} />
       )}
     </View>

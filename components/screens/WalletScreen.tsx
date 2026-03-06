@@ -1,4 +1,3 @@
-import { NavDock } from '../NavDock';
 import { PaymentCard } from '../ui/PaymentCard';
 import {
   ArrowDownLeft,
@@ -137,121 +136,145 @@ export function WalletScreen({ onNewSession, activeTab, setActiveTab }: Props) {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: insets.bottom + 128 }}>
         
-        {/* ── HERO BALANCE ──────────────────────────────────────────────── */}
+        {/* ── BALANCE CARD ───────────────────────────────────────────── */}
         <MotiView
-          from={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ type: 'spring', stiffness: 300, damping: 24, delay: 50 }}
-          style={{ marginHorizontal: 20, marginBottom: 24, alignItems: 'center' }}>
-          
-          <Text
+          from={{ opacity: 0, translateY: 22 }}
+          animate={{ opacity: 1, translateY: 0 }}
+          transition={{ type: 'timing', duration: 300, delay: 60 }}
+          style={{ marginHorizontal: 20, marginBottom: 24 }}>
+          <View
             style={{
-              fontSize: 12,
-              fontWeight: '600',
-              color: '#555555',
-              textTransform: 'uppercase',
-              letterSpacing: 1.5,
-              marginBottom: 8,
+              backgroundColor: '#141414',
+              borderRadius: 28,
+              padding: 26,
+              overflow: 'hidden',
+              shadowColor: '#000',
+              shadowOffset: { width: 0, height: 12 },
+              shadowOpacity: 0.35,
+              shadowRadius: 28,
+              elevation: 14,
             }}>
-            Available Balance
-          </Text>
-          <Text
-            style={{
-              fontSize: 64,
-              fontWeight: '300',
-              color: '#111111',
-              letterSpacing: -3.5,
-              lineHeight: 70,
-            }}>
-            ${AVAILABLE_BALANCE.toFixed(2)}
-          </Text>
-          
-          {PENDING_TRANSFER > 0 && (
+            {/* TITLE ROW */}
             <View
               style={{
                 flexDirection: 'row',
-                alignItems: 'center',
-                backgroundColor: 'rgba(255,149,0,0.1)',
-                paddingHorizontal: 12,
-                paddingVertical: 6,
-                borderRadius: 100,
-                marginTop: 8,
-                gap: 6,
+                justifyContent: 'space-between',
+                alignItems: 'flex-start',
+                marginBottom: 20,
               }}>
+              <Text
+                style={{
+                  fontSize: 31,
+                  fontWeight: '300',
+                  letterSpacing: -1.5,
+                  color: '#fff',
+                  lineHeight: 33,
+                }}>
+                Available{'\n'}Balance
+              </Text>
+              {PENDING_TRANSFER > 0 && (
+                <View
+                  style={{
+                    backgroundColor: 'rgba(255,149,0,0.15)',
+                    borderRadius: 100,
+                    paddingHorizontal: 13,
+                    paddingVertical: 6,
+                  }}>
+                  <Text
+                    style={{
+                      fontSize: 10,
+                      fontWeight: '700',
+                      color: '#FF9500',
+                      letterSpacing: 1.2,
+                      textTransform: 'uppercase',
+                    }}>
+                    + ${PENDING_TRANSFER.toFixed(2)} Transit
+                  </Text>
+                </View>
+              )}
+            </View>
+
+            {/* HERO AMOUNT */}
+            <View style={{ marginBottom: 20 }}>
               <Text
                 style={{
                   fontSize: 11,
                   fontWeight: '700',
-                  color: '#FF9500',
-                  letterSpacing: 1,
+                  color: '#FFFFFF',
+                  letterSpacing: 1.6,
                   textTransform: 'uppercase',
+                  marginBottom: 6,
                 }}>
-                + ${PENDING_TRANSFER.toFixed(2)} In Transit
+                Ready to use
+              </Text>
+              <Text
+                style={{
+                  fontSize: 62,
+                  fontWeight: '300',
+                  color: '#fff',
+                  letterSpacing: -4,
+                  lineHeight: 62,
+                }}>
+                ${AVAILABLE_BALANCE.toFixed(2)}
               </Text>
             </View>
-          )}
 
-          {/* QUICK ACTIONS */}
-          <View style={{ flexDirection: 'row', gap: 16, marginTop: 28 }}>
-            <Pressable style={{ alignItems: 'center', gap: 8 }}>
-              <View
+            {/* HAIRLINE */}
+            <View
+              style={{
+                height: 1,
+                backgroundColor: 'rgba(255,255,255,0.07)',
+                marginBottom: 16,
+              }}
+            />
+
+            {/* INLINE ACTIONS */}
+            <View style={{ flexDirection: 'row', gap: 10 }}>
+              <Pressable
                 style={{
-                  width: 56,
-                  height: 56,
-                  borderRadius: 28,
+                  flex: 1,
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: 6,
+                  paddingVertical: 13,
                   backgroundColor: '#FFFFFF',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  shadowColor: '#000',
-                  shadowOffset: { width: 0, height: 4 },
-                  shadowOpacity: 0.05,
-                  shadowRadius: 10,
-                  elevation: 2,
+                  borderRadius: 14,
                 }}>
-                <ArrowDownLeft size={22} color="#111111" strokeWidth={2} />
-              </View>
-              <Text style={{ fontSize: 12, fontWeight: '600', color: '#111111' }}>Add</Text>
-            </Pressable>
-
-            <Pressable style={{ alignItems: 'center', gap: 8 }}>
-              <View
+                <ArrowDownLeft size={13} color="#111111" strokeWidth={2.5} />
+                <Text
+                  style={{
+                    fontSize: 13,
+                    fontWeight: '700',
+                    color: '#111111',
+                    letterSpacing: -0.1,
+                  }}>
+                  Add
+                </Text>
+              </Pressable>
+              <Pressable
                 style={{
-                  width: 56,
-                  height: 56,
-                  borderRadius: 28,
-                  backgroundColor: '#111111',
+                  flex: 1,
+                  flexDirection: 'row',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  shadowColor: '#000',
-                  shadowOffset: { width: 0, height: 6 },
-                  shadowOpacity: 0.2,
-                  shadowRadius: 12,
-                  elevation: 5,
+                  gap: 6,
+                  paddingVertical: 13,
+                  backgroundColor: 'rgba(255,255,255,0.07)',
+                  borderRadius: 14,
                 }}>
-                <Send size={20} color="#FFFFFF" strokeWidth={2} style={{ marginLeft: -2, marginTop: -2 }} />
-              </View>
-              <Text style={{ fontSize: 12, fontWeight: '600', color: '#111111' }}>Transfer</Text>
-            </Pressable>
-
-            <Pressable style={{ alignItems: 'center', gap: 8 }}>
-              <View
-                style={{
-                  width: 56,
-                  height: 56,
-                  borderRadius: 28,
-                  backgroundColor: '#FFFFFF',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  shadowColor: '#000',
-                  shadowOffset: { width: 0, height: 4 },
-                  shadowOpacity: 0.05,
-                  shadowRadius: 10,
-                  elevation: 2,
-                }}>
-                <Wallet size={22} color="#111111" strokeWidth={2} />
-              </View>
-              <Text style={{ fontSize: 12, fontWeight: '600', color: '#111111' }}>Cards</Text>
-            </Pressable>
+                <Send size={13} color="rgba(255,255,255,0.8)" strokeWidth={2.2} />
+                <Text
+                  style={{
+                    fontSize: 13,
+                    fontWeight: '700',
+                    color: 'rgba(255,255,255,0.8)',
+                    letterSpacing: -0.1,
+                  }}>
+                  Transfer
+                </Text>
+              </Pressable>
+            </View>
           </View>
         </MotiView>
 
@@ -300,68 +323,130 @@ export function WalletScreen({ onNewSession, activeTab, setActiveTab }: Props) {
           </ScrollView>
         </MotiView>
 
-        {/* ── TRANSFER LEDGER ─────────────────────────────────────────── */}
+        {/* ── GRAY CARD — Recent Transfers ──────────────────────────────── */}
         <MotiView
           from={{ opacity: 0, translateY: 20 }}
           animate={{ opacity: 1, translateY: 0 }}
           transition={{ type: 'timing', duration: 300, delay: 150 }}
-          style={{ paddingHorizontal: 24 }}>
-          <Text style={{ fontSize: 16, fontWeight: '700', color: '#111111', letterSpacing: -0.5, marginBottom: 16 }}>
-            Recent Transfers
-          </Text>
-
-          <View style={{ backgroundColor: '#FFFFFF', borderRadius: 24, padding: 20, shadowColor: '#000', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.03, shadowRadius: 10, elevation: 2 }}>
-            {LEDGER.map((tx, idx) => (
-              <View
-                key={tx.id}
+          style={{ marginHorizontal: 20, marginBottom: 14 }}>
+          <View style={{ backgroundColor: '#E6E6E6', borderRadius: 28, padding: 24 }}>
+            {/* TITLE ROW */}
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                alignItems: 'flex-start',
+                marginBottom: 22,
+              }}>
+              <Text
                 style={{
+                  fontSize: 30,
+                  fontWeight: '500',
+                  letterSpacing: -1.5,
+                  color: '#000',
+                  lineHeight: 32,
+                }}>
+                Recent{'\n'}Transfers
+              </Text>
+              <Pressable
+                style={{
+                  paddingHorizontal: 12,
+                  paddingVertical: 5,
+                  borderRadius: 100,
+                  backgroundColor: 'rgba(0,0,0,0.08)',
+                  alignSelf: 'flex-start',
+                  marginTop: 4,
                   flexDirection: 'row',
                   alignItems: 'center',
-                  paddingVertical: 14,
-                  borderBottomWidth: idx < LEDGER.length - 1 ? 1 : 0,
-                  borderBottomColor: 'rgba(0,0,0,0.06)',
+                  gap: 2,
                 }}>
-                <View
-                  style={{
-                    width: 44,
-                    height: 44,
-                    borderRadius: 22,
-                    backgroundColor: tx.type === 'in' ? 'rgba(52,199,89,0.1)' : 'rgba(0,0,0,0.04)',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    marginRight: 12,
-                  }}>
-                  {tx.type === 'in' ? (
-                    <ArrowDownLeft size={20} color="#34C759" strokeWidth={2.5} />
-                  ) : (
-                    <ArrowUpRight size={20} color="#111111" strokeWidth={2} />
-                  )}
-                </View>
-
-                <View style={{ flex: 1 }}>
-                  <Text style={{ fontSize: 14, fontWeight: '600', color: '#111111', letterSpacing: -0.2, marginBottom: 2 }}>
-                    {tx.title}
-                  </Text>
-                  <Text style={{ fontSize: 12, color: '#AAAAAA' }}>{tx.date}</Text>
-                </View>
-
                 <Text
                   style={{
-                    fontSize: 15,
+                    fontSize: 10,
                     fontWeight: '700',
-                    color: tx.type === 'in' ? '#34C759' : '#111111',
-                    letterSpacing: -0.5,
+                    color: 'rgba(0,0,0,0.45)',
+                    letterSpacing: 0.8,
+                    textTransform: 'uppercase',
                   }}>
-                  {tx.type === 'in' ? '+' : '-'}${tx.amount.toFixed(2)}
+                  See all
                 </Text>
-              </View>
-            ))}
+              </Pressable>
+            </View>
+
+            {/* LEDGER LIST */}
+            <View>
+              {LEDGER.map((tx, idx) => (
+                <View
+                  key={tx.id}
+                  style={{
+                    paddingVertical: 14,
+                    borderBottomWidth: idx < LEDGER.length - 1 ? 1 : 0,
+                    borderBottomColor: 'rgba(0,0,0,0.07)',
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    gap: 13,
+                  }}>
+                  <View
+                    style={{
+                      width: 50,
+                      height: 50,
+                      borderRadius: 14,
+                      backgroundColor: tx.type === 'in' ? 'rgba(52,199,89,0.1)' : 'rgba(0,0,0,0.04)',
+                      borderWidth: 1,
+                      borderColor: tx.type === 'in' ? 'rgba(52,199,89,0.2)' : 'rgba(0,0,0,0.06)',
+                      flexShrink: 0,
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}>
+                    {tx.type === 'in' ? (
+                      <ArrowDownLeft size={22} color="#34C759" strokeWidth={2.5} />
+                    ) : (
+                      <ArrowUpRight size={22} color="#111111" strokeWidth={2} />
+                    )}
+                  </View>
+
+                  <View style={{ flex: 1 }}>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                        marginBottom: 3,
+                      }}>
+                      <Text
+                        style={{
+                          fontSize: 14.5,
+                          fontWeight: '700',
+                          color: '#000',
+                          letterSpacing: -0.3,
+                          flex: 1,
+                          marginRight: 8,
+                        }}
+                        numberOfLines={1}>
+                        {tx.title}
+                      </Text>
+                      <Text
+                        style={{
+                          fontSize: 15,
+                          fontWeight: '700',
+                          color: tx.type === 'in' ? '#00A550' : '#000',
+                          letterSpacing: -0.5,
+                        }}>
+                        {tx.type === 'in' ? '+' : '-'}${tx.amount.toFixed(2)}
+                      </Text>
+                    </View>
+
+                    <Text style={{ fontSize: 11, color: '#777', letterSpacing: 0.05 }}>
+                      {tx.date}
+                    </Text>
+                  </View>
+                </View>
+              ))}
+            </View>
           </View>
         </MotiView>
       </ScrollView>
 
-      {/* ── NAV DOCK (Shared) ────────────────────────────────────────── */}
-      <NavDock activeTab={activeTab} onTabChange={setActiveTab} onNewSession={onNewSession} />
     </View>
   );
 }
