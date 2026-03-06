@@ -292,9 +292,9 @@ function SessionRow({
             {/* RIGHT: AMOUNT + DIRECTION */}
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 4 }}>
               {isOwed ? (
-                <ArrowDownLeft size={11} color="#00A550" strokeWidth={2.5} />
+                <ArrowDownLeft size={11} color="#34C759" strokeWidth={2.5} />
               ) : (
-                <ArrowUpRight size={11} color="#111111" strokeWidth={2.5} />
+                <ArrowUpRight size={11} color="#FF3B30" strokeWidth={2.5} />
               )}
               <Text
                 style={{
@@ -302,12 +302,12 @@ function SessionRow({
                   fontWeight: '700',
                   color:
                     item.status === 'settled' && isOwed
-                      ? '#00A550'
+                      ? '#34C759'
                       : item.status === 'settled'
                         ? '#555'
                         : isOwed
-                          ? '#00A550'
-                          : '#111111',
+                          ? '#34C759'
+                          : '#FF3B30',
                   letterSpacing: -0.5,
                 }}>
                 {formattedAmount}
@@ -461,7 +461,7 @@ export function HistoryScreen({
               <View style={{ flex: 1 }}>
                 <View
                   style={{ flexDirection: 'row', alignItems: 'center', gap: 4, marginBottom: 4 }}>
-                  <CheckCircle2 size={10} color="#00A550" strokeWidth={2.5} />
+                  <CheckCircle2 size={10} color="#34C759" strokeWidth={2.5} />
                   <Text
                     style={{
                       fontSize: 9,
@@ -477,7 +477,7 @@ export function HistoryScreen({
                   style={{
                     fontSize: 19,
                     fontWeight: '600',
-                    color: '#00C853',
+                    color: '#34C759',
                     letterSpacing: -0.8,
                   }}>
                   ${TOTAL_SUMMARY.settled.toFixed(2)}
@@ -498,7 +498,7 @@ export function HistoryScreen({
               <View style={{ flex: 1 }}>
                 <View
                   style={{ flexDirection: 'row', alignItems: 'center', gap: 4, marginBottom: 4 }}>
-                  <Sparkles size={10} color="#FB8C00" strokeWidth={2.5} />
+                  <Sparkles size={10} color="#FF9500" strokeWidth={2.5} />
                   <Text
                     style={{
                       fontSize: 9,
@@ -514,7 +514,7 @@ export function HistoryScreen({
                   style={{
                     fontSize: 19,
                     fontWeight: '600',
-                    color: '#FFB300',
+                    color: '#FF9500',
                     letterSpacing: -0.8,
                   }}>
                   ${TOTAL_SUMMARY.pending.toFixed(2)}
@@ -535,7 +535,7 @@ export function HistoryScreen({
               <View style={{ flex: 1 }}>
                 <View
                   style={{ flexDirection: 'row', alignItems: 'center', gap: 4, marginBottom: 4 }}>
-                  <ArrowUpRight size={10} color="#111111" strokeWidth={2.5} />
+                  <ArrowUpRight size={10} color="#FF3B30" strokeWidth={2.5} />
                   <Text
                     style={{
                       fontSize: 9,
@@ -551,7 +551,7 @@ export function HistoryScreen({
                   style={{
                     fontSize: 19,
                     fontWeight: '600',
-                    color: '#111111',
+                    color: '#FF3B30',
                     letterSpacing: -0.8,
                   }}>
                   ${TOTAL_SUMMARY.youOwe.toFixed(2)}

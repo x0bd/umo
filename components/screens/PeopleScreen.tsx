@@ -279,7 +279,7 @@ function BalancePill({ owes, currency }: { owes: number; currency: Currency }) {
   return (
     <View
       style={{
-        backgroundColor: positive ? 'rgba(0,165,80,0.1)' : '#E0E0E0',
+        backgroundColor: positive ? 'rgba(52,199,89,0.15)' : 'rgba(255,59,48,0.15)',
         borderRadius: 100,
         paddingHorizontal: 10,
         paddingVertical: 4,
@@ -288,7 +288,7 @@ function BalancePill({ owes, currency }: { owes: number; currency: Currency }) {
         style={{
           fontSize: 12.5,
           fontWeight: '700',
-          color: positive ? '#00A550' : '#111111',
+          color: positive ? '#34C759' : '#FF3B30',
           letterSpacing: -0.3,
         }}>
         {positive ? '+' : '−'}
@@ -895,13 +895,13 @@ export function PeopleScreen({ onBack }: { onBack?: () => void }) {
             flexDirection: 'row',
             alignItems: 'center',
             gap: 5,
-            backgroundColor: '#FF0048',
+            backgroundColor: '#111111',
             borderRadius: 14,
             paddingHorizontal: 14,
             paddingVertical: 9,
-            shadowColor: '#FF0048',
+            shadowColor: '#000',
             shadowOffset: { width: 0, height: 5 },
-            shadowOpacity: 0.35,
+            shadowOpacity: 0.15,
             shadowRadius: 10,
             elevation: 5,
           }}>
@@ -954,7 +954,7 @@ export function PeopleScreen({ onBack }: { onBack?: () => void }) {
               </Text>
               <View
                 style={{
-                  backgroundColor: 'rgba(255,0,72,0.15)',
+                  backgroundColor: 'rgba(255,255,255,0.15)',
                   borderRadius: 100,
                   paddingHorizontal: 13,
                   paddingVertical: 6,
@@ -963,7 +963,7 @@ export function PeopleScreen({ onBack }: { onBack?: () => void }) {
                   style={{
                     fontSize: 10,
                     fontWeight: '700',
-                    color: '#FF0048',
+                    color: '#fff',
                     letterSpacing: 1.2,
                     textTransform: 'uppercase',
                   }}>
@@ -978,7 +978,7 @@ export function PeopleScreen({ onBack }: { onBack?: () => void }) {
                 style={{
                   fontSize: 11,
                   fontWeight: '700',
-                  color: net >= 0 ? '#00A550' : '#FF0048',
+                  color: net >= 0 ? '#34C759' : '#FF3B30',
                   letterSpacing: 1.6,
                   textTransform: 'uppercase',
                   marginBottom: 6,
@@ -1103,7 +1103,7 @@ export function PeopleScreen({ onBack }: { onBack?: () => void }) {
                   justifyContent: 'center',
                   gap: 6,
                   paddingVertical: 13,
-                  backgroundColor: '#FF0048',
+                  backgroundColor: '#111111',
                   borderRadius: 14,
                 }}>
                 <Check size={13} color="#fff" strokeWidth={2.5} />

@@ -57,15 +57,15 @@ export function Dock() {
           <MotiView
             animate={{ scale: fabPressed ? 0.9 : 1 }}
             transition={{ type: 'spring', stiffness: 400, damping: 18 }}
-            className="h-14 w-14 items-center justify-center rounded-full bg-[#FF0048]"
+            className="h-14 w-14 items-center justify-center rounded-full bg-[#FFFFFF]"
             style={{
-              shadowColor: '#FF0048',
+              shadowColor: '#000',
               shadowOffset: { width: 0, height: 4 },
-              shadowOpacity: 0.4,
+              shadowOpacity: 0.15,
               shadowRadius: 12,
               elevation: 8,
             }}>
-            <Plus size={24} color="#FFFFFF" strokeWidth={2.5} />
+            <Plus size={24} color="#111111" strokeWidth={2.5} />
           </MotiView>
         </Pressable>
 

@@ -559,15 +559,15 @@ export function HomeScreen({ onNewSession }: Props) {
                     justifyContent: 'center',
                     gap: 6,
                     paddingVertical: 13,
-                    backgroundColor: '#FF0048',
+                    backgroundColor: '#111111',
                     borderRadius: 14,
                   }}>
-                  <RefreshCw size={13} color="#111111" strokeWidth={2.2} />
+                  <RefreshCw size={13} color="#fff" strokeWidth={2.2} />
                   <Text
                     style={{
                       fontSize: 13,
                       fontWeight: '700',
-                      color: '#111111',
+                      color: '#fff',
                       letterSpacing: -0.1,
                     }}>
                     Settle Up
@@ -752,14 +752,14 @@ export function HomeScreen({ onNewSession }: Props) {
                           paddingHorizontal: 8,
                           paddingVertical: 3,
                           borderRadius: 100,
-                          backgroundColor: isPositive ? 'rgba(0,165,80,0.1)' : '#F2F2F2',
+                          backgroundColor: isPositive ? 'rgba(52,199,89,0.15)' : 'rgba(255,59,48,0.15)',
                           marginBottom: 8,
                         }}>
                         <Text
                           style={{
                             fontSize: 9,
                             fontWeight: '700',
-                            color: isPositive ? '#00A550' : '#111111',
+                            color: isPositive ? '#34C759' : '#FF3B30',
                             letterSpacing: 0.45,
                             textTransform: 'uppercase',
                           }}>
@@ -771,7 +771,7 @@ export function HomeScreen({ onNewSession }: Props) {
                         style={{
                           fontSize: 15.5,
                           fontWeight: '700',
-                          color: isPositive ? '#00A550' : '#111111',
+                          color: isPositive ? '#34C759' : '#FF3B30',
                           letterSpacing: -0.55,
                         }}>
                         {f.currency === 'ZiG'

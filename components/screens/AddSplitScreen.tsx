@@ -112,7 +112,7 @@ const MODE_COLORS: Record<SplitMode, { bg: string; text: string; label: string }
 function SectionLabel({ children }: { children: string }) {
   return (
     <View style={{ flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: 14 }}>
-      <View style={{ width: 3, height: 14, borderRadius: 2, backgroundColor: '#FF0048' }} />
+      <View style={{ width: 3, height: 14, borderRadius: 2, backgroundColor: '#111111' }} />
       <Text
         style={{
           fontSize: 9.5,
@@ -152,7 +152,7 @@ function FriendChip({
             borderRadius: 26,
             overflow: 'hidden',
             borderWidth: selected ? 2.5 : 1,
-            borderColor: selected ? '#FF0048' : 'rgba(0,0,0,0.08)',
+            borderColor: selected ? '#111111' : 'rgba(0,0,0,0.08)',
             backgroundColor: '#E0E0E0',
           }}>
           <Image source={{ uri: friend.photo }} style={{ width: '100%', height: '100%' }} />
@@ -169,7 +169,7 @@ function FriendChip({
               width: 18,
               height: 18,
               borderRadius: 9,
-              backgroundColor: '#FF0048',
+              backgroundColor: '#111111',
               borderWidth: 2,
               borderColor: '#F4F4F4',
               alignItems: 'center',
@@ -422,7 +422,7 @@ export function AddSplitScreen({ onBack }: { onBack: () => void }) {
                 style={{
                   fontSize: 9.5,
                   fontWeight: '700',
-                  color: '#FF0048',
+                  color: '#fff',
                   letterSpacing: 1.8,
                   textTransform: 'uppercase',
                   marginBottom: 10,
@@ -581,14 +581,14 @@ export function AddSplitScreen({ onBack }: { onBack: () => void }) {
                       style={{
                         fontSize: 13,
                         fontWeight: '700',
-                        color: '#FF0048',
+                        color: '#fff',
                         minWidth: 48,
                         padding: 0,
                         textAlign: 'right',
                       }}
                     />
                   ) : (
-                    <Text style={{ fontSize: 13, fontWeight: '700', color: '#FF0048' }}>
+                    <Text style={{ fontSize: 13, fontWeight: '700', color: '#fff' }}>
                       {zigRate} ZiG
                     </Text>
                   )}
@@ -704,11 +704,11 @@ export function AddSplitScreen({ onBack }: { onBack: () => void }) {
                                 width: 26,
                                 height: 26,
                                 borderRadius: 8,
-                                backgroundColor: 'rgba(255,0,72,0.1)',
+                                backgroundColor: 'rgba(0,0,0,0.06)',
                                 alignItems: 'center',
                                 justifyContent: 'center',
                               }}>
-                              <X size={11} color="#FF0048" strokeWidth={2.5} />
+                              <X size={11} color="#111111" strokeWidth={2.5} />
                             </View>
                           </Pressable>
                         )}
@@ -1236,7 +1236,7 @@ export function AddSplitScreen({ onBack }: { onBack: () => void }) {
                   style={{
                     fontSize: 9,
                     fontWeight: '700',
-                    color: '#FF0048',
+                    color: '#fff',
                     letterSpacing: 1.4,
                     textTransform: 'uppercase',
                     marginBottom: 1,
@@ -1275,13 +1275,13 @@ export function AddSplitScreen({ onBack }: { onBack: () => void }) {
               {canCreate && (
                 <Pressable
                   style={{
-                    backgroundColor: '#FF0048',
+                    backgroundColor: '#fff',
                     borderRadius: 12,
                     paddingHorizontal: 18,
                     paddingVertical: 10,
-                    shadowColor: '#FF0048',
+                    shadowColor: '#fff',
                     shadowOffset: { width: 0, height: 4 },
-                    shadowOpacity: 0.5,
+                    shadowOpacity: 0.15,
                     shadowRadius: 8,
                     elevation: 5,
                   }}>
@@ -1289,7 +1289,7 @@ export function AddSplitScreen({ onBack }: { onBack: () => void }) {
                     style={{
                       fontSize: 13,
                       fontWeight: '700',
-                      color: '#fff',
+                      color: '#111111',
                       letterSpacing: -0.2,
                     }}>
                     Create →
@@ -1326,7 +1326,7 @@ export function AddSplitScreen({ onBack }: { onBack: () => void }) {
                     style={{
                       fontSize: 9.5,
                       fontWeight: '700',
-                      color: '#FF0048',
+                      color: '#fff',
                       letterSpacing: 1.6,
                       textTransform: 'uppercase',
                       marginBottom: 3,
@@ -1366,16 +1366,16 @@ export function AddSplitScreen({ onBack }: { onBack: () => void }) {
                 <Pressable
                   disabled={!canCreate}
                   style={{
-                    backgroundColor: '#FF0048',
+                    backgroundColor: '#fff',
                     borderRadius: 16,
                     paddingVertical: 16,
                     flexDirection: 'row',
                     alignItems: 'center',
                     justifyContent: 'space-between',
                     paddingHorizontal: 20,
-                    shadowColor: '#FF0048',
+                    shadowColor: '#000',
                     shadowOffset: { width: 0, height: 6 },
-                    shadowOpacity: canCreate ? 0.45 : 0,
+                    shadowOpacity: canCreate ? 0.08 : 0,
                     shadowRadius: 14,
                     elevation: canCreate ? 8 : 0,
                   }}>
@@ -1383,12 +1383,12 @@ export function AddSplitScreen({ onBack }: { onBack: () => void }) {
                     style={{
                       fontSize: 15,
                       fontWeight: '700',
-                      color: '#fff',
+                      color: '#111111',
                       letterSpacing: -0.3,
                     }}>
                     Create Split
                   </Text>
-                  <Text style={{ fontSize: 17, color: 'rgba(255,255,255,0.7)', fontWeight: '600' }}>
+                  <Text style={{ fontSize: 17, color: 'rgba(0,0,0,0.4)', fontWeight: '600' }}>
                     →
                   </Text>
                 </Pressable>

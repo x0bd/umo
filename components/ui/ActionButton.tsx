@@ -13,7 +13,7 @@ interface ActionButtonProps {
 }
 
 const variantStyles: Record<ButtonVariant, { bg: string; text: string; iconColor: string }> = {
-  pink: { bg: 'bg-[#FF0048]', text: 'text-[#450010]', iconColor: '#450010' },
+  pink: { bg: 'bg-[#111111]', text: 'text-white', iconColor: '#FFFFFF' },
   dark: { bg: 'bg-[#111111]', text: 'text-white', iconColor: '#FFFFFF' },
   ghost: {
     bg: 'bg-transparent border border-[#CCCCCC]',

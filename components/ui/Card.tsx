@@ -14,7 +14,7 @@ interface CardProps {
 }
 
 const variantClasses: Record<CardVariant, string> = {
-  pink: 'bg-[#FF0048]',
+  pink: 'bg-[#111111]',
   platinum: 'bg-[#E6E6E6]',
   white: 'bg-white border border-[#CCCCCC]',
 };

@@ -9,7 +9,7 @@ interface PillBadgeProps {
 
 const styles: Record<BadgeVariant, { bg: string; text: string }> = {
   default: { bg: 'bg-[#E6E6E6]', text: 'text-[#111111]' },
-  pink: { bg: 'bg-[#FF0048]', text: 'text-[#450010]' },
+  pink: { bg: 'bg-[#111111]', text: 'text-white' },
   success: { bg: 'bg-[#E6F9EE]', text: 'text-[#00C853]' },
   warning: { bg: 'bg-[#FFF8E1]', text: 'text-[#F57F17]' },
   muted: { bg: 'bg-[rgba(0,0,0,0.06)]', text: 'text-[#555555]' },

@@ -37,8 +37,8 @@ interface Props {
 }
 
 // ─── Design tokens ─────────────────────────────────────────────────────────────
-const STATUS_COLORS = { pending: '#FB8C00', settled: '#00A550', partial: '#1A73E8' } as const;
-const STATUS_BG = { pending: '#FFF3E0', settled: '#E8F5EE', partial: '#EEF3FD' } as const;
+const STATUS_COLORS = { pending: '#FF9500', settled: '#34C759', partial: '#007AFF' } as const;
+const STATUS_BG = { pending: 'rgba(255,149,0,0.15)', settled: 'rgba(52,199,89,0.15)', partial: 'rgba(0,122,255,0.15)' } as const;
 const STATUS_LABELS = { pending: 'Pending', settled: 'Settled', partial: 'Partial' } as const;
 
 // ─── Photos ────────────────────────────────────────────────────────────────────
@@ -411,15 +411,15 @@ export function BillDetailScreen({ session, onBack }: Props) {
                       gap: 4,
                     }}>
                     {isOwed ? (
-                      <ArrowDownLeft size={12} color="#00C853" strokeWidth={2.5} />
+                      <ArrowDownLeft size={12} color="#34C759" strokeWidth={2.5} />
                     ) : (
-                      <ArrowUpRight size={12} color="#111111" strokeWidth={2.5} />
+                      <ArrowUpRight size={12} color="#FF3B30" strokeWidth={2.5} />
                     )}
                     <Text
                       style={{
                         fontSize: 10,
                         fontWeight: '600',
-                        color: isOwed ? '#00C853' : '#111111',
+                        color: isOwed ? '#34C759' : '#FF3B30',
                         letterSpacing: 0.3,
                       }}>
                       {isOwed ? 'They owe you' : 'You owe'}
@@ -786,15 +786,15 @@ export function BillDetailScreen({ session, onBack }: Props) {
                           gap: 5,
                         }}>
                         {settled ? (
-                          <CheckCircle2 size={11} color="#00A550" strokeWidth={2.5} />
+                          <CheckCircle2 size={11} color="#34C759" strokeWidth={2.5} />
                         ) : (
-                          <Clock size={11} color="#FB8C00" strokeWidth={2.5} />
+                          <Clock size={11} color="#FF9500" strokeWidth={2.5} />
                         )}
                         <Text
                           style={{
                             fontSize: 11,
                             fontWeight: '600',
-                            color: settled ? '#00A550' : '#FB8C00',
+                            color: settled ? '#34C759' : '#FF9500',
                             letterSpacing: 0.1,
                           }}>
                           {settled ? 'Settled' : isYou ? 'Pending' : 'Owes'}
@@ -808,7 +808,7 @@ export function BillDetailScreen({ session, onBack }: Props) {
                         style={{
                           fontSize: 16,
                           fontWeight: '700',
-                          color: settled ? '#BBBBBB' : isYou ? '#FF0048' : '#0E0E0E',
+                          color: settled ? '#BBBBBB' : isYou ? '#111111' : '#0E0E0E',
                           letterSpacing: -0.6,
                           textDecorationLine: settled ? 'line-through' : 'none',
                         }}>
@@ -1088,14 +1088,14 @@ export function BillDetailScreen({ session, onBack }: Props) {
                 onPress={handleSettleUp}
                 disabled={settling}
                 style={({ pressed }) => ({
-                  backgroundColor: settling ? '#CC003A' : pressed ? '#CC003A' : '#FF0048',
+                  backgroundColor: settling ? '#000' : pressed ? '#333' : '#111111',
                   borderRadius: 16,
                   paddingVertical: 16,
                   flexDirection: 'row',
                   alignItems: 'center',
                   justifyContent: 'space-between',
                   paddingHorizontal: 20,
-                  shadowColor: '#FF0048',
+                  shadowColor: '#000',
                   shadowOffset: { width: 0, height: 6 },
                   shadowOpacity: settling ? 0.2 : 0.45,
                   shadowRadius: 14,

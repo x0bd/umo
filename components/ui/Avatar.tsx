@@ -11,7 +11,7 @@ interface AvatarProps {
 
 const ringColor: Record<RingStatus, string> = {
   paid: '#00C853',
-  pending: '#FF0048',
+  pending: '#FF9500',
   none: 'transparent',
 };
 
