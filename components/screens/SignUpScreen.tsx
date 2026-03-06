@@ -215,14 +215,19 @@ export function SignUpScreen({ onSignedUp, onSignIn, onBack }: Props) {
           </Pressable>
           <View
             style={{
-              width: 32,
-              height: 32,
-              borderRadius: 10,
-              backgroundColor: '#111111',
+              width: 38,
+              height: 38,
+              borderRadius: 12,
+              backgroundColor: '#FF0048',
               alignItems: 'center',
               justifyContent: 'center',
+              shadowColor: '#FF0048',
+              shadowOffset: { width: 0, height: 4 },
+              shadowOpacity: 0.35,
+              shadowRadius: 12,
+              elevation: 6,
             }}>
-             <Text style={{ color: '#fff', fontSize: 14, fontWeight: '700', fontFamily: 'serif' }}>U</Text>
+             <Rabbit size={20} color="#fff" strokeWidth={2.5} />
           </View>
         </View>
 
@@ -358,8 +363,8 @@ export function SignUpScreen({ onSignedUp, onSignIn, onBack }: Props) {
               <MotiView
                 animate={{
                   scale: submitPressed ? 0.97 : 1,
-                  backgroundColor: canSubmit ? '#111111' : '#E0E0E0',
-                  shadowOpacity: canSubmit ? 0.25 : 0,
+                  backgroundColor: canSubmit ? '#FF0048' : '#E0E0E0',
+                  shadowOpacity: canSubmit ? 0.35 : 0,
                 }}
                 transition={{ type: 'timing', duration: 150 }}
                 style={{
@@ -369,7 +374,7 @@ export function SignUpScreen({ onSignedUp, onSignIn, onBack }: Props) {
                   flexDirection: 'row',
                   alignItems: 'center',
                   justifyContent: 'space-between',
-                  shadowColor: '#000',
+                  shadowColor: '#FF0048',
                   shadowOffset: { width: 0, height: 12 },
                   shadowRadius: 20,
                   elevation: canSubmit ? 8 : 0,

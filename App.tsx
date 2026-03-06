@@ -7,13 +7,13 @@ import { ServicesScreen } from './components/screens/ServicesScreen';
 import { HomeScreen } from './components/screens/HomeScreen';
 import { AddSplitScreen } from './components/screens/AddSplitScreen';
 
+import { Rabbit } from 'lucide-react-native';
 import { AnimatePresence, MotiView } from 'moti';
 import { useRef, useState } from 'react';
 import { Dimensions, Image, Pressable, ScrollView, Text, View } from 'react-native';
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
 
-const { width: W, height: H } = Dimensions.get('window');
-const IMG_H = H * 0.56;
+const { width: W } = Dimensions.get('window');
 
 const SLIDES = [
   {
@@ -57,8 +57,8 @@ function OnboardingScreen({
   }
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#F4F4F4' }}>
-      <StatusBar style="dark" />
+    <View style={{ flex: 1, backgroundColor: '#000000' }}>
+      <StatusBar style="light" />
 
       {/* TOP CHROME - Minimalist Header */}
       <View
@@ -80,19 +80,19 @@ function OnboardingScreen({
           {/* Refined Brand Mark */}
           <View
             style={{
-              width: 36,
-              height: 36,
+              width: 38,
+              height: 38,
               borderRadius: 12,
-              backgroundColor: '#111111',
+              backgroundColor: '#FF0048',
               alignItems: 'center',
               justifyContent: 'center',
-              shadowColor: '#000',
+              shadowColor: '#FF0048',
               shadowOffset: { width: 0, height: 4 },
-              shadowOpacity: 0.15,
+              shadowOpacity: 0.35,
               shadowRadius: 12,
-              elevation: 4,
+              elevation: 6,
             }}>
-            <Text style={{ color: '#fff', fontSize: 16, fontWeight: '700', fontFamily: 'serif' }}>U</Text>
+            <Rabbit size={20} color="#fff" strokeWidth={2.5} />
           </View>
         </MotiView>
 
@@ -104,9 +104,12 @@ function OnboardingScreen({
               style={{
                 fontSize: 13,
                 fontWeight: '600',
-                color: '#888888',
+                color: '#E0E0E0', // lighter since bg might be dark image
                 letterSpacing: 0.5,
                 textTransform: 'uppercase',
+                textShadowColor: 'rgba(0,0,0,0.4)',
+                textShadowOffset: { width: 0, height: 1 },
+                textShadowRadius: 4,
               }}>
               Skip
             </Text>
@@ -114,56 +117,59 @@ function OnboardingScreen({
         </MotiView>
       </View>
 
-      {/* IMAGE STRIP */}
-      <ScrollView
-        ref={scrollRef}
-        horizontal
-        pagingEnabled
-        showsHorizontalScrollIndicator={false}
-        scrollEventThrottle={16}
-        onMomentumScrollEnd={(e) => {
-          const idx = Math.round(e.nativeEvent.contentOffset.x / W);
-          setActive(idx);
-        }}
-        style={{ position: 'absolute', top: 0, left: 0, width: W, height: IMG_H }}>
-        {SLIDES.map((slide) => (
-          <View key={slide.id} style={{ width: W, height: IMG_H }}>
-            <Image
-              source={{ uri: slide.image }}
-              style={{ width: '100%', height: '100%' }}
-              resizeMode="cover"
+      {/* IMAGE CONTAINER */}
+      <View style={{ position: 'absolute', top: 0, left: 0, width: W, height: '60%' }}>
+        {/* IMAGE STRIP */}
+        <ScrollView
+          ref={scrollRef}
+          horizontal
+          pagingEnabled
+          showsHorizontalScrollIndicator={false}
+          scrollEventThrottle={16}
+          onMomentumScrollEnd={(e) => {
+            const idx = Math.round(e.nativeEvent.contentOffset.x / W);
+            setActive(idx);
+          }}
+          style={{ width: W, height: '100%' }}>
+          {SLIDES.map((slide) => (
+            <View key={slide.id} style={{ width: W, height: '100%' }}>
+              <Image
+                source={{ uri: slide.image }}
+                style={{ width: '100%', height: '100%' }}
+                resizeMode="cover"
+              />
+              <View style={{ position: 'absolute', inset: 0, backgroundColor: 'rgba(0,0,0,0.2)' }} />
+            </View>
+          ))}
+        </ScrollView>
+        {/* IMAGE DOTS INDICATOR - Positioned at bottom of wrapper */}
+        <MotiView
+          from={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ type: 'timing', duration: 600, delay: 400 }}
+          style={{
+            position: 'absolute',
+            bottom: 32,
+            left: 0,
+            right: 0,
+            flexDirection: 'row',
+            justifyContent: 'center',
+            alignItems: 'center',
+            gap: 6,
+            zIndex: 10,
+          }}>
+          {SLIDES.map((_, i) => (
+            <MotiView
+              key={i}
+              animate={{ width: i === active ? 24 : 6, opacity: i === active ? 1 : 0.5 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 26 }}
+              style={{ height: 6, borderRadius: 3, backgroundColor: '#ffffff' }}
             />
-            {/* Elegant overlay to ensure text legibility if we move text up, but here we just subtle darken */}
-            <View style={{ position: 'absolute', inset: 0, backgroundColor: 'rgba(5,5,5,0.15)' }} />
-          </View>
-        ))}
-      </ScrollView>
+          ))}
+        </MotiView>
+      </View>
 
-      {/* IMAGE DOTS INDICATOR - Moved inside the image area */}
-      <MotiView
-        from={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ type: 'timing', duration: 600, delay: 400 }}
-        style={{
-          position: 'absolute',
-          top: IMG_H - 32,
-          left: 0,
-          right: 0,
-          flexDirection: 'row',
-          justifyContent: 'center',
-          alignItems: 'center',
-          gap: 6,
-          zIndex: 10,
-        }}>
-        {SLIDES.map((_, i) => (
-          <MotiView
-            key={i}
-            animate={{ width: i === active ? 24 : 6, opacity: i === active ? 1 : 0.5 }}
-            transition={{ type: 'spring', stiffness: 300, damping: 26 }}
-            style={{ height: 6, borderRadius: 3, backgroundColor: '#ffffff' }}
-          />
-        ))}
-      </MotiView>
+
 
       {/* CONTENT CARD - Sleek Platinum/White aesthetic */}
       <View
@@ -172,7 +178,7 @@ function OnboardingScreen({
           bottom: 0,
           left: 0,
           right: 0,
-          height: H * 0.48,
+          height: '48%',
           backgroundColor: '#FFFFFF',
           borderTopLeftRadius: 36,
           borderTopRightRadius: 36,

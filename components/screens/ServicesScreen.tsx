@@ -239,8 +239,8 @@ export function ServicesScreen({ onDone }: Props) {
             />
             <View style={{ flex: 1 }}>
               {/* EYEBROW */}
-              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 7, marginBottom: 14 }}>
-                <View style={{ width: 4, height: 4, borderRadius: 2, backgroundColor: '#FF0048' }} />
+              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 16 }}>
+                <View style={{ width: 6, height: 6, borderRadius: 3, backgroundColor: '#FF0048' }} />
                 <Text
                   style={{
                     fontSize: 10,
@@ -262,8 +262,8 @@ export function ServicesScreen({ onDone }: Props) {
                       style={{
                         backgroundColor: '#FF0048',
                         borderRadius: 100,
-                        paddingHorizontal: 10,
-                        paddingVertical: 4,
+                        paddingHorizontal: 12,
+                        paddingVertical: 6,
                       }}>
                       <Text
                         style={{ fontSize: 10, fontWeight: '700', color: '#fff', letterSpacing: 0.6 }}>
@@ -365,20 +365,20 @@ export function ServicesScreen({ onDone }: Props) {
           <MotiView
             animate={{
               scale: submitPressed ? 0.97 : 1,
-              backgroundColor: hasSelection ? '#FF0048' : '#E6E6E6',
+              backgroundColor: hasSelection ? '#FF0048' : '#E0E0E0',
+              shadowOpacity: hasSelection ? 0.35 : 0,
             }}
             transition={{ type: 'timing', duration: 150 }}
             style={{
-              borderRadius: 18,
-              paddingHorizontal: 24,
-              paddingVertical: 18,
+              borderRadius: 20,
+              paddingHorizontal: 28,
+              paddingVertical: 20,
               flexDirection: 'row',
               alignItems: 'center',
               justifyContent: 'space-between',
-              shadowColor: hasSelection ? '#FF0048' : 'transparent',
-              shadowOffset: { width: 0, height: 10 },
-              shadowOpacity: 0.28,
-              shadowRadius: 18,
+              shadowColor: '#FF0048',
+              shadowOffset: { width: 0, height: 12 },
+              shadowRadius: 20,
               elevation: hasSelection ? 8 : 0,
             }}>
             <Text
