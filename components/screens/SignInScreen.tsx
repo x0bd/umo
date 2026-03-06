@@ -203,14 +203,14 @@ export function SignInScreen({ onSignedIn, onSignUp, onBack }: Props) {
               width: 38,
               height: 38,
               borderRadius: 12,
-              backgroundColor: '#FF0048',
+              backgroundColor: '#111111',
               alignItems: 'center',
               justifyContent: 'center',
-              shadowColor: '#FF0048',
+              shadowColor: '#000',
               shadowOffset: { width: 0, height: 4 },
-              shadowOpacity: 0.35,
-              shadowRadius: 12,
-              elevation: 6,
+              shadowOpacity: 0.15,
+              shadowRadius: 8,
+              elevation: 4,
             }}>
              <Rabbit size={20} color="#fff" strokeWidth={2.5} />
           </View>
