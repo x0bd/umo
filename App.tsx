@@ -7,7 +7,6 @@ import { ServicesScreen } from './components/screens/ServicesScreen';
 import { HomeScreen } from './components/screens/HomeScreen';
 import { AddSplitScreen } from './components/screens/AddSplitScreen';
 
-import { Rabbit } from 'lucide-react-native';
 import { AnimatePresence, MotiView } from 'moti';
 import { useRef, useState } from 'react';
 import { Dimensions, Image, Pressable, ScrollView, Text, View } from 'react-native';
@@ -39,80 +38,6 @@ const SLIDES = [
     sub: 'From "you owe me" to paid. EcoCash, InnBucks, or cash. One tap.',
   },
 ];
-
-function Segments({ total, active }: { total: number; active: number }) {
-  return (
-    <View style={{ flexDirection: 'row', gap: 5, alignItems: 'center' }}>
-      {Array.from({ length: total }).map((_, i) => (
-        <MotiView
-          key={i}
-          animate={{
-            width: i === active ? 30 : 8,
-            backgroundColor: i === active ? '#FF0048' : i < active ? '#FFAABB' : 'rgba(0,0,0,0.13)',
-          }}
-          transition={{ type: 'spring', stiffness: 320, damping: 28 }}
-          style={{ height: 3, borderRadius: 2 }}
-        />
-      ))}
-    </View>
-  );
-}
-
-function NextBtn({ onPress }: { onPress: () => void }) {
-  const [p, setP] = useState(false);
-  return (
-    <Pressable onPress={onPress} onPressIn={() => setP(true)} onPressOut={() => setP(false)}>
-      <MotiView
-        animate={{ scale: p ? 0.88 : 1 }}
-        transition={{ type: 'spring', stiffness: 450, damping: 18 }}
-        style={{
-          width: 54,
-          height: 54,
-          borderRadius: 27,
-          backgroundColor: '#FF0048',
-          alignItems: 'center',
-          justifyContent: 'center',
-          shadowColor: '#FF0048',
-          shadowOffset: { width: 0, height: 8 },
-          shadowOpacity: 0.4,
-          shadowRadius: 14,
-          elevation: 8,
-        }}>
-        <Text style={{ fontSize: 20, color: '#450010', marginLeft: 2 }}>→</Text>
-      </MotiView>
-    </Pressable>
-  );
-}
-
-function GetStartedBtn({ onPress }: { onPress?: () => void }) {
-  const [p, setP] = useState(false);
-  return (
-    <Pressable onPress={onPress} onPressIn={() => setP(true)} onPressOut={() => setP(false)}>
-      <MotiView
-        animate={{ scale: p ? 0.97 : 1 }}
-        transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-        style={{
-          backgroundColor: '#FF0048',
-          borderRadius: 18,
-          paddingHorizontal: 24,
-          paddingVertical: 18,
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          shadowColor: '#FF0048',
-          shadowOffset: { width: 0, height: 10 },
-          shadowOpacity: 0.35,
-          shadowRadius: 16,
-          elevation: 8,
-        }}>
-        <Text style={{ fontSize: 16, fontWeight: '700', color: '#450010', letterSpacing: -0.3 }}>
-          Get Started
-        </Text>
-        <Text style={{ fontSize: 17, color: '#450010', fontWeight: '600' }}>→</Text>
-      </MotiView>
-    </Pressable>
-  );
-}
 
 function OnboardingScreen({
   onGetStarted,
