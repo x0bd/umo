@@ -929,10 +929,10 @@ export function PeopleScreen({ onBack }: { onBack?: () => void }) {
               padding: 26,
               overflow: 'hidden',
               shadowColor: '#000',
-              shadowOffset: { width: 0, height: 14 },
-              shadowOpacity: 0.38,
-              shadowRadius: 30,
-              elevation: 15,
+              shadowOffset: { width: 0, height: 12 },
+              shadowOpacity: 0.35,
+              shadowRadius: 28,
+              elevation: 14,
             }}>
             {/* Title row */}
             <View
@@ -944,11 +944,11 @@ export function PeopleScreen({ onBack }: { onBack?: () => void }) {
               }}>
               <Text
                 style={{
-                  fontSize: 30,
+                  fontSize: 31,
                   fontWeight: '300',
                   letterSpacing: -1.5,
                   color: '#fff',
-                  lineHeight: 32,
+                  lineHeight: 33,
                 }}>
                 Your{'\n'}People
               </Text>
@@ -987,11 +987,11 @@ export function PeopleScreen({ onBack }: { onBack?: () => void }) {
               </Text>
               <Text
                 style={{
-                  fontSize: 58,
+                  fontSize: 62,
                   fontWeight: '300',
                   color: '#fff',
-                  letterSpacing: -3.5,
-                  lineHeight: 58,
+                  letterSpacing: -4,
+                  lineHeight: 62,
                 }}>
                 ${Math.abs(net).toFixed(2)}
               </Text>
@@ -1204,65 +1204,103 @@ export function PeopleScreen({ onBack }: { onBack?: () => void }) {
           </AnimatePresence>
         </MotiView>
 
-        {/* ── FRIENDS LIST ───────────────────────────────────────────────── */}
-        <View style={{ paddingHorizontal: 20 }}>
-          <SectionLabel
-            label={`${filtered.length} ${filtered.length === 1 ? 'person' : 'people'}`}
-          />
-
-          {filtered.length === 0 ? (
-            <MotiView
-              from={{ opacity: 0, scale: 0.94 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ type: 'timing', duration: 220 }}
-              style={{ alignItems: 'center', paddingTop: 50, gap: 12 }}>
+        {/* ── GRAY CARD — Friends List ──────────────────────────────────── */}
+        <MotiView
+          from={{ opacity: 0, translateY: 20 }}
+          animate={{ opacity: 1, translateY: 0 }}
+          transition={{ type: 'timing', duration: 300, delay: 150 }}
+          style={{ marginHorizontal: 20, marginBottom: 14 }}>
+          <View style={{ backgroundColor: '#E6E6E6', borderRadius: 28, padding: 24 }}>
+            {/* TITLE ROW */}
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                alignItems: 'flex-start',
+                marginBottom: 22,
+              }}>
+              <Text
+                style={{
+                  fontSize: 30,
+                  fontWeight: '500',
+                  letterSpacing: -1.5,
+                  color: '#000',
+                  lineHeight: 32,
+                }}>
+                {'All\n'}Friends
+              </Text>
               <View
                 style={{
-                  width: 64,
-                  height: 64,
-                  borderRadius: 22,
-                  backgroundColor: '#EBEBEB',
-                  alignItems: 'center',
-                  justifyContent: 'center',
+                  backgroundColor: 'rgba(0,0,0,0.08)',
+                  borderRadius: 100,
+                  paddingHorizontal: 13,
+                  paddingVertical: 6,
+                  alignSelf: 'flex-start',
+                  marginTop: 4,
                 }}>
-                <Search size={26} color="#CCCCCC" strokeWidth={1.5} />
+                <Text
+                  style={{
+                    fontSize: 10,
+                    fontWeight: '700',
+                    color: 'rgba(0,0,0,0.45)',
+                    letterSpacing: 0.8,
+                    textTransform: 'uppercase',
+                  }}>
+                  {filtered.length} {filtered.length === 1 ? 'person' : 'people'}
+                </Text>
               </View>
-              <Text
-                style={{
-                  fontSize: 16,
-                  fontWeight: '700',
-                  color: '#1A1A1A',
-                  letterSpacing: -0.4,
-                }}>
-                {query ? 'No results' : 'No friends yet'}
-              </Text>
-              <Text
-                style={{
-                  fontSize: 13,
-                  color: '#AAAAAA',
-                  textAlign: 'center',
-                  maxWidth: 220,
-                  lineHeight: 19,
-                  fontWeight: '500',
-                }}>
-                {query
-                  ? `Nothing matches "${query}"`
-                  : 'Tap Add at the top to invite someone to split with.'}
-              </Text>
-            </MotiView>
-          ) : (
-            filtered.map((friend, i) => (
-              <FriendRow
-                key={friend.key}
-                friend={friend}
-                index={i}
-                expanded={expandedKey === friend.key}
-                onPress={() => setExpandedKey((prev) => (prev === friend.key ? null : friend.key))}
-                onSettle={() => handleSettle(friend.key)}
-              />
-            ))
-          )}
-        </View>
+            </View>
+
+            {filtered.length === 0 ? (
+              <View style={{ alignItems: 'center', paddingVertical: 40, gap: 12 }}>
+                <View
+                  style={{
+                    width: 64,
+                    height: 64,
+                    borderRadius: 22,
+                    backgroundColor: 'rgba(0,0,0,0.05)',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}>
+                  <Search size={26} color="#BBBBBB" strokeWidth={1.5} />
+                </View>
+                <Text
+                  style={{
+                    fontSize: 16,
+                    fontWeight: '700',
+                    color: '#1A1A1A',
+                    letterSpacing: -0.4,
+                  }}>
+                  {query ? 'No results' : 'No friends yet'}
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 13,
+                    color: '#888888',
+                    textAlign: 'center',
+                    maxWidth: 220,
+                    lineHeight: 19,
+                    fontWeight: '500',
+                  }}>
+                  {query
+                    ? `Nothing matches "${query}"`
+                    : 'Tap Add at the top to invite someone to split with.'}
+                </Text>
+              </View>
+            ) : (
+              filtered.map((friend, i) => (
+                <FriendRow
+                  key={friend.key}
+                  friend={friend}
+                  index={i}
+                  expanded={expandedKey === friend.key}
+                  onPress={() => setExpandedKey((prev) => (prev === friend.key ? null : friend.key))}
+                  onSettle={() => handleSettle(friend.key)}
+                />
+              ))
+            )}
+          </View>
+        </MotiView>
       </ScrollView>
 
       {/* ── ADD FRIEND SHEET ─────────────────────────────────────────────── */}
