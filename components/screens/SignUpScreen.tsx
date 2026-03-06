@@ -363,8 +363,8 @@ export function SignUpScreen({ onSignedUp, onSignIn, onBack }: Props) {
               <MotiView
                 animate={{
                   scale: submitPressed ? 0.97 : 1,
-                  backgroundColor: canSubmit ? '#FF0048' : '#E0E0E0',
-                  shadowOpacity: canSubmit ? 0.35 : 0,
+                  backgroundColor: canSubmit ? '#111111' : '#E0E0E0',
+                  shadowOpacity: canSubmit ? 0.25 : 0,
                 }}
                 transition={{ type: 'timing', duration: 150 }}
                 style={{
@@ -374,7 +374,7 @@ export function SignUpScreen({ onSignedUp, onSignIn, onBack }: Props) {
                   flexDirection: 'row',
                   alignItems: 'center',
                   justifyContent: 'space-between',
-                  shadowColor: '#FF0048',
+                  shadowColor: '#000',
                   shadowOffset: { width: 0, height: 12 },
                   shadowRadius: 20,
                   elevation: canSubmit ? 8 : 0,

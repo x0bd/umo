@@ -158,8 +158,8 @@ function ServiceRow({
             {/* CHECKBOX */}
             <MotiView
               animate={{
-                backgroundColor: selected ? '#FF0048' : 'transparent',
-                borderColor: selected ? '#FF0048' : '#D4D4D4',
+                backgroundColor: selected ? '#111111' : 'transparent',
+                borderColor: selected ? '#111111' : '#D4D4D4',
               }}
               transition={{ type: 'timing', duration: 160 }}
               style={{
@@ -240,13 +240,13 @@ export function ServicesScreen({ onDone }: Props) {
             <View style={{ flex: 1 }}>
               {/* EYEBROW */}
               <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 16 }}>
-                <View style={{ width: 6, height: 6, borderRadius: 3, backgroundColor: '#FF0048' }} />
+                <View style={{ width: 6, height: 6, borderRadius: 3, backgroundColor: '#111111' }} />
                 <Text
                   style={{
                     fontSize: 10,
                     fontWeight: '700',
                     letterSpacing: 3.5,
-                    color: '#FF0048',
+                    color: '#555555',
                     textTransform: 'uppercase',
                   }}>
                   Setup
@@ -260,7 +260,7 @@ export function ServicesScreen({ onDone }: Props) {
                       exit={{ opacity: 0, scale: 0.75 }}
                       transition={{ type: 'spring', stiffness: 400, damping: 24 }}
                       style={{
-                        backgroundColor: '#FF0048',
+                        backgroundColor: '#111111',
                         borderRadius: 100,
                         paddingHorizontal: 12,
                         paddingVertical: 6,
@@ -365,8 +365,8 @@ export function ServicesScreen({ onDone }: Props) {
           <MotiView
             animate={{
               scale: submitPressed ? 0.97 : 1,
-              backgroundColor: hasSelection ? '#FF0048' : '#E0E0E0',
-              shadowOpacity: hasSelection ? 0.35 : 0,
+              backgroundColor: hasSelection ? '#111111' : '#E0E0E0',
+              shadowOpacity: hasSelection ? 0.25 : 0,
             }}
             transition={{ type: 'timing', duration: 150 }}
             style={{
@@ -376,7 +376,7 @@ export function ServicesScreen({ onDone }: Props) {
               flexDirection: 'row',
               alignItems: 'center',
               justifyContent: 'space-between',
-              shadowColor: '#FF0048',
+              shadowColor: '#000',
               shadowOffset: { width: 0, height: 12 },
               shadowRadius: 20,
               elevation: hasSelection ? 8 : 0,
