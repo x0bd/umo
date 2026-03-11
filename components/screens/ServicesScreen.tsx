@@ -4,6 +4,8 @@ import { useState } from 'react';
 import { Pressable, ScrollView, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { ScreenCard } from '../ui';
+
 interface Props {
   onDone: (selected: string[]) => void;
 }
@@ -216,132 +218,87 @@ export function ServicesScreen({ onDone }: Props) {
     <View style={{ flex: 1, backgroundColor: '#F4F4F4' }}>
       <ScrollView
         style={{ flex: 1 }}
-        contentContainerStyle={{ paddingBottom: insets.bottom + 120 }}
+        contentContainerStyle={{
+          paddingTop: insets.top + 24,
+          paddingBottom: insets.bottom + 140,
+          paddingHorizontal: 20,
+          gap: 18,
+        }}
         showsVerticalScrollIndicator={false}>
-
-        {/* HEADER */}
+        {/* HEADER CARD */}
         <MotiView
           from={{ opacity: 0, translateY: 14 }}
           animate={{ opacity: 1, translateY: 0 }}
-          transition={{ type: 'timing', duration: 240 }}
-          style={{ paddingTop: insets.top + 32, paddingHorizontal: 24, paddingBottom: 28 }}>
-          <View style={{ flexDirection: 'row' }}>
-            {/* LEFT SPINE */}
-            <View
-              style={{
-                width: 1,
-                backgroundColor: '#DEDEDE',
-                marginTop: 4,
-                marginBottom: 4,
-                marginRight: 20,
-                borderRadius: 1,
-              }}
-            />
-            <View style={{ flex: 1 }}>
-              {/* EYEBROW */}
-              <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 16 }}>
-                <View style={{ width: 6, height: 6, borderRadius: 3, backgroundColor: '#111111' }} />
-                <Text
+          transition={{ type: 'timing', duration: 240 }}>
+          <ScreenCard
+            variant="surface"
+            header={{
+              label: 'Setup',
+              title: 'What do you\nuse to pay?',
+              subtitle: "We'll show the right options at your table.",
+            }}>
+            <AnimatePresence>
+              {hasSelection && (
+                <MotiView
+                  from={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                  transition={{ type: 'spring', stiffness: 420, damping: 26 }}
                   style={{
-                    fontSize: 10,
-                    fontWeight: '700',
-                    letterSpacing: 3.5,
-                    color: '#555555',
-                    textTransform: 'uppercase',
+                    alignSelf: 'flex-start',
+                    backgroundColor: '#111111',
+                    borderRadius: 999,
+                    paddingHorizontal: 12,
+                    paddingVertical: 6,
                   }}>
-                  Setup
-                </Text>
-                <View style={{ flex: 1 }} />
-                <AnimatePresence>
-                  {hasSelection && (
-                    <MotiView
-                      from={{ opacity: 0, scale: 0.75 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0, scale: 0.75 }}
-                      transition={{ type: 'spring', stiffness: 400, damping: 24 }}
-                      style={{
-                        backgroundColor: '#111111',
-                        borderRadius: 100,
-                        paddingHorizontal: 12,
-                        paddingVertical: 6,
-                      }}>
-                      <Text
-                        style={{ fontSize: 10, fontWeight: '700', color: '#fff', letterSpacing: 0.6 }}>
-                        {selected.length} of {SERVICES.length}
-                      </Text>
-                    </MotiView>
-                  )}
-                </AnimatePresence>
-              </View>
-              <Text
-                style={{
-                  fontSize: 44,
-                  fontWeight: '600',
-                  color: '#0E0E0E',
-                  letterSpacing: -2.6,
-                  lineHeight: 46,
-                  marginBottom: 10,
-                }}>
-                {'What do you\nuse to pay?'}
-              </Text>
-              <Text
-                style={{
-                  fontSize: 14.5,
-                  color: '#5A5A5A',
-                  lineHeight: 22,
-                  letterSpacing: 0.05,
-                }}>
-                {"We'll show the right options at your table."}
-              </Text>
-            </View>
-          </View>
+                  <Text
+                    style={{
+                      fontSize: 10,
+                      fontWeight: '700',
+                      color: '#fff',
+                      letterSpacing: 0.6,
+                    }}>
+                    {selected.length} of {SERVICES.length}
+                  </Text>
+                </MotiView>
+              )}
+            </AnimatePresence>
+          </ScreenCard>
         </MotiView>
 
-        {/* LIST CARD */}
-        <View style={{ marginHorizontal: 20 }}>
-          <Text
-            style={{
-              fontSize: 10,
-              fontWeight: '700',
-              letterSpacing: 2.8,
-              color: '#AAAAAA',
-              textTransform: 'uppercase',
-              marginBottom: 10,
-              paddingLeft: 4,
+        {/* SERVICES LIST CARD */}
+        <MotiView
+          from={{ opacity: 0, translateY: 18 }}
+          animate={{ opacity: 1, translateY: 0 }}
+          transition={{ type: 'timing', duration: 260, delay: 80 }}>
+          <ScreenCard
+            variant="surface"
+            header={{
+              label: 'Payment methods',
+              title: 'Where money lives.',
+              subtitle: 'Pick everything you actually use. You can change this any time.',
             }}>
-            Payment methods
-          </Text>
-          <View
-            style={{
-              backgroundColor: '#fff',
-              borderRadius: 22,
-              overflow: 'hidden',
-              borderWidth: 1,
-              borderColor: '#EBEBEB',
-            }}>
-            {SERVICES.map((service, i) => (
-              <ServiceRow
-                key={service.id}
-                service={service}
-                selected={selected.includes(service.id)}
-                onToggle={() => toggle(service.id)}
-                delay={i * 35}
-                isLast={i === SERVICES.length - 1}
-              />
-            ))}
-          </View>
-          <Text
-            style={{
-              fontSize: 11.5,
-              color: '#BBBBBB',
-              letterSpacing: 0.1,
-              lineHeight: 17,
-              marginTop: 10,
-              paddingLeft: 4,
-            }}>
-            You can change this any time from your profile.
-          </Text>
-        </View>
+            <View
+              style={{
+                backgroundColor: '#fff',
+                borderRadius: 18,
+                overflow: 'hidden',
+                borderWidth: 1,
+                borderColor: '#EBEBEB',
+              }}>
+              {SERVICES.map((service, i) => (
+                <ServiceRow
+                  key={service.id}
+                  service={service}
+                  selected={selected.includes(service.id)}
+                  onToggle={() => toggle(service.id)}
+                  delay={i * 35}
+                  isLast={i === SERVICES.length - 1}
+                />
+              ))}
+            </View>
+          </ScreenCard>
+        </MotiView>
       </ScrollView>
 
       {/* STICKY CTA */}
@@ -359,7 +316,9 @@ export function ServicesScreen({ onDone }: Props) {
           borderTopColor: '#E8E8E8',
         }}>
         <Pressable
-          onPress={() => { if (hasSelection) onDone(selected); }}
+          onPress={() => {
+            if (hasSelection) onDone(selected);
+          }}
           onPressIn={() => setSubmitPressed(true)}
           onPressOut={() => setSubmitPressed(false)}>
           <MotiView

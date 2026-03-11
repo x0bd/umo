@@ -14,6 +14,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { AppleIcon } from '../icons/AppleIcon';
 import { GoogleIcon } from '../icons/GoogleIcon';
+import { ScreenCard } from '../ui';
 
 interface Props {
   onSignedUp: () => void;
@@ -182,13 +183,15 @@ export function SignUpScreen({ onSignedUp, onSignIn, onBack }: Props) {
       keyboardVerticalOffset={0}>
       <ScrollView
         style={{ flex: 1 }}
-        contentContainerStyle={{ paddingBottom: insets.bottom + 32 }}
+        contentContainerStyle={{
+          paddingTop: insets.top + 20,
+          paddingBottom: insets.bottom + 32,
+        }}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled">
         {/* TOP CHROME */}
         <View
           style={{
-            paddingTop: insets.top + 20,
             paddingHorizontal: 24,
             paddingBottom: 24,
             flexDirection: 'row',
@@ -227,66 +230,95 @@ export function SignUpScreen({ onSignedUp, onSignIn, onBack }: Props) {
               shadowRadius: 8,
               elevation: 4,
             }}>
-             <Rabbit size={20} color="#fff" strokeWidth={2.5} />
+            <Rabbit size={20} color="#fff" strokeWidth={2.5} />
           </View>
         </View>
 
-        {/* HERO SECTION */}
+        {/* MAIN CARD */}
         <MotiView
           from={{ opacity: 0, translateY: 16 }}
           animate={{ opacity: 1, translateY: 0 }}
           transition={{ type: 'timing', duration: 240 }}
-          style={{ paddingTop: 12, paddingHorizontal: 28 }}>
-          <View style={{ flex: 1 }}>
-            {/* EYEBROW */}
-            <View
-              style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 16 }}>
-              <View
-                style={{ width: 6, height: 6, borderRadius: 3, backgroundColor: '#111111' }}
-              />
-              <Text
-                style={{
-                  fontSize: 10,
-                  fontWeight: '700',
-                  letterSpacing: 2,
-                  color: '#555555',
-                  textTransform: 'uppercase',
-                }}>
-                Create Account
-              </Text>
-            </View>
+          style={{ paddingHorizontal: 20 }}>
+          <ScreenCard
+            variant="surface"
+            header={{
+              label: 'Create account',
+              title: 'Create your\naccount.',
+              subtitle: 'Split bills. Track who paid. Settle fast.',
+            }}
+            footer={
+              <>
+                {/* CTA */}
+                <Pressable
+                  onPress={() => {
+                    if (canSubmit) onSignedUp();
+                  }}
+                  onPressIn={() => setSubmitPressed(true)}
+                  onPressOut={() => setSubmitPressed(false)}>
+                  <MotiView
+                    animate={{
+                      scale: submitPressed ? 0.97 : 1,
+                      backgroundColor: canSubmit ? '#111111' : '#E0E0E0',
+                      shadowOpacity: canSubmit ? 0.25 : 0,
+                    }}
+                    transition={{ type: 'timing', duration: 150 }}
+                    style={{
+                      borderRadius: 20,
+                      paddingHorizontal: 28,
+                      paddingVertical: 20,
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      shadowColor: '#000',
+                      shadowOffset: { width: 0, height: 12 },
+                      shadowRadius: 20,
+                      elevation: canSubmit ? 8 : 0,
+                    }}>
+                    <Text
+                      style={{
+                        fontSize: 16,
+                        fontWeight: '700',
+                        color: canSubmit ? '#ffffff' : '#999999',
+                        letterSpacing: -0.2,
+                      }}>
+                      Create account
+                    </Text>
+                    <View
+                      style={{
+                        width: 32,
+                        height: 32,
+                        borderRadius: 16,
+                        backgroundColor: canSubmit
+                          ? 'rgba(255,255,255,0.1)'
+                          : 'rgba(0,0,0,0.04)',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}>
+                      <Text style={{ fontSize: 18, color: canSubmit ? '#fff' : '#CCCCCC' }}>→</Text>
+                    </View>
+                  </MotiView>
+                </Pressable>
 
-            {/* HEADLINE */}
-            <Text
-              style={{
-                fontSize: 42,
-                fontWeight: '600',
-                color: '#111111',
-                letterSpacing: -2,
-                lineHeight: 46,
-                marginBottom: 12,
-              }}>
-              {'Create your\naccount.'}
-            </Text>
-            <Text
-              style={{
-                fontSize: 15,
-                color: '#666666',
-                lineHeight: 24,
-                marginBottom: 36,
-              }}>
-              Split bills. Track who paid. Settle fast.
-            </Text>
-
+                {/* SIGN IN LINK */}
+                <Pressable onPress={onSignIn} style={{ alignItems: 'center', paddingVertical: 8 }}>
+                  <Text style={{ fontSize: 14, color: '#888888', letterSpacing: 0.1 }}>
+                    {'Already have an account?  '}
+                    <Text style={{ color: '#111111', fontWeight: '700', letterSpacing: -0.1 }}>
+                      Sign in
+                    </Text>
+                  </Text>
+                </Pressable>
+              </>
+            }>
             {/* SOCIAL AUTH */}
-            <View style={{ flexDirection: 'row', gap: 12, marginBottom: 32 }}>
+            <View style={{ flexDirection: 'row', gap: 12 }}>
               <SocialBtn icon={<GoogleIcon size={19} />} label="Google" />
               <SocialBtn icon={<AppleIcon size={17} color="#fff" />} label="Apple" dark />
             </View>
 
             {/* DIVIDER */}
-            <View
-              style={{ flexDirection: 'row', alignItems: 'center', gap: 16, marginBottom: 32 }}>
+            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 16 }}>
               <View style={{ flex: 1, height: 1, backgroundColor: '#E8E8E8' }} />
               <Text
                 style={{
@@ -302,32 +334,34 @@ export function SignUpScreen({ onSignedUp, onSignIn, onBack }: Props) {
             </View>
 
             {/* FORM */}
-            <FormField
-              label="Full Name"
-              value={name}
-              onChangeText={setName}
-              placeholder="Tendai Moyo"
-              autoCapitalize="words"
-            />
-            <FormField
-              label="Email"
-              value={email}
-              onChangeText={setEmail}
-              placeholder="tendai@gmail.com"
-              keyboardType="email-address"
-            />
-            <FormField
-              label="Password"
-              value={password}
-              onChangeText={setPassword}
-              placeholder="At least 6 characters"
-              secureTextEntry={!showPw}
-              onToggleSecure={() => setShowPw((v) => !v)}
-            />
+            <View style={{ marginTop: 4 }}>
+              <FormField
+                label="Full Name"
+                value={name}
+                onChangeText={setName}
+                placeholder="Tendai Moyo"
+                autoCapitalize="words"
+              />
+              <FormField
+                label="Email"
+                value={email}
+                onChangeText={setEmail}
+                placeholder="tendai@gmail.com"
+                keyboardType="email-address"
+              />
+              <FormField
+                label="Password"
+                value={password}
+                onChangeText={setPassword}
+                placeholder="At least 6 characters"
+                secureTextEntry={!showPw}
+                onToggleSecure={() => setShowPw((v) => !v)}
+              />
+            </View>
 
             {/* PASSWORD STRENGTH */}
             {password.length > 0 && (
-              <View style={{ marginTop: -2, marginBottom: 20, paddingHorizontal: 2 }}>
+              <View style={{ marginTop: -4, marginBottom: 4, paddingHorizontal: 2 }}>
                 <View style={{ flexDirection: 'row', gap: 6, marginBottom: 8 }}>
                   {[1, 2, 3, 4].map((i) => (
                     <MotiView
@@ -351,67 +385,7 @@ export function SignUpScreen({ onSignedUp, onSignIn, onBack }: Props) {
                 </Text>
               </View>
             )}
-
-            {/* CTA */}
-            <Pressable
-              onPress={() => {
-                if (canSubmit) onSignedUp();
-              }}
-              onPressIn={() => setSubmitPressed(true)}
-              onPressOut={() => setSubmitPressed(false)}
-              style={{ marginTop: 12 }}>
-              <MotiView
-                animate={{
-                  scale: submitPressed ? 0.97 : 1,
-                  backgroundColor: canSubmit ? '#111111' : '#E0E0E0',
-                  shadowOpacity: canSubmit ? 0.25 : 0,
-                }}
-                transition={{ type: 'timing', duration: 150 }}
-                style={{
-                  borderRadius: 20,
-                  paddingHorizontal: 28,
-                  paddingVertical: 20,
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  shadowColor: '#000',
-                  shadowOffset: { width: 0, height: 12 },
-                  shadowRadius: 20,
-                  elevation: canSubmit ? 8 : 0,
-                }}>
-                <Text
-                  style={{
-                    fontSize: 16,
-                    fontWeight: '700',
-                    color: canSubmit ? '#ffffff' : '#999999',
-                    letterSpacing: -0.2,
-                  }}>
-                  Create account
-                </Text>
-                <View
-                  style={{
-                    width: 32,
-                    height: 32,
-                    borderRadius: 16,
-                    backgroundColor: canSubmit ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.04)',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}>
-                  <Text style={{ fontSize: 18, color: canSubmit ? '#fff' : '#CCCCCC' }}>→</Text>
-                </View>
-              </MotiView>
-            </Pressable>
-
-            {/* SIGN IN LINK */}
-            <Pressable onPress={onSignIn} style={{ alignItems: 'center', paddingVertical: 32 }}>
-              <Text style={{ fontSize: 14, color: '#888888', letterSpacing: 0.1 }}>
-                {'Already have an account?  '}
-                <Text style={{ color: '#111111', fontWeight: '700', letterSpacing: -0.1 }}>
-                  Sign in
-                </Text>
-              </Text>
-            </Pressable>
-          </View>
+          </ScreenCard>
         </MotiView>
       </ScrollView>
     </KeyboardAvoidingView>
