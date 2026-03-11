@@ -1,4 +1,5 @@
 import { ArrowLeft, Eye, EyeOff, Rabbit } from 'lucide-react-native';
+import { StatusBar } from 'expo-status-bar';
 import { MotiView } from 'moti';
 import { useState } from 'react';
 import {
@@ -178,13 +179,14 @@ export function SignUpScreen({ onSignedUp, onSignIn, onBack }: Props) {
 
   return (
     <KeyboardAvoidingView
-      style={{ flex: 1, backgroundColor: '#F4F4F4' }}
+      style={{ flex: 1, backgroundColor: '#000000' }}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       keyboardVerticalOffset={0}>
+      <StatusBar style="light" />
       <ScrollView
         style={{ flex: 1 }}
         contentContainerStyle={{
-          paddingTop: insets.top + 20,
+          paddingTop: insets.top + 24,
           paddingBottom: insets.bottom + 32,
         }}
         showsVerticalScrollIndicator={false}
