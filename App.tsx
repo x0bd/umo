@@ -12,6 +12,7 @@ import { AnimatePresence, MotiView } from 'moti';
 import { useRef, useState } from 'react';
 import { Dimensions, Image, Pressable, ScrollView, Text, View } from 'react-native';
 import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
+import { ScreenCard } from './components/ui';
 
 const { width: W } = Dimensions.get('window');
 
@@ -171,89 +172,38 @@ function OnboardingScreen({
 
 
 
-      {/* CONTENT CARD - Sleek Platinum/White aesthetic */}
+      {/* CONTENT CARD - unified shell using ScreenCard */}
       <View
         style={{
           position: 'absolute',
           bottom: 0,
           left: 0,
           right: 0,
-          height: '48%',
-          backgroundColor: '#FFFFFF',
-          borderTopLeftRadius: 36,
-          borderTopRightRadius: 36,
-          shadowColor: '#000',
-          shadowOffset: { width: 0, height: -10 },
-          shadowOpacity: 0.05,
-          shadowRadius: 20,
-          elevation: 20,
+          paddingHorizontal: 24,
+          paddingBottom: insets.bottom + 20,
         }}>
-        <View
-          style={{
-            flex: 1,
-            paddingHorizontal: 32,
-            paddingTop: 40,
-            paddingBottom: insets.bottom + 24,
-          }}>
-          <AnimatePresence exitBeforeEnter>
-            <MotiView
-              key={active}
-              from={{ opacity: 0, translateY: 12 }}
-              animate={{ opacity: 1, translateY: 0 }}
-              exit={{ opacity: 0, translateY: -8 }}
-              transition={{ type: 'timing', duration: 220 }}
-              style={{ flex: 1, justifyContent: 'space-between' }}>
-              <View>
-                <View
-                  style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 16 }}>
-                  {/* Subtle Dot Indicator instead of bold red */}
-                  <View
-                    style={{ width: 6, height: 6, borderRadius: 3, backgroundColor: '#111111' }}
-                  />
-                  <Text
-                    style={{
-                      fontSize: 10,
-                      fontWeight: '700',
-                      letterSpacing: 2,
-                      color: '#555555',
-                      textTransform: 'uppercase',
-                    }}>
-                    {SLIDES[active].eyebrow}
-                  </Text>
-                </View>
-
-                <Text
-                  style={{
-                    fontSize: 40,
-                    fontWeight: '600',
-                    color: '#111111',
-                    letterSpacing: -2,
-                    lineHeight: 44,
-                    marginBottom: 16,
-                  }}>
-                  {SLIDES[active].headline}
-                </Text>
-
-                <Text
-                  style={{
-                    fontSize: 15,
-                    color: '#666666',
-                    lineHeight: 24,
-                    letterSpacing: 0,
-                    maxWidth: 300,
-                  }}>
-                  {SLIDES[active].sub}
-                </Text>
-              </View>
-
+        <AnimatePresence exitBeforeEnter>
+          <MotiView
+            key={active}
+            from={{ opacity: 0, translateY: 24 }}
+            animate={{ opacity: 1, translateY: 0 }}
+            exit={{ opacity: 0, translateY: 16 }}
+            transition={{ type: 'timing', duration: 260 }}>
+            <ScreenCard
+              variant="surface"
+              header={{
+                label: SLIDES[active].eyebrow,
+                title: SLIDES[active].headline,
+                subtitle: SLIDES[active].sub,
+              }}>
               <AnimatePresence exitBeforeEnter>
                 {!isLast ? (
                   <MotiView
                     key="nav"
-                    from={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ type: 'timing', duration: 160 }}
+                    from={{ opacity: 0, translateY: 4 }}
+                    animate={{ opacity: 1, translateY: 0 }}
+                    exit={{ opacity: 0, translateY: 4 }}
+                    transition={{ type: 'timing', duration: 180 }}
                     style={{
                       flexDirection: 'row',
                       alignItems: 'center',
@@ -281,10 +231,10 @@ function OnboardingScreen({
                 ) : (
                   <MotiView
                     key="cta"
-                    from={{ opacity: 0, translateY: 16 }}
+                    from={{ opacity: 0, translateY: 8 }}
                     animate={{ opacity: 1, translateY: 0 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ type: 'timing', duration: 240 }}
+                    exit={{ opacity: 0, translateY: 8 }}
+                    transition={{ type: 'timing', duration: 220 }}
                     style={{ gap: 16 }}>
                     <Pressable onPress={onGetStarted}>
                       <MotiView
@@ -302,28 +252,30 @@ function OnboardingScreen({
                           shadowRadius: 20,
                           elevation: 10,
                         }}>
-                        <Text style={{ fontSize: 16, fontWeight: '700', color: '#FFFFFF', letterSpacing: -0.2 }}>
+                        <Text
+                          style={{
+                            fontSize: 16,
+                            fontWeight: '700',
+                            color: '#FFFFFF',
+                            letterSpacing: -0.2,
+                          }}>
                           Get Started
                         </Text>
                       </MotiView>
                     </Pressable>
 
-                    <Pressable
-                      onPress={onSignIn}
-                      style={{ alignItems: 'center', paddingVertical: 8 }}>
+                    <Pressable onPress={onSignIn} style={{ alignItems: 'center', paddingVertical: 8 }}>
                       <Text style={{ fontSize: 14, color: '#888888', letterSpacing: 0.1 }}>
                         Already have an account?{' '}
-                        <Text style={{ color: '#111111', fontWeight: '700' }}>
-                          Sign in
-                        </Text>
+                        <Text style={{ color: '#111111', fontWeight: '700' }}>Sign in</Text>
                       </Text>
                     </Pressable>
                   </MotiView>
                 )}
               </AnimatePresence>
-            </MotiView>
-          </AnimatePresence>
-        </View>
+            </ScreenCard>
+          </MotiView>
+        </AnimatePresence>
       </View>
     </View>
   );
