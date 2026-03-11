@@ -6,3 +6,4 @@ export { Avatar } from './Avatar';
 export { PillBadge } from './PillBadge';
 export { ActionButton } from './ActionButton';
 export { Dock } from './Dock';
+export { ScreenCard } from './ScreenCard';
