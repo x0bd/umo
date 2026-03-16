@@ -9,6 +9,8 @@ type HeaderConfig = {
   label?: string;
   title?: string;
   subtitle?: string;
+  /** Dot color for eyebrow — defaults to #111111, use #FF0048 for brand accent */
+  accentDot?: string;
 };
 
 interface ScreenCardProps {
@@ -49,10 +51,10 @@ export function ScreenCard({
             <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
               <View
                 style={{
-                  width: 6,
-                  height: 6,
-                  borderRadius: 3,
-                  backgroundColor: '#111111',
+                  width: 5,
+                  height: 5,
+                  borderRadius: 2.5,
+                  backgroundColor: header.accentDot ?? '#111111',
                 }}
               />
               <Text

@@ -57,19 +57,22 @@ function FormField({
         }}>
         {label}
       </Text>
-      <View
+      <MotiView
+        animate={{
+          backgroundColor: focused ? '#FFFFFF' : '#F8F8F8',
+          borderColor: focused ? '#111111' : 'rgba(0,0,0,0.06)',
+          shadowOpacity: focused ? 0.06 : 0,
+        }}
+        transition={{ type: 'timing', duration: 180 }}
         style={{
           flexDirection: 'row',
           alignItems: 'center',
-          backgroundColor: focused ? '#FFFFFF' : '#F8F8F8',
-          borderRadius: 16,
+          borderRadius: 14,
           borderWidth: 1,
-          borderColor: focused ? '#111111' : 'transparent',
           paddingHorizontal: 16,
           paddingVertical: 16,
           shadowColor: '#000',
           shadowOffset: { width: 0, height: 2 },
-          shadowOpacity: focused ? 0.05 : 0,
           shadowRadius: 8,
           elevation: focused ? 2 : 0,
         }}>
@@ -101,7 +104,7 @@ function FormField({
             )}
           </Pressable>
         )}
-      </View>
+      </MotiView>
     </View>
   );
 }
@@ -177,17 +180,19 @@ export function SignUpScreen({ onSignedUp, onSignIn, onBack }: Props) {
   const pwColors = ['#E53935', '#FB8C00', '#43A047', '#00C853'];
   const pwLabels = ['Weak', 'Fair', 'Good', 'Strong'];
 
+  const [backPressed, setBackPressed] = useState(false);
+
   return (
     <KeyboardAvoidingView
-      style={{ flex: 1, backgroundColor: '#000000' }}
+      style={{ flex: 1, backgroundColor: '#050505' }}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       keyboardVerticalOffset={0}>
       <StatusBar style="light" />
       <ScrollView
         style={{ flex: 1 }}
         contentContainerStyle={{
-          paddingTop: insets.top + 24,
-          paddingBottom: insets.bottom + 32,
+          paddingTop: insets.top + 20,
+          paddingBottom: insets.bottom + 36,
         }}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled">
@@ -195,30 +200,39 @@ export function SignUpScreen({ onSignedUp, onSignIn, onBack }: Props) {
         <View
           style={{
             paddingHorizontal: 24,
-            paddingBottom: 24,
+            paddingBottom: 20,
             flexDirection: 'row',
             alignItems: 'center',
             justifyContent: 'space-between',
           }}>
           <Pressable
             onPress={onBack}
-            hitSlop={12}
-            style={{
-              width: 44,
-              height: 44,
-              borderRadius: 22,
-              backgroundColor: '#FFFFFF',
-              alignItems: 'center',
-              justifyContent: 'center',
-              shadowColor: '#000',
-              shadowOffset: { width: 0, height: 4 },
-              shadowOpacity: 0.05,
-              shadowRadius: 10,
-              elevation: 2,
-            }}>
-            <ArrowLeft size={20} color="#111111" strokeWidth={2} />
+            onPressIn={() => setBackPressed(true)}
+            onPressOut={() => setBackPressed(false)}
+            hitSlop={14}>
+            <MotiView
+              animate={{ scale: backPressed ? 0.94 : 1 }}
+              transition={{ type: 'spring', stiffness: 500, damping: 22 }}
+              style={{
+                width: 44,
+                height: 44,
+                borderRadius: 14,
+                backgroundColor: 'rgba(255,255,255,0.95)',
+                alignItems: 'center',
+                justifyContent: 'center',
+                shadowColor: '#000',
+                shadowOffset: { width: 0, height: 4 },
+                shadowOpacity: 0.08,
+                shadowRadius: 12,
+                elevation: 3,
+              }}>
+              <ArrowLeft size={20} color="#111111" strokeWidth={2} />
+            </MotiView>
           </Pressable>
-          <View
+          <MotiView
+            from={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ type: 'spring', stiffness: 360, damping: 24 }}
             style={{
               width: 38,
               height: 38,
@@ -228,19 +242,19 @@ export function SignUpScreen({ onSignedUp, onSignIn, onBack }: Props) {
               justifyContent: 'center',
               shadowColor: '#000',
               shadowOffset: { width: 0, height: 4 },
-              shadowOpacity: 0.15,
-              shadowRadius: 8,
+              shadowOpacity: 0.2,
+              shadowRadius: 10,
               elevation: 4,
             }}>
             <Rabbit size={20} color="#fff" strokeWidth={2.5} />
-          </View>
+          </MotiView>
         </View>
 
         {/* MAIN CARD */}
         <MotiView
-          from={{ opacity: 0, translateY: 16 }}
+          from={{ opacity: 0, translateY: 20 }}
           animate={{ opacity: 1, translateY: 0 }}
-          transition={{ type: 'timing', duration: 240 }}
+          transition={{ type: 'spring', stiffness: 280, damping: 28 }}
           style={{ paddingHorizontal: 20 }}>
           <ScreenCard
             variant="surface"
@@ -248,6 +262,7 @@ export function SignUpScreen({ onSignedUp, onSignIn, onBack }: Props) {
               label: 'Create account',
               title: 'Create your\naccount.',
               subtitle: 'Split bills. Track who paid. Settle fast.',
+              accentDot: '#FF0048',
             }}
             footer={
               <>
@@ -261,12 +276,16 @@ export function SignUpScreen({ onSignedUp, onSignIn, onBack }: Props) {
                   <MotiView
                     animate={{
                       scale: submitPressed ? 0.97 : 1,
-                      backgroundColor: canSubmit ? '#111111' : '#E0E0E0',
-                      shadowOpacity: canSubmit ? 0.25 : 0,
+                      backgroundColor: canSubmit
+                        ? submitPressed
+                          ? '#0A0A0A'
+                          : '#111111'
+                        : '#E0E0E0',
+                      shadowOpacity: canSubmit ? 0.28 : 0,
                     }}
-                    transition={{ type: 'timing', duration: 150 }}
+                    transition={{ type: 'spring', stiffness: 500, damping: 22 }}
                     style={{
-                      borderRadius: 20,
+                      borderRadius: 18,
                       paddingHorizontal: 28,
                       paddingVertical: 20,
                       flexDirection: 'row',
@@ -274,15 +293,15 @@ export function SignUpScreen({ onSignedUp, onSignIn, onBack }: Props) {
                       justifyContent: 'space-between',
                       shadowColor: '#000',
                       shadowOffset: { width: 0, height: 12 },
-                      shadowRadius: 20,
-                      elevation: canSubmit ? 8 : 0,
+                      shadowRadius: 24,
+                      elevation: canSubmit ? 10 : 0,
                     }}>
                     <Text
                       style={{
                         fontSize: 16,
                         fontWeight: '700',
                         color: canSubmit ? '#ffffff' : '#999999',
-                        letterSpacing: -0.2,
+                        letterSpacing: -0.3,
                       }}>
                       Create account
                     </Text>
@@ -292,7 +311,7 @@ export function SignUpScreen({ onSignedUp, onSignIn, onBack }: Props) {
                         height: 32,
                         borderRadius: 16,
                         backgroundColor: canSubmit
-                          ? 'rgba(255,255,255,0.1)'
+                          ? 'rgba(255,255,255,0.12)'
                           : 'rgba(0,0,0,0.04)',
                         alignItems: 'center',
                         justifyContent: 'center',
@@ -303,8 +322,8 @@ export function SignUpScreen({ onSignedUp, onSignIn, onBack }: Props) {
                 </Pressable>
 
                 {/* SIGN IN LINK */}
-                <Pressable onPress={onSignIn} style={{ alignItems: 'center', paddingVertical: 8 }}>
-                  <Text style={{ fontSize: 14, color: '#888888', letterSpacing: 0.1 }}>
+                <Pressable onPress={onSignIn} style={{ alignItems: 'center', paddingVertical: 10 }}>
+                  <Text style={{ fontSize: 14, color: '#888888', letterSpacing: 0.05 }}>
                     {'Already have an account?  '}
                     <Text style={{ color: '#111111', fontWeight: '700', letterSpacing: -0.1 }}>
                       Sign in
@@ -371,7 +390,7 @@ export function SignUpScreen({ onSignedUp, onSignIn, onBack }: Props) {
                       animate={{
                         backgroundColor: i <= pwScore ? pwColors[pwScore - 1] : '#EAEAEA',
                       }}
-                      transition={{ type: 'timing', duration: 200 }}
+                      transition={{ type: 'spring', stiffness: 400, damping: 26 }}
                       style={{ flex: 1, height: 4, borderRadius: 2 }}
                     />
                   ))}
