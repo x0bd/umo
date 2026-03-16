@@ -26,180 +26,232 @@ function OnboardingScreen({
   onSignIn: () => void;
 }) {
   const insets = useSafeAreaInsets();
+  const [ctaPressed, setCtaPressed] = useState(false);
 
   return (
-    <View style={{ flex: 1, backgroundColor: '#000000' }}>
+    <View style={{ flex: 1, backgroundColor: '#050505' }}>
       <StatusBar style="light" />
 
-      {/* TOP CHROME — Brand mark */}
-      <View
-        style={{
-          position: 'absolute',
-          top: insets.top + 16,
-          left: 24,
-          right: 24,
-          flexDirection: 'row',
-          alignItems: 'center',
-          justifyContent: 'center',
-          zIndex: 10,
-        }}>
-        <MotiView
-          from={{ opacity: 0, translateY: -8 }}
-          animate={{ opacity: 1, translateY: 0 }}
-          transition={{ type: 'spring', delay: 200 }}
-          style={{
-            width: 38,
-            height: 38,
-            borderRadius: 12,
-            backgroundColor: '#111111',
-            alignItems: 'center',
-            justifyContent: 'center',
-            shadowColor: '#000',
-            shadowOffset: { width: 0, height: 4 },
-            shadowOpacity: 0.25,
-            shadowRadius: 10,
-            elevation: 4,
-          }}>
-          <Rabbit size={20} color="#fff" strokeWidth={2.5} />
-        </MotiView>
-      </View>
-
-      {/* HERO IMAGE */}
-      <View style={{ position: 'absolute', top: 0, left: 0, width: W, height: '55%' }}>
+      {/* HERO IMAGE — full bleed with vignettes */}
+      <View style={{ position: 'absolute', top: 0, left: 0, width: W, height: '58%' }}>
         <Image
           source={{ uri: HERO_IMAGE }}
           style={{ width: '100%', height: '100%' }}
           resizeMode="cover"
         />
+        {/* Top vignette — brand mark reads clean */}
         <View
           style={{
             position: 'absolute',
-            inset: 0,
-            backgroundColor: 'rgba(0,0,0,0.25)',
+            top: 0,
+            left: 0,
+            right: 0,
+            height: 100,
+            backgroundColor: 'rgba(0,0,0,0.4)',
           }}
+          pointerEvents="none"
+        />
+        {/* Bottom vignette — smooth bleed into card */}
+        <View
+          style={{
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            right: 0,
+            height: 120,
+            backgroundColor: 'rgba(0,0,0,0.35)',
+          }}
+          pointerEvents="none"
         />
       </View>
 
-      {/* CONTENT CARD — Single page */}
+      {/* TOP CHROME — Brand mark, floats over hero */}
       <View
+        style={{
+          position: 'absolute',
+          top: insets.top + 20,
+          left: 0,
+          right: 0,
+          alignItems: 'center',
+          zIndex: 10,
+        }}>
+        <MotiView
+          from={{ opacity: 0, scale: 0.92 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ type: 'spring', stiffness: 340, damping: 24, delay: 180 }}
+          style={{
+            width: 44,
+            height: 44,
+            borderRadius: 14,
+            backgroundColor: 'rgba(17,17,17,0.92)',
+            alignItems: 'center',
+            justifyContent: 'center',
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 8 },
+            shadowOpacity: 0.35,
+            shadowRadius: 16,
+            elevation: 8,
+            overflow: 'hidden',
+          }}>
+          <Rabbit size={22} color="#fff" strokeWidth={2.5} />
+        </MotiView>
+      </View>
+
+      {/* CONTENT CARD — Lifted, refined */}
+      <MotiView
+        from={{ translateY: 24, opacity: 0 }}
+        animate={{ translateY: 0, opacity: 1 }}
+        transition={{ type: 'spring', stiffness: 280, damping: 28, delay: 80 }}
         style={{
           position: 'absolute',
           bottom: 0,
           left: 0,
           right: 0,
           backgroundColor: '#FFFFFF',
-          borderTopLeftRadius: 36,
-          borderTopRightRadius: 36,
+          borderTopLeftRadius: 32,
+          borderTopRightRadius: 32,
           shadowColor: '#000',
-          shadowOffset: { width: 0, height: -10 },
-          shadowOpacity: 0.05,
-          shadowRadius: 20,
-          elevation: 20,
-          paddingHorizontal: 32,
-          paddingTop: 36,
-          paddingBottom: insets.bottom + 24,
+          shadowOffset: { width: 0, height: -16 },
+          shadowOpacity: 0.12,
+          shadowRadius: 32,
+          elevation: 24,
+          overflow: 'hidden',
         }}>
-        <MotiView
-          from={{ opacity: 0, translateY: 16 }}
-          animate={{ opacity: 1, translateY: 0 }}
-          transition={{ type: 'timing', duration: 320 }}
-          style={{ flex: 1, justifyContent: 'space-between' }}>
-          <View>
+        {/* Hairline at top — card edge */}
+        <View
+          style={{
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            height: 1,
+            backgroundColor: 'rgba(0,0,0,0.06)',
+          }}
+        />
+        <View
+          style={{
+            paddingHorizontal: 28,
+            paddingTop: 32,
+            paddingBottom: insets.bottom + 28,
+          }}>
+          {/* Eyebrow — staggered */}
+          <MotiView
+            from={{ opacity: 0, translateY: 8 }}
+            animate={{ opacity: 1, translateY: 0 }}
+            transition={{ type: 'spring', stiffness: 400, damping: 28, delay: 200 }}
+            style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 12 }}>
             <View
               style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                gap: 8,
-                marginBottom: 14,
-              }}>
-              <View
-                style={{
-                  width: 6,
-                  height: 6,
-                  borderRadius: 3,
-                  backgroundColor: '#111111',
-                }}
-              />
-              <Text
-                style={{
-                  fontSize: 10,
-                  fontWeight: '700',
-                  letterSpacing: 2,
-                  color: '#555555',
-                  textTransform: 'uppercase',
-                }}>
-                Split the bill
-              </Text>
-            </View>
-
+                width: 5,
+                height: 5,
+                borderRadius: 2.5,
+                backgroundColor: '#FF0048',
+              }}
+            />
             <Text
               style={{
-                fontSize: 36,
-                fontWeight: '600',
+                fontSize: 10,
+                fontWeight: '700',
+                letterSpacing: 2.2,
+                color: '#555555',
+                textTransform: 'uppercase',
+              }}>
+              Split the bill
+            </Text>
+          </MotiView>
+
+          {/* Headline — staggered, punchier */}
+          <MotiView
+            from={{ opacity: 0, translateY: 12 }}
+            animate={{ opacity: 1, translateY: 0 }}
+            transition={{ type: 'spring', stiffness: 380, damping: 26, delay: 260 }}>
+            <Text
+              style={{
+                fontSize: 38,
+                fontWeight: '700',
                 color: '#111111',
-                letterSpacing: -1.8,
-                lineHeight: 40,
-                marginBottom: 14,
+                letterSpacing: -2,
+                lineHeight: 42,
+                marginBottom: 12,
               }}>
               Split the bill.{'\n'}
-              <Text style={{ color: 'rgba(17,17,17,0.4)' }}>Not the mood.</Text>
+              <Text style={{ color: 'rgba(17,17,17,0.35)', fontWeight: '600' }}>
+                Not the mood.
+              </Text>
             </Text>
+          </MotiView>
 
+          {/* Sub — staggered */}
+          <MotiView
+            from={{ opacity: 0, translateY: 10 }}
+            animate={{ opacity: 1, translateY: 0 }}
+            transition={{ type: 'spring', stiffness: 360, damping: 26, delay: 340 }}
+            style={{ marginBottom: 28 }}>
             <Text
               style={{
                 fontSize: 15,
                 color: '#666666',
                 lineHeight: 24,
-                letterSpacing: -0.1,
-                maxWidth: 320,
+                letterSpacing: -0.2,
+                maxWidth: 300,
               }}>
               Claim exactly what you ordered. Convert USD & ZiG on the fly. Settle
               with EcoCash, InnBucks, or cash — one tap.
             </Text>
-          </View>
+          </MotiView>
 
+          {/* CTAs — with press feedback */}
           <MotiView
-            from={{ opacity: 0, translateY: 12 }}
+            from={{ opacity: 0, translateY: 14 }}
             animate={{ opacity: 1, translateY: 0 }}
-            transition={{ type: 'timing', duration: 280, delay: 120 }}
-            style={{ gap: 16, marginTop: 24 }}>
-            <Pressable onPress={onGetStarted}>
+            transition={{ type: 'spring', stiffness: 320, damping: 26, delay: 420 }}
+            style={{ gap: 14 }}>
+            <Pressable
+              onPress={onGetStarted}
+              onPressIn={() => setCtaPressed(true)}
+              onPressOut={() => setCtaPressed(false)}>
               <MotiView
+                animate={{
+                  scale: ctaPressed ? 0.97 : 1,
+                  backgroundColor: ctaPressed ? '#0A0A0A' : '#111111',
+                }}
+                transition={{ type: 'spring', stiffness: 500, damping: 22 }}
                 style={{
-                  backgroundColor: '#111111',
-                  borderRadius: 20,
-                  paddingVertical: 18,
+                  borderRadius: 18,
+                  paddingVertical: 20,
                   paddingHorizontal: 28,
                   flexDirection: 'row',
                   alignItems: 'center',
                   justifyContent: 'center',
                   shadowColor: '#000',
                   shadowOffset: { width: 0, height: 12 },
-                  shadowOpacity: 0.25,
-                  shadowRadius: 20,
-                  elevation: 10,
+                  shadowOpacity: 0.28,
+                  shadowRadius: 24,
+                  elevation: 12,
                 }}>
                 <Text
                   style={{
                     fontSize: 16,
                     fontWeight: '700',
                     color: '#FFFFFF',
-                    letterSpacing: -0.2,
+                    letterSpacing: -0.3,
                   }}>
                   Get Started
                 </Text>
               </MotiView>
             </Pressable>
 
-            <Pressable onPress={onSignIn} style={{ alignItems: 'center', paddingVertical: 8 }}>
-              <Text style={{ fontSize: 14, color: '#888888', letterSpacing: 0.1 }}>
+            <Pressable onPress={onSignIn} style={{ alignItems: 'center', paddingVertical: 10 }}>
+              <Text style={{ fontSize: 14, color: '#888888', letterSpacing: 0.05 }}>
                 Already have an account?{' '}
-                <Text style={{ color: '#111111', fontWeight: '700' }}>Sign in</Text>
+                <Text style={{ color: '#111111', fontWeight: '700', letterSpacing: -0.1 }}>
+                  Sign in
+                </Text>
               </Text>
             </Pressable>
           </MotiView>
-        </MotiView>
-      </View>
+        </View>
+      </MotiView>
     </View>
   );
 }
